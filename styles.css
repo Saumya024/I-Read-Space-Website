@@ -2800,7 +2800,7 @@ a.area-item:hover,
 
 .process-divider {
   width: 3px;
-  height: 200px;
+  height: 260px;
   background-color: rgba(185, 151, 80, 0.55);
   margin: 0 20px;
 }
@@ -2896,6 +2896,13 @@ a.area-item:hover,
   opacity: 0.9;
 }
 
+.about-saumya-text .about-saumya-lede {
+  font-family: var(--font-heading);
+  font-size: clamp(22px, 3vw, 32px);
+  line-height: 1.35;
+  opacity: 1;
+}
+
 .about-saumya-text p:last-child {
   margin-bottom: 0;
 }
@@ -2905,7 +2912,7 @@ a.area-item:hover,
     max-width: 1100px;
     display: grid;
     grid-template-columns: 330px minmax(0, 1fr);
-    grid-template-rows: auto auto;
+    grid-template-rows: 1fr auto auto 1fr;
     column-gap: 56px;
     align-items: start;
     position: relative;
@@ -2924,14 +2931,14 @@ a.area-item:hover,
 
   .about-saumya-photo-wrapper {
     grid-column: 1;
-    grid-row: 1;
+    grid-row: 2;
     margin: 0 0 16px;
     justify-self: center;
   }
 
   .about-saumya-left-meta {
     grid-column: 1;
-    grid-row: 2;
+    grid-row: 3;
     margin: 0;
     justify-self: center;
     align-self: start;
@@ -2939,7 +2946,7 @@ a.area-item:hover,
 
   .about-saumya-right-column {
     grid-column: 2;
-    grid-row: 1 / 3;
+    grid-row: 1 / 5;
     padding-left: 28px;
     align-self: start;
     min-width: 0;
@@ -3787,6 +3794,26 @@ a.area-item:hover,
   opacity: 0.9;
 }
 
+.footer-legal {
+  width: 100%;
+  margin-top: 6px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(248, 246, 242, 0.18);
+}
+
+.footer-legal p {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  line-height: 1.5;
+  color: var(--cream-white);
+  opacity: 0.58;
+  margin: 0;
+}
+
+.footer-legal p + p {
+  margin-top: 4px;
+}
+
 /* Intake Page */
 .intake {
   background-color: var(--cream-white);
@@ -4457,28 +4484,50 @@ main[class$="-page"] .wizard-chip.active {
     padding-right: 24px;
   }
 
-  /* Session Experience: use stacked layout from tablet down so content stays centered and nothing is cut off */
+  /* Session Experience: compact row cards on tablet/mobile to reduce vertical space. */
   .process-flow {
     flex-direction: column;
-    align-items: center;
-    gap: 40px;
+    align-items: stretch;
+    gap: 24px;
     padding: 0 12px;
+    max-width: 680px;
   }
 
   .process-divider {
-    width: 200px;
+    width: calc(100% - 48px);
     height: 3px;
     margin: 0 auto;
   }
 
   .process-step {
-    max-width: 360px;
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    align-items: center;
+    column-gap: 20px;
+    max-width: 100%;
     width: 100%;
+    text-align: left;
+  }
+
+  .process-icon {
+    grid-row: 1 / 3;
+    width: 96px;
+    height: 96px;
+    margin: 0;
+    padding: 16px;
   }
 
   .process-heading {
+    grid-column: 2;
     line-height: 1.3;
     max-width: none;
+    margin: 0 0 10px;
+    text-align: left;
+  }
+
+  .process-text {
+    grid-column: 2;
+    text-align: left;
   }
 
   .header {
@@ -5686,18 +5735,45 @@ main[class$="-page"] .wizard-chip.active {
 
   .process-flow {
     flex-direction: column;
-    gap: 40px;
+    align-items: stretch;
+    gap: 22px;
+    max-width: 640px;
+    padding: 0 8px;
   }
 
   .process-step {
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1fr);
+    align-items: center;
+    column-gap: 16px;
     max-width: 100%;
+    text-align: left;
   }
 
   .process-divider {
-    width: 200px;
+    width: calc(100% - 32px);
     height: 3px;
-  margin: 0 auto;
-}
+    margin: 0 auto;
+  }
+
+  .process-icon {
+    grid-row: 1 / 3;
+    width: 76px;
+    height: 76px;
+    margin: 0;
+    padding: 13px;
+  }
+
+  .process-heading {
+    grid-column: 2;
+    margin: 0 0 8px;
+    text-align: left;
+  }
+
+  .process-text {
+    grid-column: 2;
+    text-align: left;
+  }
 
   .contact {
     padding: 56px 20px;
@@ -5862,6 +5938,15 @@ main[class$="-page"] .wizard-chip.active {
     font-size: 11px;
     white-space: normal;
     padding: 4px 6px;
+  }
+
+  .footer-legal {
+    margin-top: 4px;
+    padding: 12px 20px 0;
+  }
+
+  .footer-legal p {
+    font-size: 11px;
   }
 
   .contact-icon {
@@ -9949,6 +10034,38 @@ main[class$="-page"] .wizard-chip.active {
 }
 
 /* FAQ Chat Widget */
+.whatsapp-floating-button {
+  position: fixed;
+  bottom: 80px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--tertiary);
+  border: 2px solid var(--tertiary);
+  color: var(--primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(67, 16, 57, 0.2);
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.whatsapp-floating-button:hover {
+  background: var(--tertiary-light);
+  border-color: var(--tertiary);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(67, 16, 57, 0.3);
+}
+
+.whatsapp-floating-button svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
 .faq-chat-button {
   position: fixed;
   bottom: 24px;
@@ -9956,9 +10073,9 @@ main[class$="-page"] .wizard-chip.active {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: var(--tertiary);
-  border: 2px solid var(--primary-lighter);
-  color: var(--primary);
+  background: transparent;
+  border: 2px solid var(--tertiary);
+  color: var(--tertiary);
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
@@ -9972,20 +10089,20 @@ main[class$="-page"] .wizard-chip.active {
 }
 
 .faq-chat-button:hover {
-  background: var(--tertiary-light);
+  background: rgba(185, 151, 80, 0.1);
   transform: scale(1.05);
   box-shadow: 0 6px 16px rgba(67, 16, 57, 0.3);
 }
 
 .faq-chat-button.active {
-  background: var(--primary);
-  color: var(--cream-white);
+  background: transparent;
+  color: var(--tertiary);
   border-color: var(--tertiary);
 }
 
 .faq-chat-panel {
   position: fixed;
-  bottom: 76px;
+  bottom: 136px;
   right: 24px;
   width: 400px;
   max-width: calc(100vw - 48px);
@@ -10402,6 +10519,13 @@ main[class$="-page"] .wizard-chip.active {
   .about-cta-section .cta {
     padding: 16px 32px;
     font-size: 18px;
+  }
+
+  .whatsapp-floating-button {
+    bottom: 68px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
   }
 
   .founder-photo-wrapper {
@@ -11310,6 +11434,10 @@ body.home .process,
 body.home .founder-note {
   padding-top: 72px;
   padding-bottom: 72px;
+}
+
+body.home .founder-note {
+  display: none;
 }
 
 /* Keep hamburger white across all pages/modes */

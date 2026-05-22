@@ -4,7 +4,7 @@
 const FAQ_DATA = [
   {
     question: "How do I book a Vedic astrology consultation?",
-    answer: "You can book a Vedic astrology consultation online by selecting a session type, sharing your birth details, and choosing an available slot.<br><br><strong>1. Choose your session type:</strong><ul><li>30-minute session (Quick Clarity) — ₹1,200 (Audio) / ₹1,500 (Video)</li><li>60-minute session (Deep Insight) — ₹2,400 (Audio) / ₹2,700 (Video)</li><li>90-minute session (Holistic Guidance) — ₹3,600 (Audio) / ₹3,900 (Video)</li></ul><strong>2. Prepare your birth details:</strong><ul><li>Exact date of birth</li><li>Precise time of birth (as accurate as possible)</li><li>Place of birth (city and state/country)</li></ul><strong>3. Book online:</strong><br>Visit the <a href='intake.html' target='_blank'>booking page</a>, select your preferred session, share your birth details, choose an available slot, and complete payment. Payment is required in advance to confirm the appointment.<br><br>Consultations are conducted online. Rescheduling is possible with 24 hours' notice. Sessions are confidential.",
+    answer: "You can book a Vedic astrology consultation online by selecting a session type, sharing your birth details, and choosing an available slot.<br><br><strong>1. Choose your session type:</strong><ul><li>30-minute session (Quick Clarity) — ₹1,200 (Audio) / ₹1,500 (Video)</li><li>60-minute session (Deep Insight) — ₹2,400 (Audio) / ₹3,000 (Video)</li><li>90-minute session (Holistic Guidance) — ₹3,600 (Audio) / ₹4,500 (Video)</li></ul><strong>2. Prepare your birth details:</strong><ul><li>Exact date of birth</li><li>Precise time of birth (as accurate as possible)</li><li>Place of birth (city and state/country)</li></ul><strong>3. Book online:</strong><br>Visit the <a href='intake.html' target='_blank'>booking page</a>, select your preferred session, share your birth details, choose an available slot, and complete payment. Payment is required in advance to confirm the appointment.<br><br>Consultations are conducted online. Rescheduling is possible with 24 hours' notice. Sessions are confidential.",
     category: "getting-started"
   },
   {
@@ -14,7 +14,7 @@ const FAQ_DATA = [
   },
   {
     question: "How much does a Vedic astrology consultation cost?",
-    answer: "Vedic astrology consultations at I Read Space range from ₹1,200 to ₹3,900, depending on session length and format (audio or video).<br><br><ul><li><strong>30-minute session (Quick Clarity)</strong> — ₹1,200 (Audio) / ₹1,500 (Video). One primary concern using one chart.</li><li><strong>60-minute session (Deep Insight)</strong> — ₹2,400 (Audio) / ₹2,700 (Video). Up to three related themes using two charts.</li><li><strong>90-minute session (Holistic Guidance)</strong> — ₹3,600 (Audio) / ₹3,900 (Video). Multiple life areas and charts.</li></ul><strong>Session packages</strong><br>Three-session packages are available with savings of ₹300–₹900. Sessions do not expire.<br><br>Payment is required in advance. Rescheduling possible with 24 hours' notice.",
+    answer: "Vedic astrology consultations at I Read Space range from ₹1,200 to ₹4,500, depending on session length and format (audio or video).<br><br><ul><li><strong>30-minute session (Quick Clarity)</strong> — ₹1,200 (Audio) / ₹1,500 (Video). One primary concern using one chart.</li><li><strong>60-minute session (Deep Insight)</strong> — ₹2,400 (Audio) / ₹3,000 (Video). Up to three related themes using two charts.</li><li><strong>90-minute session (Holistic Guidance)</strong> — ₹3,600 (Audio) / ₹4,500 (Video). Multiple life areas and charts.</li></ul><strong>Session packages</strong><br>Three-session packages are available with savings of ₹300–₹900. Sessions do not expire.<br><br>Payment is required in advance. Rescheduling possible with 24 hours' notice.",
     category: "getting-started"
   },
   {
@@ -188,6 +188,28 @@ const FAQ_CATEGORIES = {
   }
 };
 
+function initWhatsAppFloatingButton() {
+  if (document.getElementById('whatsapp-floating-button')) return;
+
+  const faqButton = document.getElementById('faq-chat-button');
+  if (!faqButton) return;
+
+  const whatsappButton = document.createElement('a');
+  whatsappButton.id = 'whatsapp-floating-button';
+  whatsappButton.className = 'whatsapp-floating-button';
+  whatsappButton.href = 'https://wa.me/919217679635';
+  whatsappButton.target = '_blank';
+  whatsappButton.rel = 'noopener noreferrer';
+  whatsappButton.setAttribute('aria-label', 'Chat on WhatsApp');
+  whatsappButton.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.464 3.488"/>
+    </svg>
+  `;
+
+  faqButton.insertAdjacentElement('beforebegin', whatsappButton);
+}
+
 // Initialize FAQ Chat Widget
 function initFAQChat() {
   const chatButton = document.getElementById('faq-chat-button');
@@ -312,6 +334,7 @@ function initFAQChat() {
 // Hide floating button while it overlaps the hero CTA
 function initFAQButtonVisibility() {
   const btn = document.getElementById('faq-chat-button');
+  const whatsappBtn = document.getElementById('whatsapp-floating-button');
   const heroCta = document.querySelector('.hero-cta');
   if (!btn || !heroCta) return;
 
@@ -320,8 +343,11 @@ function initFAQButtonVisibility() {
     const btnRect = btn.getBoundingClientRect();
     const overlaps = ctaRect.bottom > btnRect.top && ctaRect.top < btnRect.bottom &&
                      ctaRect.right > btnRect.left && ctaRect.left < btnRect.right;
-    btn.style.opacity = overlaps ? '0' : '';
-    btn.style.pointerEvents = overlaps ? 'none' : '';
+    [btn, whatsappBtn].forEach(button => {
+      if (!button) return;
+      button.style.opacity = overlaps ? '0' : '';
+      button.style.pointerEvents = overlaps ? 'none' : '';
+    });
   }
 
   window.addEventListener('scroll', update, { passive: true });
@@ -331,8 +357,9 @@ function initFAQButtonVisibility() {
 
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => { initFAQChat(); initFAQButtonVisibility(); });
+  document.addEventListener('DOMContentLoaded', () => { initWhatsAppFloatingButton(); initFAQChat(); initFAQButtonVisibility(); });
 } else {
+  initWhatsAppFloatingButton();
   initFAQChat();
   initFAQButtonVisibility();
 }
