@@ -2069,6 +2069,18 @@ a.area-item:hover,
   text-decoration: none;
   font-size: var(--text-body);
   font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.area-cta:hover,
+.area-cta:focus-visible {
+  color: var(--secondary-light);
+}
+
+.area-topics-toggle:hover,
+.area-topics-toggle:focus-visible {
+  color: var(--secondary-light);
+  opacity: 1;
 }
 
 .area-actions {
@@ -4734,8 +4746,8 @@ main[class$="-page"] .wizard-chip.active {
     -webkit-tap-highlight-color: transparent;
   }
 
-  .nav a:not(.mobile-menu-contact-cta):not(.mobile-menu-book-cta):not(.mobile-menu-resource-link):hover,
-  .nav a:not(.mobile-menu-contact-cta):not(.mobile-menu-book-cta):not(.mobile-menu-resource-link):active {
+  .nav:not(.mobile-menu-enhanced) a:not(.mobile-menu-contact-cta):not(.mobile-menu-book-cta):not(.mobile-menu-resource-link):hover,
+  .nav:not(.mobile-menu-enhanced) a:not(.mobile-menu-contact-cta):not(.mobile-menu-book-cta):not(.mobile-menu-resource-link):active {
     opacity: 0.9;
     padding-left: 8px;
     color: var(--secondary-lighter) !important;
@@ -4747,13 +4759,6 @@ main[class$="-page"] .wizard-chip.active {
 
   .nav a:last-child {
     border-bottom: none;
-  }
-
-  .nav .mobile-menu-contact-cta:hover,
-  .nav .mobile-menu-contact-cta:active {
-    padding: 11px 14px;
-    opacity: 0.88;
-    color: var(--primary) !important;
   }
 
   /* Header CTA shown at bottom of hamburger menu (legacy; book CTA uses .mobile-menu-book-cta) */
@@ -4839,11 +4844,7 @@ main[class$="-page"] .wizard-chip.active {
     margin-top: 0 !important;
     padding-top: 10px !important;
     padding-bottom: 10px !important;
-  }
-
-  .nav.mobile-menu-enhanced .mobile-menu-link:hover,
-  .nav.mobile-menu-enhanced .mobile-menu-link:active {
-    color: var(--primary-light) !important;
+    transition: color 0.2s ease !important;
   }
 
   .nav.mobile-menu-enhanced .mobile-menu-resource-link {
@@ -4853,6 +4854,16 @@ main[class$="-page"] .wizard-chip.active {
   .nav.mobile-menu-enhanced .mobile-menu-resource-link:hover,
   .nav.mobile-menu-enhanced .mobile-menu-resource-link:active {
     padding-left: 24px !important;
+  }
+
+  .nav.mobile-menu-enhanced .mobile-menu-link:hover,
+  .nav.mobile-menu-enhanced .mobile-menu-link:active,
+  .nav.mobile-menu-enhanced .mobile-menu-resource-link:hover,
+  .nav.mobile-menu-enhanced .mobile-menu-resource-link:active,
+  .nav.mobile-menu-enhanced .mobile-menu-contact-cta:hover,
+  .nav.mobile-menu-enhanced .mobile-menu-contact-cta:active {
+    color: var(--secondary) !important;
+    opacity: 1 !important;
   }
 
   .nav.mobile-menu-enhanced .mobile-menu-contact-cta {
@@ -4866,15 +4877,13 @@ main[class$="-page"] .wizard-chip.active {
     border: none !important;
     box-shadow: inset 0 0 0 1px rgba(185, 151, 80, 0.72) !important;
     overflow: visible !important;
-    transition: opacity 0.2s ease !important;
+    transition: color 0.2s ease !important;
   }
 
   .nav.mobile-menu-enhanced .mobile-menu-contact-cta:hover,
   .nav.mobile-menu-enhanced .mobile-menu-contact-cta:active {
     padding: 11px 14px !important;
     padding-left: 14px !important;
-    opacity: 0.88 !important;
-    color: var(--primary) !important;
   }
 
   .nav.mobile-menu-enhanced .mobile-menu-book-cta {
@@ -4887,6 +4896,12 @@ main[class$="-page"] .wizard-chip.active {
     font-weight: 600 !important;
     line-height: 1.25 !important;
     letter-spacing: 0.02em !important;
+  }
+
+  .nav.mobile-menu-enhanced .mobile-menu-book-cta:hover,
+  .nav.mobile-menu-enhanced .mobile-menu-book-cta:active {
+    background-color: var(--secondary-light) !important;
+    color: var(--primary) !important;
   }
 
   .nav.mobile-menu-enhanced .mobile-menu-link:not(.mobile-menu-contact-cta):not(.mobile-menu-book-cta):not(.mobile-menu-resource-link):hover,
@@ -5528,8 +5543,8 @@ main[class$="-page"] .wizard-chip.active {
     -webkit-tap-highlight-color: transparent;
   }
 
-  .nav a:not(.mobile-menu-contact-cta):not(.mobile-menu-book-cta):not(.mobile-menu-resource-link):hover,
-  .nav a:not(.mobile-menu-contact-cta):not(.mobile-menu-book-cta):not(.mobile-menu-resource-link):active {
+  .nav:not(.mobile-menu-enhanced) a:not(.mobile-menu-contact-cta):not(.mobile-menu-book-cta):not(.mobile-menu-resource-link):hover,
+  .nav:not(.mobile-menu-enhanced) a:not(.mobile-menu-contact-cta):not(.mobile-menu-book-cta):not(.mobile-menu-resource-link):active {
     opacity: 0.9;
     padding-left: 8px;
     color: var(--secondary-lighter) !important;
@@ -5537,13 +5552,6 @@ main[class$="-page"] .wizard-chip.active {
 
   .nav a:active {
     transition: none;
-  }
-
-  .nav .mobile-menu-contact-cta:hover,
-  .nav .mobile-menu-contact-cta:active {
-    padding: 10px 12px;
-    opacity: 0.88;
-    color: var(--primary) !important;
   }
 
   .nav .header-cta:not(.mobile-menu-book-cta) {
@@ -5622,11 +5630,7 @@ main[class$="-page"] .wizard-chip.active {
     margin-top: 0 !important;
     padding-top: 9px !important;
     padding-bottom: 9px !important;
-  }
-
-  .nav.mobile-menu-enhanced .mobile-menu-link:hover,
-  .nav.mobile-menu-enhanced .mobile-menu-link:active {
-    color: var(--primary-light) !important;
+    transition: color 0.2s ease !important;
   }
 
   .nav.mobile-menu-enhanced .mobile-menu-resource-link {
@@ -5636,6 +5640,16 @@ main[class$="-page"] .wizard-chip.active {
   .nav.mobile-menu-enhanced .mobile-menu-resource-link:hover,
   .nav.mobile-menu-enhanced .mobile-menu-resource-link:active {
     padding-left: 22px !important;
+  }
+
+  .nav.mobile-menu-enhanced .mobile-menu-link:hover,
+  .nav.mobile-menu-enhanced .mobile-menu-link:active,
+  .nav.mobile-menu-enhanced .mobile-menu-resource-link:hover,
+  .nav.mobile-menu-enhanced .mobile-menu-resource-link:active,
+  .nav.mobile-menu-enhanced .mobile-menu-contact-cta:hover,
+  .nav.mobile-menu-enhanced .mobile-menu-contact-cta:active {
+    color: var(--secondary) !important;
+    opacity: 1 !important;
   }
 
   .nav.mobile-menu-enhanced .mobile-menu-contact-cta {
@@ -5649,15 +5663,13 @@ main[class$="-page"] .wizard-chip.active {
     border: none !important;
     box-shadow: inset 0 0 0 1px rgba(185, 151, 80, 0.72) !important;
     overflow: visible !important;
-    transition: opacity 0.2s ease !important;
+    transition: color 0.2s ease !important;
   }
 
   .nav.mobile-menu-enhanced .mobile-menu-contact-cta:hover,
   .nav.mobile-menu-enhanced .mobile-menu-contact-cta:active {
     padding: 10px 12px !important;
     padding-left: 12px !important;
-    opacity: 0.88 !important;
-    color: var(--primary) !important;
   }
 
   .nav.mobile-menu-enhanced .mobile-menu-book-cta {
@@ -5670,6 +5682,12 @@ main[class$="-page"] .wizard-chip.active {
     font-weight: 600 !important;
     line-height: 1.25 !important;
     letter-spacing: 0.02em !important;
+  }
+
+  .nav.mobile-menu-enhanced .mobile-menu-book-cta:hover,
+  .nav.mobile-menu-enhanced .mobile-menu-book-cta:active {
+    background-color: var(--secondary-light) !important;
+    color: var(--primary) !important;
   }
 
   .nav.mobile-menu-enhanced .mobile-menu-link:not(.mobile-menu-contact-cta):not(.mobile-menu-book-cta):not(.mobile-menu-resource-link):hover,
