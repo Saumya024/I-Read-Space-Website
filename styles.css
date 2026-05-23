@@ -4734,8 +4734,8 @@ main[class$="-page"] .wizard-chip.active {
     -webkit-tap-highlight-color: transparent;
   }
 
-  .nav a:hover,
-  .nav a:active {
+  .nav a:not(.mobile-menu-contact-cta):not(.mobile-menu-book-cta):hover,
+  .nav a:not(.mobile-menu-contact-cta):not(.mobile-menu-book-cta):active {
     opacity: 0.9;
     padding-left: 8px;
     color: var(--secondary-lighter) !important;
@@ -4747,6 +4747,13 @@ main[class$="-page"] .wizard-chip.active {
 
   .nav a:last-child {
     border-bottom: none;
+  }
+
+  .nav .mobile-menu-contact-cta:hover,
+  .nav .mobile-menu-contact-cta:active {
+    padding: 11px 14px;
+    opacity: 0.88;
+    color: var(--primary) !important;
   }
 
   /* Header CTA shown at bottom of hamburger menu (legacy; book CTA uses .mobile-menu-book-cta) */
@@ -4854,6 +4861,15 @@ main[class$="-page"] .wizard-chip.active {
     border: none !important;
     box-shadow: inset 0 0 0 1px rgba(185, 151, 80, 0.72) !important;
     overflow: visible !important;
+    transition: opacity 0.2s ease !important;
+  }
+
+  .nav.mobile-menu-enhanced .mobile-menu-contact-cta:hover,
+  .nav.mobile-menu-enhanced .mobile-menu-contact-cta:active {
+    padding: 11px 14px !important;
+    padding-left: 14px !important;
+    opacity: 0.88 !important;
+    color: var(--primary) !important;
   }
 
   .nav.mobile-menu-enhanced .mobile-menu-book-cta {
@@ -5507,8 +5523,8 @@ main[class$="-page"] .wizard-chip.active {
     -webkit-tap-highlight-color: transparent;
   }
 
-  .nav a:hover,
-  .nav a:active {
+  .nav a:not(.mobile-menu-contact-cta):not(.mobile-menu-book-cta):hover,
+  .nav a:not(.mobile-menu-contact-cta):not(.mobile-menu-book-cta):active {
     opacity: 0.9;
     padding-left: 8px;
     color: var(--secondary-lighter) !important;
@@ -5516,6 +5532,13 @@ main[class$="-page"] .wizard-chip.active {
 
   .nav a:active {
     transition: none;
+  }
+
+  .nav .mobile-menu-contact-cta:hover,
+  .nav .mobile-menu-contact-cta:active {
+    padding: 10px 12px;
+    opacity: 0.88;
+    color: var(--primary) !important;
   }
 
   .nav .header-cta:not(.mobile-menu-book-cta) {
@@ -5616,6 +5639,15 @@ main[class$="-page"] .wizard-chip.active {
     border: none !important;
     box-shadow: inset 0 0 0 1px rgba(185, 151, 80, 0.72) !important;
     overflow: visible !important;
+    transition: opacity 0.2s ease !important;
+  }
+
+  .nav.mobile-menu-enhanced .mobile-menu-contact-cta:hover,
+  .nav.mobile-menu-enhanced .mobile-menu-contact-cta:active {
+    padding: 10px 12px !important;
+    padding-left: 12px !important;
+    opacity: 0.88 !important;
+    color: var(--primary) !important;
   }
 
   .nav.mobile-menu-enhanced .mobile-menu-book-cta {
