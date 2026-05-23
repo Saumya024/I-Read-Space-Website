@@ -64,8 +64,8 @@
       panel.className = 'mobile-menu-panel';
 
       const workGroup = createGroup('Work With Me', [
-        cloneLink('Pricing'),
-        cloneLink('Services')
+        cloneLink('Services'),
+        cloneLink('Pricing')
       ]);
 
       const learnChildren = [cloneLink('About')];
