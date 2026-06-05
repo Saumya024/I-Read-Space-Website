@@ -144,6 +144,7 @@
             <div class="field">
               <label for="intake-tob">Time of Birth *</label>
               <input type="time" name="tob" required id="intake-tob" />
+              <label class="tob-unknown-label" for="intake-tob-approx"><input type="checkbox" name="tob_approx" id="intake-tob-approx" value="1" /> I only know an approximate time of birth (within about 15 minutes)</label>
               <label class="tob-unknown-label" for="intake-tob-unknown"><input type="checkbox" name="tob_unknown" id="intake-tob-unknown" value="1" /> Don't know the time of birth</label>
             </div>
   
@@ -307,9 +308,11 @@
       
       // "Don't know the time of birth" – main chart
       const tobUnknownCheckbox = document.getElementById('intake-tob-unknown');
+      const tobApproxCheckbox = document.getElementById('intake-tob-approx');
       if (tobUnknownCheckbox && tobInput) {
         function syncMainTobUnknown() {
           if (tobUnknownCheckbox.checked) {
+            if (tobApproxCheckbox) tobApproxCheckbox.checked = false;
             tobInput.removeAttribute('required');
             tobInput.disabled = true;
             tobInput.value = '';
@@ -323,20 +326,45 @@
         tobUnknownCheckbox.addEventListener('change', syncMainTobUnknown);
         syncMainTobUnknown();
       }
+      if (tobApproxCheckbox && tobUnknownCheckbox && tobInput) {
+        tobApproxCheckbox.addEventListener('change', function() {
+          if (tobApproxCheckbox.checked) {
+            tobUnknownCheckbox.checked = false;
+            tobInput.disabled = false;
+            tobInput.setAttribute('required', 'required');
+            setRequiredFieldState(tobInput, hasAttemptedIntakeSubmit);
+          }
+        });
+      }
       
-      // "Don't know the time of birth" – additional charts (event delegation)
+      // Time of birth certainty – additional charts (event delegation)
       document.addEventListener('change', function(e) {
         if (e.target && e.target.classList.contains('chart-tob-unknown')) {
           const name = e.target.getAttribute('data-tob-for');
           if (!name) return;
           const timeInput = document.querySelector('input[name="' + name + '"]');
           if (!timeInput) return;
+          const approxInput = document.querySelector('input[name="' + name + '_approx"]');
           if (e.target.checked) {
+            if (approxInput) approxInput.checked = false;
             timeInput.removeAttribute('required');
             timeInput.disabled = true;
             timeInput.value = '';
             timeInput.classList.remove('required-empty', 'required-filled');
           } else {
+            timeInput.disabled = false;
+            timeInput.setAttribute('required', 'required');
+            setRequiredFieldState(timeInput, hasAttemptedIntakeSubmit);
+          }
+        }
+        if (e.target && e.target.classList.contains('chart-tob-approx')) {
+          const name = e.target.getAttribute('data-tob-for');
+          if (!name) return;
+          const timeInput = document.querySelector('input[name="' + name + '"]');
+          const unknownInput = document.querySelector('input[name="' + name + '_unknown"]');
+          if (!timeInput) return;
+          if (e.target.checked) {
+            if (unknownInput) unknownInput.checked = false;
             timeInput.disabled = false;
             timeInput.setAttribute('required', 'required');
             setRequiredFieldState(timeInput, hasAttemptedIntakeSubmit);
@@ -692,7 +720,7 @@
         '</div>' +
         '<div class="field"><label for="' + prefix + '-name">Name *</label><input type="text" name="' + prefix + '_name" id="' + prefix + '-name" required /></div>' +
         '<div class="field"><label for="' + prefix + '-dob">Date of Birth *</label><input type="date" name="' + prefix + '_dob" required id="' + prefix + '-dob" max="' + today + '" /><span class="field-error" id="' + prefix + '-dob-error"></span></div>' +
-        '<div class="field"><label for="' + prefix + '-tob">Time of Birth *</label><input type="time" name="' + prefix + '_tob" required id="' + prefix + '-tob" /><label class="tob-unknown-label" for="' + prefix + '-tob-unknown"><input type="checkbox" name="' + prefix + '_tob_unknown" id="' + prefix + '-tob-unknown" value="1" class="chart-tob-unknown" data-tob-for="' + prefix + '_tob" /> Don\'t know the time of birth</label></div>' +
+        '<div class="field"><label for="' + prefix + '-tob">Time of Birth *</label><input type="time" name="' + prefix + '_tob" required id="' + prefix + '-tob" /><label class="tob-unknown-label" for="' + prefix + '-tob-approx"><input type="checkbox" name="' + prefix + '_tob_approx" id="' + prefix + '-tob-approx" value="1" class="chart-tob-approx" data-tob-for="' + prefix + '_tob" /> I only know an approximate time of birth (within about 15 minutes)</label><label class="tob-unknown-label" for="' + prefix + '-tob-unknown"><input type="checkbox" name="' + prefix + '_tob_unknown" id="' + prefix + '-tob-unknown" value="1" class="chart-tob-unknown" data-tob-for="' + prefix + '_tob" /> Don\'t know the time of birth</label></div>' +
         '<div class="field"><label for="' + prefix + '-pob">Place of Birth *</label><div class="autocomplete-wrapper">' +
         '<input type="text" name="' + prefix + '_pob" id="' + prefix + '-pob" class="place-of-birth-input" autocomplete="off" required />' +
         '<div class="autocomplete-suggestions" id="place-suggestions-' + chartNum + '"></div></div></div>';
@@ -870,6 +898,7 @@
 
     // Track iframe creation to ensure it's created only once per page load
     let calIframeCreated = false;
+    const RESERVED_PAGE_URL = 'https://ireadspace.com/reserved-latest.html';
 
     // Validation functions
     function validateEmail(email) {
@@ -890,6 +919,13 @@
       const today = new Date();
       today.setHours(23, 59, 59, 999); // Set to end of today
       return selectedDate <= today;
+    }
+
+    function getTimeOfBirthAccuracy(formData, fieldPrefix) {
+      const baseName = fieldPrefix ? fieldPrefix + '_tob' : 'tob';
+      if (formData.get(baseName + '_unknown') === '1') return "Don't know time of birth";
+      if (formData.get(baseName + '_approx') === '1') return 'Approximate time of birth';
+      return 'Provided time of birth';
     }
 
     function countWords(text) {
@@ -1085,14 +1121,18 @@
           return;
         }
       }
-      // Get session type (audio/video) from active toggle button
-      const activeToggle = document.querySelector('.toggle-btn.active');
+      // Check if it's a package
+      const packageCard = document.getElementById('package-card');
+      const pricingCard = document.getElementById('pricing-card');
+      const isPackage = packageCard && packageCard.style.display !== 'none';
+      const selectedCard = isPackage ? packageCard : pricingCard;
+
+      // Get session type (audio/video) from the visible selected card
+      const activeToggle = selectedCard ? selectedCard.querySelector('.toggle-btn.active') : document.querySelector('.toggle-btn.active');
       const sessionType = activeToggle ? activeToggle.dataset.type : 'audio';
       
-      // Determine duration from pricing card or package card
-      const pricingDurationElement = document.querySelector('.pricing-duration');
-      const packageDurationElement = document.querySelector('.package-duration');
-      const durationElement = pricingDurationElement || packageDurationElement;
+      // Determine duration from the visible pricing card or package card
+      const durationElement = selectedCard ? selectedCard.querySelector('.pricing-duration, .package-duration') : document.querySelector('.pricing-duration, .package-duration');
       let duration = 60; // Default to 60 minutes
       if (durationElement) {
         const durationText = durationElement.textContent.trim();
@@ -1101,10 +1141,9 @@
           duration = parseInt(durationMatch[1], 10);
         }
       }
-      
-      // Check if it's a package
-      const packageCard = document.getElementById('package-card');
-      const isPackage = packageCard && packageCard.style.display !== 'none';
+
+      const investmentElement = selectedCard ? selectedCard.querySelector('.pricing-price, .package-price') : null;
+      const investment = investmentElement ? investmentElement.textContent.trim() : '';
       
       // Submit to Google Sheets asynchronously (don't block form submission)
       // Use setTimeout to ensure this runs after the modal opens
@@ -1118,21 +1157,25 @@
             phone: phone,
             dob: dob,
             tob: tob || '',
+            timeOfBirthAccuracy: getTimeOfBirthAccuracy(formData, ''),
             pob: pob || '',
             area: area || '',
             unclear: unclear || '',
             sessionType: sessionType,
             duration: duration.toString(),
+            investment: investment,
             isPackage: isPackage,
             // Additional chart 2 – always send; empty if not added
             chart2_name: formData.get('chart2_name') || '',
             chart2_dob: formData.get('chart2_dob') || '',
             chart2_tob: formData.get('chart2_tob') || '',
+            chart2_tob_accuracy: formData.get('chart2_name') ? getTimeOfBirthAccuracy(formData, 'chart2') : '',
             chart2_pob: formData.get('chart2_pob') || '',
             // Additional chart 3 – always send; empty if not added
             chart3_name: formData.get('chart3_name') || '',
             chart3_dob: formData.get('chart3_dob') || '',
             chart3_tob: formData.get('chart3_tob') || '',
+            chart3_tob_accuracy: formData.get('chart3_name') ? getTimeOfBirthAccuracy(formData, 'chart3') : '',
             chart3_pob: formData.get('chart3_pob') || ''
           };
           
@@ -1290,7 +1333,7 @@
             document.body.style.overflow = 'hidden';
           }
           setTimeout(function() {
-            window.location.href = 'reserved-latest.html?v=1';
+            window.location.href = RESERVED_PAGE_URL + '?v=1';
           }, 400);
         }
       } catch (err) {}
@@ -1307,7 +1350,7 @@
         if (overlay) {
           overlay.style.display = 'flex';
           document.body.style.overflow = 'hidden';
-          setTimeout(function() { window.location.href = 'reserved-latest.html?v=1'; }, 2000);
+          setTimeout(function() { window.location.href = RESERVED_PAGE_URL + '?v=1'; }, 2000);
         }
       }, 500);
     })();

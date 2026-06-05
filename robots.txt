@@ -13,10 +13,3 @@ Disallow: /my-pathways.html
 Disallow: /confirm.html
 Disallow: /schedule.html
 Disallow: /reserved.html
-
-# Disallow JS directory (not content)
-Disallow: /js/
-
-
-
-

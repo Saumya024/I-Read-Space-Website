@@ -17,14 +17,14 @@
  * 10. Click "Authorize access" and grant permissions
  */
 
-// Replace 'Sheet1' with your actual sheet name/tab name (must match the tab name in your Google Sheet)
-var SHEET_NAME = 'Sheet1';
+// Must match the tab name in your Google Sheet.
+var SHEET_NAME = 'Sheet 1';
 
 function doPost(e) {
   try {
     // Allow overriding the target sheet via a `sheetName` parameter (e.g. 'Sheet2')
     var sheetNameFromParam = (e && e.parameter && e.parameter.sheetName) ? e.parameter.sheetName : null;
-    var defaultSheetName = (typeof SHEET_NAME !== 'undefined' && SHEET_NAME) ? SHEET_NAME : 'Sheet1';
+    var defaultSheetName = (typeof SHEET_NAME !== 'undefined' && SHEET_NAME) ? SHEET_NAME : 'Sheet 1';
     var sheetName = sheetNameFromParam || defaultSheetName;
     let data;
 
@@ -117,27 +117,31 @@ function doPost(e) {
 
     if (lastRow === 0) {
       // Sheet is empty - create headers and add data
-      headers = ['Name', 'Email', 'Phone', 'Date of Birth', 'Time of Birth', 'Place of Birth', 'Primary Area', 'Unclear Question', 'Session Type', 'Duration', 'Package', 'Timestamp', 'Chart 2 Name', 'Chart 2 Date of Birth', 'Chart 2 Time of Birth', 'Chart 2 Place of Birth', 'Chart 3 Name', 'Chart 3 Date of Birth', 'Chart 3 Time of Birth', 'Chart 3 Place of Birth'];
+      headers = ['Name', 'Email', 'Phone', 'Date of Birth', 'Time of Birth', 'Time of Birth Accuracy', 'Place of Birth', 'Primary Area', 'Unclear Question', 'Session Type', 'Duration', 'Investment', 'Package', 'Timestamp', 'Chart 2 Name', 'Chart 2 Date of Birth', 'Chart 2 Time of Birth', 'Chart 2 Time of Birth Accuracy', 'Chart 2 Place of Birth', 'Chart 3 Name', 'Chart 3 Date of Birth', 'Chart 3 Time of Birth', 'Chart 3 Time of Birth Accuracy', 'Chart 3 Place of Birth'];
       rowData = [
         data.name || '',
         data.email || '',
         data.phone || '',
         data.dob || '',
         data.tob || '',
+        data.timeOfBirthAccuracy || '',
         data.pob || '',
         data.area || '',
         data.unclear || '',
         data.sessionType || '',
         data.duration || '',
+        data.investment || '',
         data.isPackage ? 'Yes' : 'No',
         new Date(),
         (data.chart2_name || ''),
         (data.chart2_dob || ''),
         (data.chart2_tob || ''),
+        (data.chart2_tob_accuracy || ''),
         (data.chart2_pob || ''),
         (data.chart3_name || ''),
         (data.chart3_dob || ''),
         (data.chart3_tob || ''),
+        (data.chart3_tob_accuracy || ''),
         (data.chart3_pob || '')
       ];
 
@@ -169,6 +173,8 @@ function doPost(e) {
           return data.dob || '';
         } else if ((normalizedHeader.includes('time of birth') || normalizedHeader.includes('tob')) && !normalizedHeader.includes('chart 2') && !normalizedHeader.includes('chart 3')) {
           return data.tob || '';
+        } else if ((normalizedHeader.includes('time of birth accuracy') || normalizedHeader.includes('time accuracy') || normalizedHeader.includes('time certainty')) && !normalizedHeader.includes('chart 2') && !normalizedHeader.includes('chart 3')) {
+          return data.timeOfBirthAccuracy || '';
         } else if ((normalizedHeader.includes('place of birth') || normalizedHeader.includes('pob')) && !normalizedHeader.includes('chart 2') && !normalizedHeader.includes('chart 3')) {
           return data.pob || '';
         } else if (normalizedHeader.includes('area') || normalizedHeader.includes('primary area') || normalizedHeader.includes('guidance')) {
@@ -179,6 +185,8 @@ function doPost(e) {
           return data.sessionType || '';
         } else if (normalizedHeader.includes('duration') && !normalizedHeader.includes('chart')) {
           return data.duration || '';
+        } else if (normalizedHeader.includes('investment') || normalizedHeader.includes('investement') || normalizedHeader.includes('price') || normalizedHeader.includes('amount')) {
+          return data.investment || data.price || data.amount || '';
         } else if (normalizedHeader.includes('package')) {
           return data.isPackage ? 'Yes' : 'No';
         } else if (normalizedHeader.includes('timestamp') || normalizedHeader.includes('date submitted') || normalizedHeader.includes('submitted')) {
@@ -187,6 +195,8 @@ function doPost(e) {
           return data.chart2_name || '';
         } else if (normalizedHeader.includes('chart 2') && (normalizedHeader.includes('date') || normalizedHeader.includes('dob'))) {
           return data.chart2_dob || '';
+        } else if (normalizedHeader.includes('chart 2') && (normalizedHeader.includes('time of birth accuracy') || normalizedHeader.includes('time accuracy') || normalizedHeader.includes('time certainty'))) {
+          return data.chart2_tob_accuracy || '';
         } else if (normalizedHeader.includes('chart 2') && (normalizedHeader.includes('time') || normalizedHeader.includes('tob'))) {
           return data.chart2_tob || '';
         } else if (normalizedHeader.includes('chart 2') && (normalizedHeader.includes('place') || normalizedHeader.includes('pob'))) {
@@ -195,6 +205,8 @@ function doPost(e) {
           return data.chart3_name || '';
         } else if (normalizedHeader.includes('chart 3') && (normalizedHeader.includes('date') || normalizedHeader.includes('dob'))) {
           return data.chart3_dob || '';
+        } else if (normalizedHeader.includes('chart 3') && (normalizedHeader.includes('time of birth accuracy') || normalizedHeader.includes('time accuracy') || normalizedHeader.includes('time certainty'))) {
+          return data.chart3_tob_accuracy || '';
         } else if (normalizedHeader.includes('chart 3') && (normalizedHeader.includes('time') || normalizedHeader.includes('tob'))) {
           return data.chart3_tob || '';
         } else if (normalizedHeader.includes('chart 3') && (normalizedHeader.includes('place') || normalizedHeader.includes('pob'))) {
@@ -243,7 +255,7 @@ function doGet(e) {
   return ContentService.createTextOutput(JSON.stringify({
     success: true,
     message: 'Google Apps Script is working. Use POST to submit form data.',
-    sheetName: 'Sheet1',
+    sheetName: 'Sheet 1',
     spreadsheetId: '1JAJh_uGHo6VBHtWtiiOMzWc0zTnSNX7DPKvbl5e2r68'
   })).setMimeType(ContentService.MimeType.JSON);
 }
@@ -259,18 +271,22 @@ function testDoPost() {
         dob: '1990-01-01',
         tob: '10:00',
         pob: 'New York, USA',
+        timeOfBirthAccuracy: 'Approximate time of birth',
         area: 'Career & Finances',
         unclear: 'Test question',
         sessionType: 'audio',
         duration: '60',
+        investment: '₹2,400',
         isPackage: false,
         chart2_name: '',
         chart2_dob: '',
         chart2_tob: '',
+        chart2_tob_accuracy: '',
         chart2_pob: '',
         chart3_name: '',
         chart3_dob: '',
         chart3_tob: '',
+        chart3_tob_accuracy: '',
         chart3_pob: ''
       })
     }
