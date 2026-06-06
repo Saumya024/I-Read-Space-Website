@@ -72,6 +72,7 @@
       const resourceLinks = [
         cloneLink('Insights', 'mobile-menu-resource-link'),
         cloneLink('Healing', 'mobile-menu-resource-link'),
+        cloneLink('Conscious Living', 'mobile-menu-resource-link'),
         cloneLink('Reset', 'mobile-menu-resource-link')
       ].filter(Boolean);
 

@@ -8187,6 +8187,8 @@ main[class$="-page"] .wizard-chip.active {
   border-radius: 8px;
   padding: 24px;
   transition: box-shadow 0.3s, transform 0.3s;
+  display: flex;
+  flex-direction: column;
 }
 
 .healing-modality-card:hover {
@@ -8207,6 +8209,7 @@ main[class$="-page"] .wizard-chip.active {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-top: auto;
 }
 
 .healing-modality-cta {

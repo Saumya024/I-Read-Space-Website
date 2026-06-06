@@ -18,13 +18,13 @@
  */
 
 // Must match the tab name in your Google Sheet.
-var SHEET_NAME = 'Sheet 1';
+var SHEET_NAME = 'Sheet1';
 
 function doPost(e) {
   try {
     // Allow overriding the target sheet via a `sheetName` parameter (e.g. 'Sheet2')
     var sheetNameFromParam = (e && e.parameter && e.parameter.sheetName) ? e.parameter.sheetName : null;
-    var defaultSheetName = (typeof SHEET_NAME !== 'undefined' && SHEET_NAME) ? SHEET_NAME : 'Sheet 1';
+    var defaultSheetName = (typeof SHEET_NAME !== 'undefined' && SHEET_NAME) ? SHEET_NAME : 'Sheet1';
     var sheetName = sheetNameFromParam || defaultSheetName;
     let data;
 
@@ -255,7 +255,7 @@ function doGet(e) {
   return ContentService.createTextOutput(JSON.stringify({
     success: true,
     message: 'Google Apps Script is working. Use POST to submit form data.',
-    sheetName: 'Sheet 1',
+    sheetName: 'Sheet1',
     spreadsheetId: '1JAJh_uGHo6VBHtWtiiOMzWc0zTnSNX7DPKvbl5e2r68'
   })).setMimeType(ContentService.MimeType.JSON);
 }
