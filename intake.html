@@ -34,7 +34,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Spectral:wght@400;500&display=swap" rel="stylesheet">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="styles.css?v=174" />
+  <link rel="stylesheet" href="styles.css?v=179" />
 </head>
 
 <body>
@@ -144,7 +144,7 @@
             <div class="field">
               <label for="intake-tob">Time of Birth *</label>
               <input type="time" name="tob" required id="intake-tob" />
-              <label class="tob-unknown-label" for="intake-tob-approx"><input type="checkbox" name="tob_approx" id="intake-tob-approx" value="1" /> I only know an approximate time of birth (within about 15 minutes)</label>
+              <p class="field-note"><strong>Please note:</strong> Enter only an accurate time of birth. If unsure, select "I don't know my time of birth."</p>
               <label class="tob-unknown-label" for="intake-tob-unknown"><input type="checkbox" name="tob_unknown" id="intake-tob-unknown" value="1" /> Don't know the time of birth</label>
             </div>
   
@@ -308,11 +308,9 @@
       
       // "Don't know the time of birth" – main chart
       const tobUnknownCheckbox = document.getElementById('intake-tob-unknown');
-      const tobApproxCheckbox = document.getElementById('intake-tob-approx');
       if (tobUnknownCheckbox && tobInput) {
         function syncMainTobUnknown() {
           if (tobUnknownCheckbox.checked) {
-            if (tobApproxCheckbox) tobApproxCheckbox.checked = false;
             tobInput.removeAttribute('required');
             tobInput.disabled = true;
             tobInput.value = '';
@@ -326,16 +324,6 @@
         tobUnknownCheckbox.addEventListener('change', syncMainTobUnknown);
         syncMainTobUnknown();
       }
-      if (tobApproxCheckbox && tobUnknownCheckbox && tobInput) {
-        tobApproxCheckbox.addEventListener('change', function() {
-          if (tobApproxCheckbox.checked) {
-            tobUnknownCheckbox.checked = false;
-            tobInput.disabled = false;
-            tobInput.setAttribute('required', 'required');
-            setRequiredFieldState(tobInput, hasAttemptedIntakeSubmit);
-          }
-        });
-      }
       
       // Time of birth certainty – additional charts (event delegation)
       document.addEventListener('change', function(e) {
@@ -344,27 +332,12 @@
           if (!name) return;
           const timeInput = document.querySelector('input[name="' + name + '"]');
           if (!timeInput) return;
-          const approxInput = document.querySelector('input[name="' + name + '_approx"]');
           if (e.target.checked) {
-            if (approxInput) approxInput.checked = false;
             timeInput.removeAttribute('required');
             timeInput.disabled = true;
             timeInput.value = '';
             timeInput.classList.remove('required-empty', 'required-filled');
           } else {
-            timeInput.disabled = false;
-            timeInput.setAttribute('required', 'required');
-            setRequiredFieldState(timeInput, hasAttemptedIntakeSubmit);
-          }
-        }
-        if (e.target && e.target.classList.contains('chart-tob-approx')) {
-          const name = e.target.getAttribute('data-tob-for');
-          if (!name) return;
-          const timeInput = document.querySelector('input[name="' + name + '"]');
-          const unknownInput = document.querySelector('input[name="' + name + '_unknown"]');
-          if (!timeInput) return;
-          if (e.target.checked) {
-            if (unknownInput) unknownInput.checked = false;
             timeInput.disabled = false;
             timeInput.setAttribute('required', 'required');
             setRequiredFieldState(timeInput, hasAttemptedIntakeSubmit);
@@ -720,7 +693,7 @@
         '</div>' +
         '<div class="field"><label for="' + prefix + '-name">Name *</label><input type="text" name="' + prefix + '_name" id="' + prefix + '-name" required /></div>' +
         '<div class="field"><label for="' + prefix + '-dob">Date of Birth *</label><input type="date" name="' + prefix + '_dob" required id="' + prefix + '-dob" max="' + today + '" /><span class="field-error" id="' + prefix + '-dob-error"></span></div>' +
-        '<div class="field"><label for="' + prefix + '-tob">Time of Birth *</label><input type="time" name="' + prefix + '_tob" required id="' + prefix + '-tob" /><label class="tob-unknown-label" for="' + prefix + '-tob-approx"><input type="checkbox" name="' + prefix + '_tob_approx" id="' + prefix + '-tob-approx" value="1" class="chart-tob-approx" data-tob-for="' + prefix + '_tob" /> I only know an approximate time of birth (within about 15 minutes)</label><label class="tob-unknown-label" for="' + prefix + '-tob-unknown"><input type="checkbox" name="' + prefix + '_tob_unknown" id="' + prefix + '-tob-unknown" value="1" class="chart-tob-unknown" data-tob-for="' + prefix + '_tob" /> Don\'t know the time of birth</label></div>' +
+        '<div class="field"><label for="' + prefix + '-tob">Time of Birth *</label><input type="time" name="' + prefix + '_tob" required id="' + prefix + '-tob" /><p class="field-note"><strong>Please note:</strong> Enter only an accurate time of birth. If unsure, select &quot;I don&apos;t know my time of birth.&quot;</p><label class="tob-unknown-label" for="' + prefix + '-tob-unknown"><input type="checkbox" name="' + prefix + '_tob_unknown" id="' + prefix + '-tob-unknown" value="1" class="chart-tob-unknown" data-tob-for="' + prefix + '_tob" /> Don&apos;t know the time of birth</label></div>' +
         '<div class="field"><label for="' + prefix + '-pob">Place of Birth *</label><div class="autocomplete-wrapper">' +
         '<input type="text" name="' + prefix + '_pob" id="' + prefix + '-pob" class="place-of-birth-input" autocomplete="off" required />' +
         '<div class="autocomplete-suggestions" id="place-suggestions-' + chartNum + '"></div></div></div>';
@@ -924,7 +897,6 @@
     function getTimeOfBirthAccuracy(formData, fieldPrefix) {
       const baseName = fieldPrefix ? fieldPrefix + '_tob' : 'tob';
       if (formData.get(baseName + '_unknown') === '1') return "Don't know time of birth";
-      if (formData.get(baseName + '_approx') === '1') return 'Approximate time of birth';
       return 'Provided time of birth';
     }
 

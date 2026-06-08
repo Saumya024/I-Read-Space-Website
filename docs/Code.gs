@@ -271,7 +271,7 @@ function testDoPost() {
         dob: '1990-01-01',
         tob: '10:00',
         pob: 'New York, USA',
-        timeOfBirthAccuracy: 'Approximate time of birth',
+        timeOfBirthAccuracy: 'Provided time of birth',
         area: 'Career & Finances',
         unclear: 'Test question',
         sessionType: 'audio',
