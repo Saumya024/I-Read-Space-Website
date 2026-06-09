@@ -4130,7 +4130,14 @@ body.home #testimonial-3 {
 .nav.mobile-menu-enhanced .mobile-menu-group--learn-more,
 .nav.mobile-menu-enhanced .mobile-menu-group--reach-out {
   padding-top: 12px;
+}
+
+.nav.mobile-menu-enhanced .mobile-menu-group--learn-more {
   padding-bottom: 12px;
+}
+
+.nav.mobile-menu-enhanced .mobile-menu-group--reach-out {
+  padding-bottom: 16px;
 }
 
 .nav.mobile-menu-enhanced .mobile-menu-group .mobile-menu-section-heading {
@@ -4162,7 +4169,7 @@ body.home #testimonial-3 {
 }
 
 .nav.mobile-menu-enhanced .mobile-menu-scroll .mobile-menu-group:last-child {
-  padding-bottom: 12px;
+  padding-bottom: 16px;
 }
 
 .nav.mobile-menu-enhanced .mobile-menu-contact-details {
@@ -4186,7 +4193,7 @@ body.home #testimonial-3 {
 }
 
 .nav.mobile-menu-enhanced .mobile-menu-group--reach-out .mobile-menu-contact-detail-row:last-child {
-  padding-bottom: 0;
+  padding-bottom: 7px;
 }
 
 .nav.mobile-menu-enhanced a.mobile-menu-contact-value {
