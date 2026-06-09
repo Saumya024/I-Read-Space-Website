@@ -127,7 +127,7 @@
 
 
  <!-- Styles -->
- <link rel="stylesheet" href="styles.css?v=186" />
+ <link rel="stylesheet" href="styles.css?v=216" />
 </head>
 
 <body class="home">
@@ -230,8 +230,8 @@
  </div>
  </section>
 
- <!-- CORE BENEFITS -->
- <section class="core-benefits" id="main-content" role="main">
+ <!-- Hidden intentionally (kept in code for future re-enable): Core Benefits -->
+ <section class="core-benefits" id="core-benefits" hidden aria-hidden="true">
  <div class="core-benefits-container">
  <div class="core-benefit-block">
  <h3 class="core-benefit-title">Clarity</h3>
@@ -249,7 +249,7 @@
  </section>
 
  <!-- ABOUT – SAUMYA SINGH -->
- <section class="about-saumya" id="about-saumya">
+ <section class="about-saumya" id="main-content" role="main">
  <div class="about-saumya-inner">
  <div class="about-saumya-photo-wrapper">
  <img src="assets/images/saumya-about.png" alt="Saumyaa S Singh" class="about-saumya-image" loading="lazy" />
@@ -629,7 +629,6 @@
  <!-- PRICING (geo-based: India → INR, outside India → USD) -->
  <section class="pricing" id="pricing">
  <h2>Pricing</h2>
- <div class="pricing-container">
  <!-- Indian Pricing -->
  <div class="pricing-grid" id="indian-pricing">
  <div class="pricing-card">
@@ -641,32 +640,18 @@
  <button class="toggle-btn" data-type="video" aria-label="Select video session">Video</button>
  </div>
  <div class="pricing-price" data-audio-price="₹3,600" data-video-price="₹4,500">₹3,600</div>
- <div class="pricing-details">
- <div class="pricing-detail-item">Multiple life areas</div>
- <div class="pricing-detail-item">Multiple charts</div>
+ <div class="pricing-includes-visible">
+ <ul>
+ <li>Multiple life areas covered: career, relationships, health, finances, family</li>
+ <li>Timing analysis for the year ahead</li>
+ <li>Multiple charts read together: self, partner, children, business</li>
+ <li>Deep pattern analysis for solid, lasting outcomes</li>
+ <li>Personalised remedies: mantras, routines, behavioural shifts</li>
+ </ul>
+ <p class="pricing-ideal-for">Ideal for: Major crossroads, annual planning, or anyone seeking structured guidance, not just insight</p>
  </div>
  <div class="pricing-card-actions">
  <a href="intake.html?duration=90" class="pricing-cta">Book Now</a>
- <button class="pricing-expand-toggle" data-card="holistic-guidance-indian" aria-expanded="false" aria-controls="holistic-guidance-indian">What's Included</button>
- </div>
- <div class="pricing-expand-content" id="holistic-guidance-indian">
- <div class="pricing-expand-section">
- <h4>What's Included</h4>
- <ul>
- <li>Comprehensive review across multiple life areas (career, relationships, health, finances, family)</li>
- <li>Detailed timing analysis for the year ahead</li>
- <li>Analysis of multiple charts (self, partner, children, business, as needed)</li>
- <li>Personalized remedies: mantras, routines, behavioural shifts</li>
- </ul>
- </div>
- <div class="pricing-expand-section">
- <h4>Suitable For</h4>
- <ul>
- <li>Those at a major crossroads needing clarity across several life areas at once</li>
- <li>Annual review clients planning the year with astrological timing</li>
- <li>Anyone seeking structured remedies and ongoing guidance, not just insight</li>
- </ul>
- </div>
  </div>
  <div class="pricing-footer-note">Regional pricing applies. International bookings use global rates.</div>
  </div>
@@ -681,32 +666,17 @@
  <button class="toggle-btn" data-type="video" aria-label="Select video session">Video</button>
  </div>
  <div class="pricing-price" data-audio-price="₹2,400" data-video-price="₹3,000">₹2,400</div>
- <div class="pricing-details">
- <div class="pricing-detail-item">Up to 3 themes</div>
- <div class="pricing-detail-item">Up to 2 charts</div>
+ <div class="pricing-includes-visible">
+ <ul>
+ <li>In-depth chart analysis across up to 3 related topics</li>
+ <li>Root-cause exploration of recurring patterns</li>
+ <li>Timing windows for the next 6 months</li>
+ <li>Up to 2 charts read together: yours and one other, if relevant</li>
+ </ul>
+ <p class="pricing-ideal-for">Ideal for: First-time clients, career shifts, relationship questions, or understanding why patterns keep repeating</p>
  </div>
  <div class="pricing-card-actions">
  <a href="intake.html?duration=60" class="pricing-cta">Book Now</a>
- <button class="pricing-expand-toggle" data-card="deep-insight-indian" aria-expanded="false" aria-controls="deep-insight-indian">What's Included</button>
- </div>
- <div class="pricing-expand-content" id="deep-insight-indian">
- <div class="pricing-expand-section">
- <h4>What's Included</h4>
- <ul>
- <li>In-depth chart analysis covering up to 3 related topics</li>
- <li>Root-cause exploration of recurring patterns</li>
- <li>Timing windows for the next 6–12 months</li>
- <li>Analysis of up to 2 charts (yours + one other, if relevant)</li>
- </ul>
- </div>
- <div class="pricing-expand-section">
- <h4>Suitable For</h4>
- <ul>
- <li>First-time clients seeking a foundational understanding of their chart</li>
- <li>Those navigating career shifts, relationship questions, or major decisions</li>
- <li>Anyone who wants to understand why patterns keep repeating</li>
- </ul>
- </div>
  </div>
  <div class="pricing-footer-note">Regional pricing applies. International bookings use global rates.</div>
  </div>
@@ -720,31 +690,16 @@
  <button class="toggle-btn" data-type="video" aria-label="Select video session">Video</button>
  </div>
  <div class="pricing-price" data-audio-price="₹1,200" data-video-price="₹1,500">₹1,200</div>
- <div class="pricing-details">
- <div class="pricing-detail-item">1 key theme</div>
- <div class="pricing-detail-item">1 chart</div>
- </div>
- <div class="pricing-card-actions">
- <a href="intake.html?duration=30" class="pricing-cta">Book Now</a>
- <button class="pricing-expand-toggle" data-card="quick-clarity-indian" aria-expanded="false" aria-controls="quick-clarity-indian">What's Included</button>
- </div>
- <div class="pricing-expand-content" id="quick-clarity-indian">
- <div class="pricing-expand-section">
- <h4>What's Included</h4>
+ <div class="pricing-includes-visible">
  <ul>
  <li>Focused analysis on one specific life area or decision</li>
  <li>Timing insights for the question at hand</li>
  <li>Practical guidance you can act on immediately</li>
  </ul>
+ <p class="pricing-ideal-for">Ideal for: Follow-up clients, time-sensitive questions, or quick check-ins during an important decision point</p>
  </div>
- <div class="pricing-expand-section">
- <h4>Suitable For</h4>
- <ul>
- <li>Follow-up clients with a specific, time-sensitive question</li>
- <li>Those who need clarity on one focused topic, not a full life review</li>
- <li>Quick check-ins during a challenging transit or decision point</li>
- </ul>
- </div>
+ <div class="pricing-card-actions">
+ <a href="intake.html?duration=30" class="pricing-cta">Book Now</a>
  </div>
  <div class="pricing-footer-note">Regional pricing applies. International bookings use global rates.</div>
  </div>
@@ -761,32 +716,18 @@
  <button class="toggle-btn" data-type="video" aria-label="Select video session">Video</button>
  </div>
  <div class="pricing-price" data-audio-price="$81" data-video-price="$114">$81</div>
- <div class="pricing-details">
- <div class="pricing-detail-item">Multiple life areas</div>
- <div class="pricing-detail-item">Multiple charts</div>
+ <div class="pricing-includes-visible">
+ <ul>
+ <li>Multiple life areas covered: career, relationships, health, finances, family</li>
+ <li>Timing analysis for the year ahead</li>
+ <li>Multiple charts read together: self, partner, children, business</li>
+ <li>Deep pattern analysis for solid, lasting outcomes</li>
+ <li>Personalised remedies: mantras, routines, behavioural shifts</li>
+ </ul>
+ <p class="pricing-ideal-for">Ideal for: Major crossroads, annual planning, or anyone seeking structured guidance, not just insight</p>
  </div>
  <div class="pricing-card-actions">
  <a href="intake.html?duration=90" class="pricing-cta">Book Now</a>
- <button class="pricing-expand-toggle" data-card="holistic-guidance-international" aria-expanded="false" aria-controls="holistic-guidance-international">What's Included</button>
- </div>
- <div class="pricing-expand-content" id="holistic-guidance-international">
- <div class="pricing-expand-section">
- <h4>What's Included</h4>
- <ul>
- <li>Comprehensive review across multiple life areas (career, relationships, health, finances, family)</li>
- <li>Detailed timing analysis for the year ahead</li>
- <li>Analysis of multiple charts (self, partner, children, business, as needed)</li>
- <li>Personalized remedies: mantras, routines, behavioural shifts</li>
- </ul>
- </div>
- <div class="pricing-expand-section">
- <h4>Suitable For</h4>
- <ul>
- <li>Those at a major crossroads needing clarity across several life areas at once</li>
- <li>Annual review clients planning the year with astrological timing</li>
- <li>Anyone seeking structured remedies and ongoing guidance, not just insight</li>
- </ul>
- </div>
  </div>
  </div>
 
@@ -800,32 +741,17 @@
  <button class="toggle-btn" data-type="video" aria-label="Select video session">Video</button>
  </div>
  <div class="pricing-price" data-audio-price="$54" data-video-price="$73">$54</div>
- <div class="pricing-details">
- <div class="pricing-detail-item">Up to 3 themes</div>
- <div class="pricing-detail-item">Up to 2 charts</div>
+ <div class="pricing-includes-visible">
+ <ul>
+ <li>In-depth chart analysis across up to 3 related topics</li>
+ <li>Root-cause exploration of recurring patterns</li>
+ <li>Timing windows for the next 6 months</li>
+ <li>Up to 2 charts read together: yours and one other, if relevant</li>
+ </ul>
+ <p class="pricing-ideal-for">Ideal for: First-time clients, career shifts, relationship questions, or understanding why patterns keep repeating</p>
  </div>
  <div class="pricing-card-actions">
  <a href="intake.html?duration=60" class="pricing-cta">Book Now</a>
- <button class="pricing-expand-toggle" data-card="deep-insight-international" aria-expanded="false" aria-controls="deep-insight-international">What's Included</button>
- </div>
- <div class="pricing-expand-content" id="deep-insight-international">
- <div class="pricing-expand-section">
- <h4>What's Included</h4>
- <ul>
- <li>In-depth chart analysis covering up to 3 related topics</li>
- <li>Root-cause exploration of recurring patterns</li>
- <li>Timing windows for the next 6–12 months</li>
- <li>Analysis of up to 2 charts (yours + one other, if relevant)</li>
- </ul>
- </div>
- <div class="pricing-expand-section">
- <h4>Suitable For</h4>
- <ul>
- <li>First-time clients seeking a foundational understanding of their chart</li>
- <li>Those navigating career shifts, relationship questions, or major decisions</li>
- <li>Anyone who wants to understand why patterns keep repeating</li>
- </ul>
- </div>
  </div>
  </div>
 
@@ -838,32 +764,16 @@
  <button class="toggle-btn" data-type="video" aria-label="Select video session">Video</button>
  </div>
  <div class="pricing-price" data-audio-price="$27" data-video-price="$33">$27</div>
- <div class="pricing-details">
- <div class="pricing-detail-item">1 key theme</div>
- <div class="pricing-detail-item">1 chart</div>
- </div>
- <div class="pricing-card-actions">
- <a href="intake.html?duration=30" class="pricing-cta">Book Now</a>
- <button class="pricing-expand-toggle" data-card="quick-clarity-international" aria-expanded="false" aria-controls="quick-clarity-international">What's Included</button>
- </div>
- <div class="pricing-expand-content" id="quick-clarity-international">
- <div class="pricing-expand-section">
- <h4>What's Included</h4>
+ <div class="pricing-includes-visible">
  <ul>
  <li>Focused analysis on one specific life area or decision</li>
  <li>Timing insights for the question at hand</li>
  <li>Practical guidance you can act on immediately</li>
  </ul>
+ <p class="pricing-ideal-for">Ideal for: Follow-up clients, time-sensitive questions, or quick check-ins during an important decision point</p>
  </div>
- <div class="pricing-expand-section">
- <h4>Suitable For</h4>
- <ul>
- <li>Follow-up clients with a specific, time-sensitive question</li>
- <li>Those who need clarity on one focused topic, not a full life review</li>
- <li>Quick check-ins during a challenging transit or decision point</li>
- </ul>
- </div>
- </div>
+ <div class="pricing-card-actions">
+ <a href="intake.html?duration=30" class="pricing-cta">Book Now</a>
  </div>
  </div>
  </div>
@@ -899,8 +809,8 @@
 
  <!-- A SAFE SPACE FOR EVERYONE -->
  <section class="safe-space" id="safe-space">
- <h2>A safe space for everyone.</h2>
  <div class="safe-space-content">
+ <h2>A safe space for everyone.</h2>
  <p class="safe-space-text">
  This practice is for anyone willing to look honestly at their life.<br>
  No condition on who you are, where you come from, or what you believe.
@@ -1101,8 +1011,7 @@
  <svg class="founder-circle-outline" viewBox="-40 -40 280 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
  <circle cx="100" cy="100" r="137" 
  fill="none" 
- stroke="#B99750" 
- stroke-width="3"/>
+ stroke-width="1"/>
  </svg>
  </div>
  <div class="founder-left-meta">
@@ -1281,7 +1190,7 @@
  </section>
 
  <!-- CONTACT / CLOSING BLOCK -->
- <section class="contact" id="trusted-approach">
+ <section class="contact closing-cta-band" id="trusted-approach">
  <div class="contact-container">
  <div class="contact-lead">
  <h2 class="contact-heading">A Trusted Approach to Vedic Astrology</h2>
@@ -1290,30 +1199,6 @@
  <span class="contact-description-italic">I Read Space offers a disciplined way to understand those deeper influences.</span>
  </p>
  <a href="index.html#pricing" class="contact-cta">Book a Session</a>
- </div>
- </div>
- </section>
-
- <section class="contact-icons-band" id="contact">
- <div class="contact-icons-band-inner">
- <h2 class="contact-icons-heading">Contact Us</h2>
- <div class="contact-icons">
- <a href="https://wa.me/919217679635" class="contact-icon-item" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
- <img src="assets/images/icons8-whatsapp-logo-100.png" alt="WhatsApp" class="contact-icon" loading="lazy">
- <span class="contact-label">WhatsApp</span>
- </a>
- <a href="mailto:consult@ireadspace.com" class="contact-icon-item" aria-label="Email">
- <img src="assets/images/icons8-email-100.png" alt="Email" class="contact-icon" loading="lazy">
- <span class="contact-label">Email</span>
- </a>
- <a href="https://www.instagram.com/ireadspace?igsh=MmVlbWhzcjFwYmN5&utm_source=qr" target="_blank" rel="noopener noreferrer" class="contact-icon-item" aria-label="Instagram">
- <img src="assets/images/icons8-instagram-logo-100.png" alt="Instagram" class="contact-icon" loading="lazy">
- <span class="contact-label">Instagram</span>
- </a>
- <a href="https://www.linkedin.com/in/theonesaumya/" target="_blank" rel="noopener noreferrer" class="contact-icon-item" aria-label="LinkedIn">
- <img src="assets/images/icons8-linkedin-logo-100.png" alt="LinkedIn" class="contact-icon" loading="lazy">
- <span class="contact-label">LinkedIn</span>
- </a>
  </div>
  </div>
  </section>
@@ -1679,7 +1564,7 @@
  </script>
 
  <!-- FOOTER -->
- <footer class="footer">
+ <footer class="footer" id="contact">
  <div class="footer-content">
  <div class="footer-logo">
  <a href="index.html"><img src="assets/images/23.png" alt="I Read Space" loading="lazy" /></a>
@@ -1695,7 +1580,8 @@
  <a href="index.html#contact">Contact</a>
  </nav>
  <div class="footer-newsletter">
- <p class="footer-newsletter-text">Want practical Vedic knowledge in your inbox? No spam. Unsubscribe anytime.</p>
+ <h2 class="footer-newsletter-heading">Want practical Vedic knowledge in your inbox?</h2>
+ <p class="footer-newsletter-text">No spam. Unsubscribe anytime.</p>
  <form class="footer-newsletter-form" id="footer-email-form" data-email-capture data-source="Footer Newsletter - Home" data-success-text="Subscribed!">
  <input type="email" name="email" placeholder="Your email" required aria-label="Email address for newsletter" />
  <button type="submit">Subscribe</button>
