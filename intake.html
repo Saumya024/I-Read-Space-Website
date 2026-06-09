@@ -34,7 +34,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Spectral:wght@400;500&display=swap" rel="stylesheet">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="styles.css?v=179" />
+  <link rel="stylesheet" href="styles.css?v=180" />
 </head>
 
 <body>
@@ -145,7 +145,7 @@
               <label for="intake-tob">Time of Birth *</label>
               <input type="time" name="tob" required id="intake-tob" />
               <p class="field-note"><strong>Please note:</strong> Enter only an accurate time of birth. If unsure, select "I don't know my time of birth."</p>
-              <label class="tob-unknown-label" for="intake-tob-unknown"><input type="checkbox" name="tob_unknown" id="intake-tob-unknown" value="1" /> Don't know the time of birth</label>
+              <label class="tob-unknown-label" for="intake-tob-unknown"><input type="checkbox" name="tob_unknown" id="intake-tob-unknown" value="1" /> I don't know my time of birth</label>
             </div>
   
             <div class="field">
@@ -306,7 +306,7 @@
       
       const tobInput = document.querySelector('input[name="tob"]');
       
-      // "Don't know the time of birth" – main chart
+      // "I don't know my time of birth" – main chart
       const tobUnknownCheckbox = document.getElementById('intake-tob-unknown');
       if (tobUnknownCheckbox && tobInput) {
         function syncMainTobUnknown() {
@@ -693,7 +693,7 @@
         '</div>' +
         '<div class="field"><label for="' + prefix + '-name">Name *</label><input type="text" name="' + prefix + '_name" id="' + prefix + '-name" required /></div>' +
         '<div class="field"><label for="' + prefix + '-dob">Date of Birth *</label><input type="date" name="' + prefix + '_dob" required id="' + prefix + '-dob" max="' + today + '" /><span class="field-error" id="' + prefix + '-dob-error"></span></div>' +
-        '<div class="field"><label for="' + prefix + '-tob">Time of Birth *</label><input type="time" name="' + prefix + '_tob" required id="' + prefix + '-tob" /><p class="field-note"><strong>Please note:</strong> Enter only an accurate time of birth. If unsure, select &quot;I don&apos;t know my time of birth.&quot;</p><label class="tob-unknown-label" for="' + prefix + '-tob-unknown"><input type="checkbox" name="' + prefix + '_tob_unknown" id="' + prefix + '-tob-unknown" value="1" class="chart-tob-unknown" data-tob-for="' + prefix + '_tob" /> Don&apos;t know the time of birth</label></div>' +
+        '<div class="field"><label for="' + prefix + '-tob">Time of Birth *</label><input type="time" name="' + prefix + '_tob" required id="' + prefix + '-tob" /><p class="field-note"><strong>Please note:</strong> Enter only an accurate time of birth. If unsure, select &quot;I don&apos;t know my time of birth.&quot;</p><label class="tob-unknown-label" for="' + prefix + '-tob-unknown"><input type="checkbox" name="' + prefix + '_tob_unknown" id="' + prefix + '-tob-unknown" value="1" class="chart-tob-unknown" data-tob-for="' + prefix + '_tob" /> I don&apos;t know my time of birth</label></div>' +
         '<div class="field"><label for="' + prefix + '-pob">Place of Birth *</label><div class="autocomplete-wrapper">' +
         '<input type="text" name="' + prefix + '_pob" id="' + prefix + '-pob" class="place-of-birth-input" autocomplete="off" required />' +
         '<div class="autocomplete-suggestions" id="place-suggestions-' + chartNum + '"></div></div></div>';
@@ -1454,6 +1454,6 @@
     </div>
     <div id="faq-chat-content" class="faq-chat-content"></div>
   </div>
-  <script src="js/faq-chat.js?v=8"></script>
+  <script src="js/faq-chat.js?v=11"></script>
 </body>
 </html>

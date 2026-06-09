@@ -3,8 +3,18 @@
 
 const FAQ_DATA = [
   {
+    question: "What is I Read Space?",
+    answer: "I Read Space is Vedic astrology practice built around ongoing, structured birth chart consultations, not fortune-telling, but a continuing conversation that goes deeper each time, until the patterns are clear, the decisions feel easier, and the changes in your life are ones you can actually see. Founded by Saumyaa S Singh, an LSR alumna with a background in product leadership in top fintech companies and a decade of Vipassana practice, she brings both the rigour of a systems thinker and the stillness of a long-time meditator to every session.",
+    category: "about"
+  },
+  {
+    question: "Who is Saumyaa S Singh?",
+    answer: "Saumyaa is a Vedic astrologer, writer, and researcher, and the founder of I Read Space. An alumna of Lady Shri Ram College, she spent years leading fintech products before turning to full-time practice, building systems used by millions gave her a structural, analytical lens that now shapes how she reads charts. She brings classical Jyotish together with psychology and a decade of Vipassana practice, so you're met by someone who understands ambition, burnout, and the messiness of real decisions, from the inside out, and knows how to read them in a chart.",
+    category: "about"
+  },
+  {
     question: "How do I book a Vedic astrology consultation?",
-    answer: "You can book a Vedic astrology consultation online by selecting a session type, sharing your birth details, and choosing an available slot.<br><br><strong>1. Choose your session type:</strong><ul><li>30-minute session (Quick Clarity) — ₹1,200 (Audio) / ₹1,500 (Video)</li><li>60-minute session (Deep Insight) — ₹2,400 (Audio) / ₹3,000 (Video)</li><li>90-minute session (Holistic Guidance) — ₹3,600 (Audio) / ₹4,500 (Video)</li></ul><strong>2. Prepare your birth details:</strong><ul><li>Exact date of birth</li><li>Precise time of birth (as accurate as possible)</li><li>Place of birth (city and state/country)</li></ul><strong>3. Book online:</strong><br>Visit the <a href='intake.html' target='_blank'>booking page</a>, select your preferred session, share your birth details, choose an available slot, and complete payment. Payment is required in advance to confirm the appointment.<br><br>Consultations are conducted online. Rescheduling is possible with 24 hours' notice. Sessions are confidential.",
+    answer: "You can book a Vedic astrology consultation online by selecting a session type, sharing your birth details, and choosing an available slot.<br><br><strong>1. Choose your session type:</strong><ul><li>30-minute session (Quick Clarity) — ₹1,200 (Audio) / ₹1,500 (Video)</li><li>60-minute session (Deep Insight) — ₹2,400 (Audio) / ₹3,000 (Video)</li><li>90-minute session (Holistic Guidance) — ₹3,600 (Audio) / ₹4,500 (Video)</li></ul><strong>2. Prepare your birth details:</strong><ul><li>Exact date of birth</li><li>Accurate time of birth (from hospital records, birth certificate, or trusted family records; if unsure, select \"I don't know my time of birth\" on the form)</li><li>Place of birth (city and state/country)</li></ul><strong>3. Book online:</strong><br>Visit the <a href='intake.html' target='_blank'>booking page</a>, select your preferred session, share your birth details, choose an available slot, and complete payment. Payment is required in advance to confirm the appointment.<br><br>Consultations are conducted online. Rescheduling is possible with 24 hours' notice. Sessions are confidential.",
     category: "getting-started"
   },
   {
@@ -19,7 +29,7 @@ const FAQ_DATA = [
   },
   {
     question: "What details do I need for a Vedic astrology reading?",
-    answer: "You need three essential details for a Vedic astrology reading:<br><br><strong>1. Date of birth</strong> — Your exact date of birth (day, month, year).<br><br><strong>2. Time of birth</strong> — Exact time of birth (as precise as possible). Even a 10-15 minute difference can shift key indicators.<br><br><strong>3. Place of birth</strong> — City/town and state/country where you were born.<br><br>The more precise your birth time, the more accurate the reading.",
+    answer: "You need three essential details for a Vedic astrology reading:<br><br><strong>1. Date of birth</strong> — Your exact date of birth (day, month, year).<br><br><strong>2. Time of birth</strong> — Accurate time of birth (from hospital records, birth certificate, or trusted family records). If you are unsure or only guessing, select \"I don't know my time of birth\" on the booking form. Do not enter an approximate or estimated time.<br><br><strong>3. Place of birth</strong> — City/town and state/country where you were born.",
     category: "getting-started"
   },
   {
@@ -104,12 +114,12 @@ const FAQ_DATA = [
   },
   {
     question: "What do I need before booking?",
-    answer: "You need three things to book a Vedic astrology consultation: your exact date of birth, precise time of birth, and place of birth (city and state/country). Birth time accuracy is crucial — even a 10-15 minute difference can alter chart calculations.<br><br>Also consider what questions or life areas you want to explore. Having 2-3 primary concerns helps tailor the session. No prior knowledge of astrology is needed.",
+    answer: "You need three things to book a Vedic astrology consultation: your date of birth, accurate time of birth, and place of birth (city and state/country). Time of birth must be accurate and reliable (from hospital records, birth certificate, or family records you trust). If you are unsure or only guessing, select \"I don't know my time of birth\" on the booking form. Do not enter an approximate or estimated time.<br><br>Also consider what questions or life areas you want to explore. Having 2-3 primary concerns helps tailor the session. No prior knowledge of astrology is needed.",
     category: "practical"
   },
   {
     question: "What if my birth time is unknown?",
-    answer: "If your birth time is completely unknown, some techniques become unavailable.<br><br>It's better to be honest about uncertainty than to guess.",
+    answer: "If your birth time is not known with certainty, select \"I don't know my time of birth\" on the booking form rather than entering a guess or estimate. Without an accurate time, full chart-based techniques become unavailable. Where needed, tarot and numerology may be used alongside astrology.",
     category: "practical"
   },
   {
@@ -131,6 +141,14 @@ const FAQ_DATA = [
 
 // Category structure with shortened labels
 const FAQ_CATEGORIES = {
+  "about": {
+    title: "About I Read Space",
+    shortTitle: "About",
+    options: [
+      { label: "What is I Read Space?", question: "What is I Read Space?" },
+      { label: "Who is Saumyaa?", question: "Who is Saumyaa S Singh?" }
+    ]
+  },
   "getting-started": {
     title: "Getting Started",
     shortTitle: "Getting Started",
