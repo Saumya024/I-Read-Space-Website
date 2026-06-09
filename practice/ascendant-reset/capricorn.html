@@ -20,7 +20,7 @@
 
   <link rel="icon" type="image/png" href="../../assets/images/Radicle (4).png">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Spectral:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../styles.css?v=240" />
+  <link rel="stylesheet" href="../../styles.css?v=241" />
 
   <style>
     .capricorn-page { min-height: 50vh; padding: 48px 24px 64px; background: var(--cream-white); }
@@ -99,12 +99,19 @@
     <div class="logo"><a href="../../index.html"><img src="../../assets/images/23.png" alt="I Read Space" /></a></div>
     <div class="header-mobile-actions"><button class="hamburger" id="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button></div>
     <nav class="nav" id="nav">
-      <a href="../../about.html">About</a>
-      <a href="../../index.html#pricing">Pricing</a>
       <a href="../../index.html#areas">Services</a>
-      <a href="../../insights.html">Insights</a>
-      <a href="../../alternative-healing-practices.html">Healing</a><a href="../../conscious-living.html">Conscious Living</a>
-      <a href="../../reset-now.html">Reset</a>
+      <a href="../../index.html#pricing">Pricing</a>
+      
+      <a href="../../about.html">About</a>
+      
+            <div class="nav-dropdown">
+        <button class="nav-dropdown-toggle" aria-expanded="false">Resources</button>
+        <div class="nav-dropdown-menu">
+          <a href="../../insights.html">Insights</a>
+          <a href="../../alternative-healing-practices.html">Healing</a><a href="../../conscious-living.html">Conscious Living</a>
+          <a href="../../reset-now.html">Reset</a>
+        </div>
+      </div>
 
       <a href="../../index.html#pricing" class="header-cta">Book a Session</a>
     </nav>
@@ -327,9 +334,11 @@
       <div class="footer-logo"><a href="../../index.html"><img src="../../assets/images/23.png" alt="I Read Space"  loading="lazy" /></a></div>
       <nav class="footer-nav">
         <a href="../../index.html">Home</a>
-        <a href="../../about.html">About</a>
-        <a href="../../index.html#pricing">Pricing</a>
         <a href="../../index.html#areas">Services</a>
+        <a href="../../index.html#pricing">Pricing</a>
+        
+        <a href="../../about.html">About</a>
+        
         <a href="../../insights.html">Insights</a>
         <a href="../../alternative-healing-practices.html">Healing</a><a href="../../conscious-living.html">Conscious Living</a>
         <a href="../../reset-now.html">Reset</a>
@@ -378,7 +387,7 @@
     </div>
   </footer>
 
-  <script src="../../js/mobile-menu.js?v=17"></script>
+  <script src="../../js/mobile-menu.js?v=19"></script>
   <script src="../../js/email-capture.js"></script>
   <script>
 (function() {
@@ -580,12 +589,6 @@
     });
     document.getElementById('print-contract').addEventListener('click', function() { window.print(); });
 
-    var dropdowns = document.querySelectorAll('.nav-dropdown');
-    dropdowns.forEach(function(d) {
-      var t = d.querySelector('.nav-dropdown-toggle');
-      if (t) t.addEventListener('click', function(e) { e.stopPropagation(); d.classList.toggle('active'); });
-    });
-    document.addEventListener('click', function() { dropdowns.forEach(function(d) { d.classList.remove('active'); }); });
   });
 })();
   </script>

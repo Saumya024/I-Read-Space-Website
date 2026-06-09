@@ -285,9 +285,74 @@
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMobileMenu);
-  } else {
+  function initNavDropdowns() {
+    const dropdowns = document.querySelectorAll('.nav-dropdown');
+    if (dropdowns.length === 0) return;
+
+    dropdowns.forEach(dropdown => {
+      const toggle = dropdown.querySelector('.nav-dropdown-toggle');
+
+      dropdown.addEventListener('mouseenter', function() {
+        if (window.innerWidth > 1024) {
+          dropdown.classList.add('active');
+          if (toggle) toggle.setAttribute('aria-expanded', 'true');
+        }
+      });
+
+      dropdown.addEventListener('mouseleave', function() {
+        if (window.innerWidth > 1024) {
+          dropdown.classList.remove('active');
+          if (toggle) toggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      if (toggle) {
+        toggle.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          const isActive = dropdown.classList.contains('active');
+          dropdown.classList.toggle('active');
+          toggle.setAttribute('aria-expanded', String(!isActive));
+
+          dropdowns.forEach(other => {
+            if (other !== dropdown) {
+              other.classList.remove('active');
+              const otherToggle = other.querySelector('.nav-dropdown-toggle');
+              if (otherToggle) otherToggle.setAttribute('aria-expanded', 'false');
+            }
+          });
+        });
+
+        toggle.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            const isActive = dropdown.classList.contains('active');
+            dropdown.classList.toggle('active');
+            toggle.setAttribute('aria-expanded', String(!isActive));
+          }
+        });
+      }
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.nav-dropdown')) {
+        dropdowns.forEach(dropdown => {
+          dropdown.classList.remove('active');
+          const toggle = dropdown.querySelector('.nav-dropdown-toggle');
+          if (toggle) toggle.setAttribute('aria-expanded', 'false');
+        });
+      }
+    });
+  }
+
+  function init() {
     initMobileMenu();
+    initNavDropdowns();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 })();

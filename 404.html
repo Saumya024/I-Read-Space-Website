@@ -31,7 +31,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Spectral:wght@400;500&display=swap" rel="stylesheet">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="styles.css?v=240" />
+  <link rel="stylesheet" href="styles.css?v=241" />
 </head>
 <body>
 
@@ -55,7 +55,7 @@
  <a href="about.html">About</a>
       
       <div class="nav-dropdown">
-        <button class="nav-dropdown-toggle" aria-expanded="false">Resources <span class="dropdown-arrow">▼</span></button>
+        <button class="nav-dropdown-toggle" aria-expanded="false">Resources</button>
         <div class="nav-dropdown-menu">
           <a href="insights.html">Insights</a>
           <a href="alternative-healing-practices.html">Healing</a><a href="conscious-living.html">Conscious Living</a>
@@ -138,27 +138,8 @@
   </footer>
 
   <!-- Mobile Menu Script -->
-  <script src="js/mobile-menu.js?v=17"></script>
+  <script src="js/mobile-menu.js?v=19"></script>
   <script src="js/email-capture.js"></script>
-
-  <!-- Navigation Dropdown Script -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const dropdowns = document.querySelectorAll('.nav-dropdown');
-      dropdowns.forEach(dropdown => {
-        const toggle = dropdown.querySelector('.nav-dropdown-toggle');
-        if (toggle) {
-          toggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            this.parentElement.classList.toggle('active');
-          });
-        }
-      });
-      document.addEventListener('click', function() {
-        document.querySelectorAll('.nav-dropdown').forEach(dropdown => dropdown.classList.remove('active'));
-      });
-    });
-  </script>
 
   <button id="faq-chat-button" class="faq-chat-button" aria-label="Open FAQ chat">
     ?

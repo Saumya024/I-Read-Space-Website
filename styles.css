@@ -971,9 +971,6 @@ body.menu-open .faq-chat-button {
   border: none;
   outline: none;
   padding: 0;
-  display: flex;
-  align-items: center;
-  gap: 4px;
   cursor: pointer;
   color: var(--cream-white);
   font-family: inherit;
@@ -985,17 +982,6 @@ body.menu-open .faq-chat-button {
 
 .nav-dropdown-toggle:hover {
   opacity: 0.7;
-}
-
-.dropdown-arrow {
-  font-size: 10px;
-  transition: transform 0.3s;
-  display: none;
-}
-
-.nav-dropdown:hover .dropdown-arrow,
-.nav-dropdown.active .dropdown-arrow {
-  transform: rotate(180deg);
 }
 
 .nav-dropdown-menu {
@@ -5287,7 +5273,7 @@ main[class$="-page"] .wizard-chip.active {
     text-align: left !important;
   }
 
-  /* Tablet hamburger nav: Resources dropdown — show arrow + divider (mirrors ≤768px rules) */
+  /* Tablet hamburger nav: Resources dropdown (mirrors ≤768px rules) */
   .nav-dropdown {
     width: 100%;
   }
@@ -5296,15 +5282,9 @@ main[class$="-page"] .wizard-chip.active {
     width: 100%;
     padding: 16px 0;
     border-bottom: var(--section-divider-width) solid var(--section-divider-color-on-dark);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     color: var(--cream-white);
     font-size: var(--text-small);
-  }
-
-  .dropdown-arrow {
-    display: inline-block;
+    text-align: left;
   }
 
   .nav-dropdown-menu {
@@ -6197,15 +6177,9 @@ main[class$="-page"] .wizard-chip.active {
     width: 100%;
     padding: 16px 0;
     border-bottom: var(--section-divider-width) solid var(--section-divider-color-on-dark);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     color: var(--cream-white);
     font-size: var(--text-caption);
-  }
-
-  .dropdown-arrow {
-    display: inline-block;
+    text-align: left;
   }
 
   .nav-dropdown-menu {
