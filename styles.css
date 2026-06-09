@@ -4166,7 +4166,8 @@ body.home #testimonial-3 {
 }
 
 .nav.mobile-menu-enhanced .mobile-menu-contact-details {
-  padding-right: 0;
+  padding-right: 14px;
+  box-sizing: border-box;
 }
 
 .nav.mobile-menu-enhanced .mobile-menu-contact-detail-row {
@@ -4191,10 +4192,11 @@ body.home #testimonial-3 {
 .nav.mobile-menu-enhanced a.mobile-menu-contact-value {
   display: block !important;
   width: auto !important;
-  max-width: 72%;
+  max-width: 68%;
   flex: 1 1 auto;
   min-width: 0;
   margin-left: auto;
+  margin-right: 4px;
   padding: 0 !important;
   border-bottom: none !important;
   text-align: right;
@@ -5452,9 +5454,10 @@ main[class$="-page"] .wizard-chip.active {
   .nav .mobile-menu-contact-value {
     color: var(--primary) !important;
     width: auto !important;
-    max-width: 72%;
+    max-width: 68%;
     flex: 1 1 auto;
     margin-left: auto;
+    margin-right: 4px;
     padding: 0 !important;
     border-bottom: none !important;
     font-family: var(--font-body) !important;
@@ -6391,9 +6394,10 @@ main[class$="-page"] .wizard-chip.active {
   .nav .mobile-menu-contact-value {
     color: var(--primary) !important;
     width: auto !important;
-    max-width: 72%;
+    max-width: 68%;
     flex: 1 1 auto;
     margin-left: auto;
+    margin-right: 4px;
     padding: 0 !important;
     border-bottom: none !important;
     font-family: var(--font-body) !important;
