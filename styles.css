@@ -4101,6 +4101,11 @@ body.home #testimonial-3 {
   width: 100%;
 }
 
+.nav.mobile-menu-enhanced .mobile-menu-panel {
+  position: relative;
+  top: -1dvh;
+}
+
 .nav.mobile-menu-enhanced .mobile-menu-group {
   padding-top: 16px;
   padding-bottom: 16px;
