@@ -216,6 +216,12 @@
 
       const reachScrollGroup = createGroup('Reach Out', [reachPrimary]);
 
+      const closeBtn = document.createElement('button');
+      closeBtn.type = 'button';
+      closeBtn.className = 'mobile-menu-close';
+      closeBtn.setAttribute('aria-label', 'Close menu');
+      closeBtn.innerHTML = '<span aria-hidden="true">&times;</span>';
+
       const scrollArea = document.createElement('div');
       scrollArea.className = 'mobile-menu-scroll';
       [workGroup, learnGroup, reachScrollGroup].filter(Boolean).forEach(group => scrollArea.appendChild(group));
@@ -225,6 +231,7 @@
       ctaDock.appendChild(createReachDivider());
       ctaDock.appendChild(reachSecondary);
 
+      panel.appendChild(closeBtn);
       panel.appendChild(scrollArea);
       panel.appendChild(ctaDock);
 
@@ -272,6 +279,14 @@
       e.stopPropagation();
       toggleMenu();
     });
+
+    const menuCloseBtn = nav.querySelector('.mobile-menu-close');
+    if (menuCloseBtn) {
+      menuCloseBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        closeMenu();
+      });
+    }
 
     nav.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', function(e) {

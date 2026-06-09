@@ -3729,7 +3729,7 @@ body.home #testimonial-3 {
 .footer {
   background-color: var(--primary);
   border-top: var(--section-divider-width) solid var(--section-divider-color-on-dark);
-  padding: 15px 40px calc(28px + env(safe-area-inset-bottom, 0px));
+  padding: 15px 40px 28px;
   scroll-margin-top: 95px;
 }
 
@@ -3796,7 +3796,9 @@ body.home #testimonial-3 {
   max-width: 720px;
   margin: 16px auto 12px;
   padding: 28px 32px 26px;
-  background: var(--cream-white);
+  background-color: var(--cream-white);
+  color-scheme: light;
+  forced-color-adjust: none;
   border-radius: 20px;
   border: var(--card-border);
   box-shadow: 0 8px 28px rgba(67, 16, 57, 0.12);
@@ -4894,10 +4896,6 @@ main[class$="-page"] .wizard-chip.active {
     overflow: hidden;
   }
 
-  .footer {
-    padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
-  }
-
   /* Keep all section content within viewport so nothing is cut off */
   .packages-container,
   .contact-container,
@@ -5030,13 +5028,38 @@ main[class$="-page"] .wizard-chip.active {
     z-index: 1;
   }
 
-  .hamburger.active span {
-    background-color: var(--primary) !important;
+  body.menu-open .hamburger.active span {
+    background-color: var(--cream-white) !important;
   }
 
   .hamburger span {
     width: 22px;
     height: 1.5px;
+  }
+
+  .mobile-menu-close {
+    position: absolute;
+    top: 18px;
+    right: 16px;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--primary);
+    font-family: var(--font-body);
+    font-size: 28px;
+    font-weight: 300;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .mobile-menu-panel {
+    position: relative;
   }
 
   /* Mobile nav: slide in smoothly from the right – brand primary frame, cream text */
@@ -5935,13 +5958,21 @@ main[class$="-page"] .wizard-chip.active {
     z-index: 1;
   }
 
-  .hamburger.active span {
-    background-color: var(--primary) !important;
+  body.menu-open .hamburger.active span {
+    background-color: var(--cream-white) !important;
   }
 
   .hamburger span {
     width: 22px;
     height: 1.5px;
+  }
+
+  .mobile-menu-close {
+    top: 14px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    font-size: 26px;
   }
 
   /* Small screens: right-slide nav matching tablet behavior */
@@ -6889,7 +6920,7 @@ main[class$="-page"] .wizard-chip.active {
   }
 
   .footer {
-    padding: 15px 20px calc(108px + env(safe-area-inset-bottom, 0px));
+    padding: 15px 20px 28px;
   }
 
   .footer-content {
@@ -6926,6 +6957,7 @@ main[class$="-page"] .wizard-chip.active {
     padding: 24px 20px 22px;
     width: 100%;
     max-width: 100%;
+    background-color: var(--cream-white);
   }
 
   .footer-newsletter-heading {
@@ -6940,7 +6972,8 @@ main[class$="-page"] .wizard-chip.active {
 
   .footer-newsletter-form {
     flex-direction: column;
-    gap: 8px;
+    align-items: center;
+    gap: 10px;
     max-width: 100%;
     padding: 0;
     background: transparent;
@@ -6958,6 +6991,8 @@ main[class$="-page"] .wizard-chip.active {
   .footer-newsletter-form button {
     width: 100%;
     max-width: 220px;
+    margin: 0 auto;
+    align-self: center;
     font-size: var(--text-caption);
     padding: 10px 16px;
   }
