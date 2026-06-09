@@ -159,8 +159,13 @@
       const servicesLink = cloneLink('Services');
       const pricingLink = cloneLink('Pricing');
 
+      const workLinks = document.createElement('div');
+      workLinks.className = 'mobile-menu-work-links';
+      if (servicesLink) workLinks.appendChild(servicesLink);
+      if (pricingLink) workLinks.appendChild(pricingLink);
+
       const workGroup = document.createElement('div');
-      workGroup.className = 'mobile-menu-group mobile-menu-group--work-with-me';
+      workGroup.className = 'mobile-menu-group mobile-menu-group--work-with-me mobile-menu-group--heading-only';
       const workHeading = document.createElement('div');
       workHeading.className = 'mobile-menu-section-heading';
       workHeading.textContent = 'Work With Me';
@@ -221,26 +226,22 @@
 
       const reachGroup = createGroup('Reach Out', [reachPrimary]);
 
-      const belowWork = document.createElement('div');
-      belowWork.className = 'mobile-menu-below-work';
-      const workLinks = document.createElement('div');
-      workLinks.className = 'mobile-menu-work-links';
-      if (servicesLink) workLinks.appendChild(servicesLink);
-      if (pricingLink) workLinks.appendChild(pricingLink);
-      belowWork.appendChild(workLinks);
-      if (learnGroup) belowWork.appendChild(learnGroup);
-      if (reachGroup) belowWork.appendChild(reachGroup);
-
       const closeBtn = document.createElement('button');
       closeBtn.type = 'button';
       closeBtn.className = 'mobile-menu-close';
       closeBtn.setAttribute('aria-label', 'Close menu');
       closeBtn.innerHTML = '<span aria-hidden="true">&times;</span>';
 
+      const belowWork = document.createElement('div');
+      belowWork.className = 'mobile-menu-below-work';
+      if (workLinks.childElementCount > 0) belowWork.appendChild(workLinks);
+      if (learnGroup) belowWork.appendChild(learnGroup);
+      if (reachGroup) belowWork.appendChild(reachGroup);
+
       const scrollArea = document.createElement('div');
       scrollArea.className = 'mobile-menu-scroll';
       scrollArea.appendChild(workGroup);
-      scrollArea.appendChild(belowWork);
+      if (belowWork.childElementCount > 0) scrollArea.appendChild(belowWork);
 
       const ctaDock = document.createElement('div');
       ctaDock.className = 'mobile-menu-cta-dock';
