@@ -4101,20 +4101,25 @@ body.home #testimonial-3 {
   width: 100%;
 }
 
-.nav.mobile-menu-enhanced .mobile-menu-group--work-with-me > :not(.mobile-menu-section-heading),
-.nav.mobile-menu-enhanced .mobile-menu-group--learn-more,
-.nav.mobile-menu-enhanced .mobile-menu-group--reach-out,
-.nav.mobile-menu-enhanced .mobile-menu-cta-dock {
-  position: relative;
-  top: -1dvh;
+.nav.mobile-menu-enhanced .mobile-menu-group {
+  padding-top: 16px;
+  padding-bottom: 16px;
 }
 
-.nav.mobile-menu-enhanced .mobile-menu-group--work-with-me {
-  padding-bottom: 8px;
+.nav.mobile-menu-enhanced .mobile-menu-section-heading {
+  margin-bottom: 8px;
 }
 
-.nav.mobile-menu-enhanced .mobile-menu-group--work-with-me .mobile-menu-link:last-child {
-  padding-bottom: 4px;
+.nav.mobile-menu-enhanced .mobile-menu-scroll .mobile-menu-group:last-child {
+  padding-bottom: 16px;
+}
+
+.nav.mobile-menu-enhanced .mobile-menu-reach-primary .mobile-menu-contact-detail-row:first-child {
+  padding-top: 10px;
+}
+
+.nav.mobile-menu-enhanced .mobile-menu-reach-primary .mobile-menu-contact-detail-row:last-child {
+  padding-bottom: 10px;
 }
 
 .mobile-menu-reach-divider {
@@ -5215,15 +5220,6 @@ main[class$="-page"] .wizard-chip.active {
 
   .mobile-menu-scroll .mobile-menu-group:last-child {
     border-bottom: none;
-    padding-bottom: 18px;
-  }
-
-  .mobile-menu-scroll .mobile-menu-group--reach-out {
-    padding-bottom: 14px;
-  }
-
-  .mobile-menu-scroll .mobile-menu-group--reach-out .mobile-menu-section-heading {
-    margin-bottom: 14px;
   }
 
   .mobile-menu-cta-dock {
@@ -5244,14 +5240,9 @@ main[class$="-page"] .wizard-chip.active {
 
   .mobile-menu-group {
     width: 100%;
-    padding: 18px 0 22px;
     border-bottom: var(--section-divider-width) solid var(--card-border-color);
     box-sizing: border-box;
     overflow: visible;
-  }
-
-  .mobile-menu-section-heading {
-    margin-bottom: 8px;
   }
 
   .mobile-menu-reach-primary {
@@ -6158,15 +6149,6 @@ main[class$="-page"] .wizard-chip.active {
 
   .mobile-menu-scroll .mobile-menu-group:last-child {
     border-bottom: none;
-    padding-bottom: 16px;
-  }
-
-  .mobile-menu-scroll .mobile-menu-group--reach-out {
-    padding-bottom: 12px;
-  }
-
-  .mobile-menu-scroll .mobile-menu-group--reach-out .mobile-menu-section-heading {
-    margin-bottom: 12px;
   }
 
   .mobile-menu-cta-dock {
@@ -6187,14 +6169,9 @@ main[class$="-page"] .wizard-chip.active {
 
   .mobile-menu-group {
     width: 100%;
-    padding: 16px 0 20px;
     border-bottom: var(--section-divider-width) solid var(--card-border-color);
     box-sizing: border-box;
     overflow: visible;
-  }
-
-  .mobile-menu-section-heading {
-    margin-bottom: 8px;
   }
 
   .mobile-menu-reach-primary {
