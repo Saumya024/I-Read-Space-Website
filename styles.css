@@ -4127,19 +4127,20 @@ body.home #testimonial-3 {
   padding-bottom: 16px;
 }
 
-.nav.mobile-menu-enhanced .mobile-menu-group--work-with-me .mobile-menu-section-heading {
-  margin-bottom: 8px;
-}
-
 .nav.mobile-menu-enhanced .mobile-menu-group--learn-more,
 .nav.mobile-menu-enhanced .mobile-menu-group--reach-out {
   padding-top: 12px;
   padding-bottom: 12px;
 }
 
-.nav.mobile-menu-enhanced .mobile-menu-group--learn-more .mobile-menu-section-heading,
-.nav.mobile-menu-enhanced .mobile-menu-group--reach-out .mobile-menu-section-heading {
+.nav.mobile-menu-enhanced .mobile-menu-group .mobile-menu-section-heading {
   margin-bottom: 8px;
+}
+
+.nav.mobile-menu-enhanced .mobile-menu-work-links > .mobile-menu-link:first-child,
+.nav.mobile-menu-enhanced .mobile-menu-group--learn-more > .mobile-menu-link:first-child,
+.nav.mobile-menu-enhanced .mobile-menu-group--reach-out .mobile-menu-contact-detail-row:first-child {
+  padding-top: 10px !important;
 }
 
 .nav.mobile-menu-enhanced .mobile-menu-group--learn-more .mobile-menu-subheading {
@@ -4149,6 +4150,10 @@ body.home #testimonial-3 {
 .nav.mobile-menu-enhanced .mobile-menu-group--learn-more .mobile-menu-link:not(.mobile-menu-resource-link) {
   padding-top: 8px !important;
   padding-bottom: 8px !important;
+}
+
+.nav.mobile-menu-enhanced .mobile-menu-group--learn-more > .mobile-menu-link:first-child {
+  padding-top: 10px !important;
 }
 
 .nav.mobile-menu-enhanced .mobile-menu-group--learn-more .mobile-menu-resource-link {
@@ -4174,11 +4179,12 @@ body.home #testimonial-3 {
   padding: 8px 0;
 }
 
-.nav.mobile-menu-enhanced .mobile-menu-contact-detail-row:first-child {
-  padding-top: 0;
+.nav.mobile-menu-enhanced .mobile-menu-group--reach-out .mobile-menu-contact-detail-row {
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
-.nav.mobile-menu-enhanced .mobile-menu-contact-detail-row:last-child {
+.nav.mobile-menu-enhanced .mobile-menu-group--reach-out .mobile-menu-contact-detail-row:last-child {
   padding-bottom: 0;
 }
 
