@@ -4097,10 +4097,11 @@ body.home #testimonial-3 {
 
 .mobile-menu-contact-detail-row {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 0;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 4px;
+  padding: 10px 0;
 }
 
 .mobile-menu-section-heading,
@@ -4130,7 +4131,8 @@ body.home #testimonial-3 {
   letter-spacing: 0.01em;
   color: var(--primary);
   text-decoration: none;
-  text-align: right;
+  text-align: left;
+  width: 100%;
   word-break: break-word;
 }
 
