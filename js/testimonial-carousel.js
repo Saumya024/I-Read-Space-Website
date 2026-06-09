@@ -1,6 +1,15 @@
-// Testimonial carousel: fixed-height crossfade (no layout shift between slides)
+// Testimonial carousel: fixed-height crossfade on all screen sizes (no layout shift)
 (function () {
   'use strict';
+
+  function lockSlideHeight(slidesWrapper, slides) {
+    if (!slidesWrapper || slides.length === 0) return;
+
+    slidesWrapper.classList.add('is-measuring');
+    const maxHeight = slidesWrapper.offsetHeight;
+    slidesWrapper.classList.remove('is-measuring');
+    slidesWrapper.style.minHeight = maxHeight + 'px';
+  }
 
   function initTestimonialCarousel(carouselId) {
     const carousel = document.getElementById(carouselId);
@@ -15,9 +24,10 @@
 
     let currentIndex = 0;
     let autoTimer = null;
+    let resizeTimer = null;
 
     function showSlide(index) {
-      slides.forEach((slide, i) => {
+      slides.forEach(function (slide, i) {
         slide.classList.toggle('active', i === index);
       });
     }
@@ -38,7 +48,17 @@
       autoTimer = setInterval(nextSlide, 10000);
     }
 
+    function refreshHeight() {
+      lockSlideHeight(slidesWrapper, slides);
+    }
+
+    function scheduleRefresh() {
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(refreshHeight, 150);
+    }
+
     showSlide(0);
+    refreshHeight();
     restartAuto();
 
     if (rightArrow) {
@@ -53,6 +73,17 @@
         prevSlide();
         restartAuto();
       });
+    }
+
+    window.addEventListener('resize', scheduleRefresh);
+
+    if (typeof ResizeObserver !== 'undefined') {
+      const observer = new ResizeObserver(scheduleRefresh);
+      observer.observe(slidesWrapper);
+    }
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(refreshHeight);
     }
   }
 

@@ -214,7 +214,10 @@
         bookCta
       ]);
 
-      const reachScrollGroup = createGroup('Reach Out', [reachPrimary]);
+      const reachPanel = document.createElement('div');
+      reachPanel.className = 'mobile-menu-reach-panel';
+      const reachGroup = createGroup('Reach Out', [reachPrimary]);
+      if (reachGroup) reachPanel.appendChild(reachGroup);
 
       const closeBtn = document.createElement('button');
       closeBtn.type = 'button';
@@ -224,7 +227,7 @@
 
       const scrollArea = document.createElement('div');
       scrollArea.className = 'mobile-menu-scroll';
-      [workGroup, learnGroup, reachScrollGroup].filter(Boolean).forEach(group => scrollArea.appendChild(group));
+      [workGroup, learnGroup].filter(Boolean).forEach(group => scrollArea.appendChild(group));
 
       const ctaDock = document.createElement('div');
       ctaDock.className = 'mobile-menu-cta-dock';
@@ -232,6 +235,7 @@
       ctaDock.appendChild(reachSecondary);
 
       panel.appendChild(scrollArea);
+      if (reachGroup) panel.appendChild(reachPanel);
       panel.appendChild(ctaDock);
 
       nav.appendChild(closeBtn);
