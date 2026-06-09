@@ -4096,9 +4096,15 @@ body.home #testimonial-3 {
   }
 }
 
-.mobile-menu-reach-primary,
 .mobile-menu-reach-secondary {
   width: 100%;
+}
+
+.nav.mobile-menu-enhanced .mobile-menu-group--work-with-me > :not(.mobile-menu-section-heading),
+.nav.mobile-menu-enhanced .mobile-menu-group--learn-more,
+.nav.mobile-menu-enhanced .mobile-menu-cta-dock {
+  position: relative;
+  top: -1dvh;
 }
 
 .mobile-menu-reach-divider {
@@ -5202,14 +5208,6 @@ main[class$="-page"] .wizard-chip.active {
     padding-bottom: 18px;
   }
 
-  .mobile-menu-scroll .mobile-menu-group--reach-out {
-    padding-bottom: 14px;
-  }
-
-  .mobile-menu-scroll .mobile-menu-group--reach-out .mobile-menu-section-heading {
-    margin-bottom: 14px;
-  }
-
   .mobile-menu-cta-dock {
     flex-shrink: 0;
     width: 100%;
@@ -5236,10 +5234,6 @@ main[class$="-page"] .wizard-chip.active {
 
   .mobile-menu-section-heading {
     margin-bottom: 8px;
-  }
-
-  .mobile-menu-reach-primary {
-    padding-bottom: 0;
   }
 
   .mobile-menu-reach-secondary {
@@ -6145,53 +6139,6 @@ main[class$="-page"] .wizard-chip.active {
     padding-bottom: 16px;
   }
 
-  .mobile-menu-scroll .mobile-menu-group--reach-out {
-    padding-bottom: 12px;
-  }
-
-  .mobile-menu-scroll .mobile-menu-group--reach-out .mobile-menu-section-heading {
-    margin-bottom: 12px;
-  }
-
-  .mobile-menu-panel--reach-peek .mobile-menu-scroll {
-    flex: 0 1 auto;
-    max-height: var(--menu-reach-peek-height);
-  }
-
-  .mobile-menu-panel--reach-peek .mobile-menu-cta-dock {
-    margin-top: auto;
-  }
-
-  .mobile-menu-reach-peek-hint {
-    flex-shrink: 0;
-    width: 100%;
-    margin-top: auto;
-    padding: 10px 0 6px;
-    border-top: var(--section-divider-width) solid var(--card-border-color);
-    font-family: var(--font-body);
-    font-size: var(--text-caption);
-    font-weight: 600;
-    line-height: 1.2;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--tertiary);
-    box-sizing: border-box;
-    pointer-events: none;
-  }
-
-  .mobile-menu-scroll.has-content-below::after {
-    content: '';
-    position: sticky;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: block;
-    height: 22px;
-    margin-top: -22px;
-    pointer-events: none;
-    background: linear-gradient(to bottom, rgba(248, 246, 242, 0), var(--cream-white));
-  }
-
   .mobile-menu-cta-dock {
     flex-shrink: 0;
     width: 100%;
@@ -6218,10 +6165,6 @@ main[class$="-page"] .wizard-chip.active {
 
   .mobile-menu-section-heading {
     margin-bottom: 8px;
-  }
-
-  .mobile-menu-reach-primary {
-    padding-bottom: 0;
   }
 
   .mobile-menu-reach-secondary {
