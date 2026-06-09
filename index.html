@@ -127,7 +127,7 @@
 
 
  <!-- Styles -->
- <link rel="stylesheet" href="styles.css?v=250" />
+ <link rel="stylesheet" href="styles.css?v=254" />
 </head>
 
 <body class="home">
@@ -631,12 +631,14 @@
  <!-- Indian Pricing -->
  <div class="pricing-grid" id="indian-pricing">
  <div class="pricing-card">
+ <div class="pricing-card-head">
  <div class="pricing-duration">90-Minutes</div>
  <h3 class="pricing-name">Holistic Guidance</h3>
  <div class="pricing-best-for">In-depth life themes | Remedies & planning</div>
  <div class="pricing-toggle">
  <button class="toggle-btn active" data-type="audio" aria-label="Select audio session">Audio</button>
  <button class="toggle-btn" data-type="video" aria-label="Select video session">Video</button>
+ </div>
  </div>
  <div class="pricing-price" data-audio-price="₹3,600" data-video-price="₹4,500">₹3,600</div>
  <div class="pricing-includes-visible">
@@ -657,12 +659,14 @@
 
  <div class="pricing-card pricing-card-popular">
  <div class="pricing-popular-badge">Most Popular</div>
+ <div class="pricing-card-head">
  <div class="pricing-duration">60-Minutes</div>
  <h3 class="pricing-name">Deep Insight</h3>
  <div class="pricing-best-for">Root-cause analysis | First-time consultations</div>
  <div class="pricing-toggle">
  <button class="toggle-btn active" data-type="audio" aria-label="Select audio session">Audio</button>
  <button class="toggle-btn" data-type="video" aria-label="Select video session">Video</button>
+ </div>
  </div>
  <div class="pricing-price" data-audio-price="₹2,400" data-video-price="₹3,000">₹2,400</div>
  <div class="pricing-includes-visible">
@@ -681,12 +685,14 @@
  </div>
 
  <div class="pricing-card">
+ <div class="pricing-card-head">
  <div class="pricing-duration">30-Minutes</div>
  <h3 class="pricing-name">Quick Clarity</h3>
  <div class="pricing-best-for">Follow-ups | Focused queries &amp; themes</div>
  <div class="pricing-toggle">
  <button class="toggle-btn active" data-type="audio" aria-label="Select audio session">Audio</button>
  <button class="toggle-btn" data-type="video" aria-label="Select video session">Video</button>
+ </div>
  </div>
  <div class="pricing-price" data-audio-price="₹1,200" data-video-price="₹1,500">₹1,200</div>
  <div class="pricing-includes-visible">
@@ -707,12 +713,14 @@
  <!-- International Pricing -->
  <div class="pricing-grid" id="international-pricing" style="display: none;">
  <div class="pricing-card">
+ <div class="pricing-card-head">
  <div class="pricing-duration">90-Minutes</div>
  <h3 class="pricing-name">Holistic Guidance</h3>
  <div class="pricing-best-for">In-depth life themes | Remedies & planning</div>
  <div class="pricing-toggle">
  <button class="toggle-btn active" data-type="audio" aria-label="Select audio session">Audio</button>
  <button class="toggle-btn" data-type="video" aria-label="Select video session">Video</button>
+ </div>
  </div>
  <div class="pricing-price" data-audio-price="$81" data-video-price="$114">$81</div>
  <div class="pricing-includes-visible">
@@ -732,12 +740,14 @@
 
  <div class="pricing-card pricing-card-popular">
  <div class="pricing-popular-badge">Most Popular</div>
+ <div class="pricing-card-head">
  <div class="pricing-duration">60-Minutes</div>
  <h3 class="pricing-name">Deep Insight</h3>
  <div class="pricing-best-for">Root-cause analysis | First-time consultations</div>
  <div class="pricing-toggle">
  <button class="toggle-btn active" data-type="audio" aria-label="Select audio session">Audio</button>
  <button class="toggle-btn" data-type="video" aria-label="Select video session">Video</button>
+ </div>
  </div>
  <div class="pricing-price" data-audio-price="$54" data-video-price="$73">$54</div>
  <div class="pricing-includes-visible">
@@ -755,12 +765,14 @@
  </div>
 
  <div class="pricing-card">
+ <div class="pricing-card-head">
  <div class="pricing-duration">30-Minutes</div>
  <h3 class="pricing-name">Quick Clarity</h3>
  <div class="pricing-best-for">Follow-ups | Focused queries &amp; themes</div>
  <div class="pricing-toggle">
  <button class="toggle-btn active" data-type="audio" aria-label="Select audio session">Audio</button>
  <button class="toggle-btn" data-type="video" aria-label="Select video session">Video</button>
+ </div>
  </div>
  <div class="pricing-price" data-audio-price="$27" data-video-price="$33">$27</div>
  <div class="pricing-includes-visible">
@@ -1321,6 +1333,9 @@
  detectLocation().then(() => {
  showPricing();
  updateBookingLinks(isIndia ? 'in' : 'intl');
+ if (window.alignPricingSections) {
+ requestAnimationFrame(window.alignPricingSections);
+ }
  });
  })();
  </script>
@@ -1427,10 +1442,10 @@
 
  </script>
 
- <script src="js/testimonial-carousel.js?v=2"></script>
+ <script src="js/testimonial-carousel.js?v=3"></script>
 
  <!-- Mobile Menu Script -->
- <script src="js/mobile-menu.js?v=25"></script>
+ <script src="js/mobile-menu.js?v=28"></script>
  <script src="js/email-capture.js"></script>
 
  <!-- FOOTER -->
@@ -1726,14 +1741,19 @@
  <!-- Pricing Expand Toggle + Equal Heights -->
  <script>
  (function() {
- var sectionClasses = [
- '.pricing-duration',
- '.pricing-name',
- '.pricing-best-for',
- '.pricing-toggle',
- '.pricing-price',
- '.pricing-details'
- ];
+ var sectionClasses = ['.pricing-card-head'];
+ var MOBILE_MAX = 768;
+
+ function equalizeRow(cards, selector) {
+ var els = cards.map(function(c) { return c.querySelector(selector); }).filter(Boolean);
+ els.forEach(function(el) { el.style.minHeight = ''; });
+ if (!els.length) return;
+ var maxH = 0;
+ els.forEach(function(el) { maxH = Math.max(maxH, el.offsetHeight); });
+ if (maxH > 0) {
+ els.forEach(function(el) { el.style.minHeight = maxH + 'px'; });
+ }
+ }
 
  function alignPricingSections() {
  document.querySelectorAll('.pricing-grid').forEach(function(grid) {
@@ -1741,14 +1761,19 @@
  var cards = Array.from(grid.querySelectorAll('.pricing-card'));
  if (cards.length < 2) return;
 
+ if (window.innerWidth <= MOBILE_MAX) {
  sectionClasses.forEach(function(sel) {
- var els = cards.map(function(c) { return c.querySelector(sel); });
- els.forEach(function(el) { if (el) el.style.minHeight = ''; });
- var maxH = 0;
- els.forEach(function(el) { if (el) maxH = Math.max(maxH, el.offsetHeight); });
- if (maxH > 0) {
- els.forEach(function(el) { if (el) el.style.minHeight = maxH + 'px'; });
+ cards.forEach(function(c) {
+ var el = c.querySelector(sel);
+ if (el) el.style.minHeight = '';
+ });
+ });
+ cards.forEach(function(c) { c.style.minHeight = ''; });
+ return;
  }
+
+ sectionClasses.forEach(function(sel) {
+ equalizeRow(cards, sel);
  });
 
  cards.forEach(function(c) { c.style.minHeight = ''; });
@@ -1769,7 +1794,11 @@
  }
 
  alignPricingSections();
+ window.alignPricingSections = alignPricingSections;
  window.addEventListener('resize', alignPricingSections);
+ if (document.fonts && document.fonts.ready) {
+ document.fonts.ready.then(alignPricingSections);
+ }
 
  document.querySelectorAll('.pricing-expand-toggle').forEach(function(toggle) {
  toggle.addEventListener('click', function(e) {

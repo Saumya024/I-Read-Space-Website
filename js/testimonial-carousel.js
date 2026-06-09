@@ -6,9 +6,12 @@
     if (!slidesWrapper || slides.length === 0) return;
 
     slidesWrapper.classList.add('is-measuring');
-    const maxHeight = slidesWrapper.offsetHeight;
+    let maxHeight = 0;
+    slides.forEach(function (slide) {
+      maxHeight = Math.max(maxHeight, slide.offsetHeight, slide.scrollHeight);
+    });
     slidesWrapper.classList.remove('is-measuring');
-    slidesWrapper.style.minHeight = maxHeight + 'px';
+    slidesWrapper.style.minHeight = maxHeight > 0 ? maxHeight + 'px' : '';
   }
 
   function initTestimonialCarousel(carouselId) {
@@ -25,6 +28,7 @@
     let currentIndex = 0;
     let autoTimer = null;
     let resizeTimer = null;
+    let isLockingHeight = false;
 
     function showSlide(index) {
       slides.forEach(function (slide, i) {
@@ -49,7 +53,12 @@
     }
 
     function refreshHeight() {
+      if (isLockingHeight) return;
+      isLockingHeight = true;
       lockSlideHeight(slidesWrapper, slides);
+      requestAnimationFrame(function () {
+        isLockingHeight = false;
+      });
     }
 
     function scheduleRefresh() {
