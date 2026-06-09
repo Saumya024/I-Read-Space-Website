@@ -9251,43 +9251,6 @@ main[class$="-page"] .wizard-chip.active {
   text-decoration: underline;
 }
 
-.reading-search-filter {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 40px;
-  flex-wrap: wrap;
-}
-
-.reading-search {
-  flex: 1;
-  min-width: 200px;
-}
-
-.reading-search-input {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid var(--primary-light);
-  border-radius: 100px;
-  font-family: var(--font-body);
-  font-size: var(--text-small);
-  outline: none;
-}
-
-.reading-filter {
-  min-width: 200px;
-}
-
-.reading-filter-select {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid var(--primary-light);
-  border-radius: 100px;
-  font-family: var(--font-body);
-  font-size: var(--text-small);
-  background-color: var(--brand-white);
-  cursor: pointer;
-}
-
 @media (max-width: 768px) {
   .reading-category h2 {
     font-size: 22px;
@@ -9299,16 +9262,6 @@ main[class$="-page"] .wizard-chip.active {
   
   .reading-modality h3 {
     font-size: 18px;
-  }
-  
-  .reading-search-filter {
-    flex-direction: column;
-  }
-  
-  .reading-search,
-  .reading-filter {
-    width: 100%;
-    min-width: auto;
   }
 }
 
