@@ -5039,8 +5039,8 @@ main[class$="-page"] .wizard-chip.active {
 
   .mobile-menu-close {
     position: absolute;
-    top: 18px;
-    right: 16px;
+    top: 22px;
+    right: 20px;
     z-index: 3;
     display: flex;
     align-items: center;
@@ -5056,10 +5056,6 @@ main[class$="-page"] .wizard-chip.active {
     font-weight: 300;
     line-height: 1;
     cursor: pointer;
-  }
-
-  .mobile-menu-panel {
-    position: relative;
   }
 
   /* Mobile nav: slide in smoothly from the right – brand primary frame, cream text */
@@ -5097,7 +5093,7 @@ main[class$="-page"] .wizard-chip.active {
     pointer-events: auto;
   }
 
-  .nav.mobile-menu-enhanced > :not(.mobile-menu-panel) {
+  .nav.mobile-menu-enhanced > :not(.mobile-menu-panel):not(.mobile-menu-close) {
     display: none !important;
   }
 
@@ -5968,8 +5964,8 @@ main[class$="-page"] .wizard-chip.active {
   }
 
   .mobile-menu-close {
-    top: 14px;
-    right: 12px;
+    top: 18px;
+    right: 16px;
     width: 32px;
     height: 32px;
     font-size: 26px;
@@ -6010,7 +6006,7 @@ main[class$="-page"] .wizard-chip.active {
     pointer-events: auto;
   }
 
-  .nav.mobile-menu-enhanced > :not(.mobile-menu-panel) {
+  .nav.mobile-menu-enhanced > :not(.mobile-menu-panel):not(.mobile-menu-close) {
     display: none !important;
   }
 

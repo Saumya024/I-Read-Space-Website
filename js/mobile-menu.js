@@ -231,10 +231,10 @@
       ctaDock.appendChild(createReachDivider());
       ctaDock.appendChild(reachSecondary);
 
-      panel.appendChild(closeBtn);
       panel.appendChild(scrollArea);
       panel.appendChild(ctaDock);
 
+      nav.appendChild(closeBtn);
       nav.appendChild(panel);
       nav.classList.add('mobile-menu-enhanced');
     }
