@@ -164,12 +164,7 @@
       if (servicesLink) workLinks.appendChild(servicesLink);
       if (pricingLink) workLinks.appendChild(pricingLink);
 
-      const workGroup = document.createElement('div');
-      workGroup.className = 'mobile-menu-group mobile-menu-group--work-with-me mobile-menu-group--heading-only';
-      const workHeading = document.createElement('div');
-      workHeading.className = 'mobile-menu-section-heading';
-      workHeading.textContent = 'Work With Me';
-      workGroup.appendChild(workHeading);
+      const workGroup = createGroup('Work With Me', [workLinks]);
 
       const learnChildren = [cloneLink('About')];
       const resourceLinks = [
@@ -232,16 +227,9 @@
       closeBtn.setAttribute('aria-label', 'Close menu');
       closeBtn.innerHTML = '<span aria-hidden="true">&times;</span>';
 
-      const belowWork = document.createElement('div');
-      belowWork.className = 'mobile-menu-below-work';
-      if (workLinks.childElementCount > 0) belowWork.appendChild(workLinks);
-      if (learnGroup) belowWork.appendChild(learnGroup);
-      if (reachGroup) belowWork.appendChild(reachGroup);
-
       const scrollArea = document.createElement('div');
       scrollArea.className = 'mobile-menu-scroll';
-      scrollArea.appendChild(workGroup);
-      if (belowWork.childElementCount > 0) scrollArea.appendChild(belowWork);
+      [workGroup, learnGroup, reachGroup].filter(Boolean).forEach(group => scrollArea.appendChild(group));
 
       const ctaDock = document.createElement('div');
       ctaDock.className = 'mobile-menu-cta-dock';

@@ -935,6 +935,10 @@ section {
   display: none;
 }
 
+.mobile-menu-close {
+  display: none;
+}
+
 body.menu-open .whatsapp-floating-button,
 body.menu-open .faq-chat-button {
   opacity: 0;
@@ -4101,36 +4105,9 @@ body.home #testimonial-3 {
   width: 100%;
 }
 
-.nav.mobile-menu-enhanced .mobile-menu-group--work-with-me.mobile-menu-group--heading-only {
-  padding-bottom: 0;
-  border-bottom: none;
-}
-
-.nav.mobile-menu-enhanced .mobile-menu-below-work {
-  width: 100%;
-  margin-top: -4dvh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-.nav.mobile-menu-enhanced .mobile-menu-below-work .mobile-menu-group {
-  width: 100%;
-}
-
-.nav.mobile-menu-enhanced .mobile-menu-below-work .mobile-menu-group:last-child {
-  border-bottom: none;
-}
-
-.nav.mobile-menu-enhanced .mobile-menu-cta-dock {
-  margin-top: -4dvh;
-}
-
 .nav.mobile-menu-enhanced .mobile-menu-work-links {
   width: 100%;
   box-sizing: border-box;
-  padding-bottom: 16px;
-  border-bottom: var(--section-divider-width) solid var(--card-border-color);
 }
 
 .nav.mobile-menu-enhanced .mobile-menu-resources {
@@ -4146,16 +4123,16 @@ body.home #testimonial-3 {
 }
 
 .nav.mobile-menu-enhanced .mobile-menu-group {
-  padding-top: 16px;
-  padding-bottom: 16px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .nav.mobile-menu-enhanced .mobile-menu-section-heading {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .nav.mobile-menu-enhanced .mobile-menu-scroll .mobile-menu-group:last-child {
-  padding-bottom: 16px;
+  padding-bottom: 10px;
 }
 
 .nav.mobile-menu-enhanced .mobile-menu-reach-primary .mobile-menu-contact-detail-row:first-child {
