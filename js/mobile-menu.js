@@ -241,6 +241,18 @@
 
     buildGroupedMobileMenu();
 
+    const scrollArea = nav.querySelector('.mobile-menu-scroll');
+    if (scrollArea) {
+      let scrollHideTimer = null;
+      scrollArea.addEventListener('scroll', function () {
+        scrollArea.classList.add('is-scrolling');
+        if (scrollHideTimer) clearTimeout(scrollHideTimer);
+        scrollHideTimer = setTimeout(function () {
+          scrollArea.classList.remove('is-scrolling');
+        }, 700);
+      }, { passive: true });
+    }
+
     let scrollLockY = 0;
 
     function openMenu() {
@@ -256,6 +268,8 @@
     }
 
     function closeMenu() {
+      const menuScroll = nav.querySelector('.mobile-menu-scroll');
+      if (menuScroll) menuScroll.classList.remove('is-scrolling');
       hamburger.classList.remove('active');
       nav.classList.remove('active');
       body.classList.remove('menu-open');
