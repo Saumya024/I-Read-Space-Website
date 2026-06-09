@@ -25,7 +25,10 @@ FOOTER_BLOCK = '''<div class="footer-reach-row">
 </div>
 </div>'''
 
-INSERT_AFTER_NEWSLETTER = re.compile(r"(</form>\s*</div>\s*</div>\s*)", re.DOTALL)
+INSERT_AFTER_NEWSLETTER = re.compile(
+    r"(<form class=\"footer-newsletter-form\"[^>]*>.*?</form>\s*</div>\s*)",
+    re.DOTALL,
+)
 
 
 def asset_prefix(html_path: Path) -> str:

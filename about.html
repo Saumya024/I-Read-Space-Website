@@ -61,7 +61,7 @@
  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Spectral:wght@400;500&display=swap" rel="stylesheet">
 
  <!-- Styles -->
- <link rel="stylesheet" href="styles.css?v=241" />
+ <link rel="stylesheet" href="styles.css?v=243" />
 </head>
 
 <body class="about">
@@ -306,7 +306,6 @@
  <button type="submit">Subscribe</button>
  </form>
  </div>
- </div>
  <div class="footer-reach-row">
 <div class="footer-reach-section footer-reach-section--connect">
 <span class="footer-reach-label">Connect</span>
@@ -339,73 +338,14 @@
         <p>Powered by AKSHAANA AEROS</p>
       </div>
  </div>
- </footer>
+</footer>
 
  <!-- Mobile Menu Script -->
- <script src="js/mobile-menu.js?v=19"></script>
+ <script src="js/testimonial-carousel.js?v=1"></script>
+ <script src="js/mobile-menu.js?v=20"></script>
  <script src="js/email-capture.js"></script>
 
  <script>
- // Testimonial Carousel: arrows + 7s auto-advance
- function initTestimonialCarousel(carouselId) {
- const carousel = document.getElementById(carouselId);
- if (!carousel) return;
-
- const slidesWrapper = carousel.querySelector('.testimonial-slides-wrapper');
- const slides = slidesWrapper ? slidesWrapper.querySelectorAll('.testimonial-slide') : [];
- const leftArrow = carousel.querySelector('.testimonial-arrow-left');
- const rightArrow = carousel.querySelector('.testimonial-arrow-right');
-
- if (slides.length === 0) return;
-
- let currentIndex = 0;
- let autoTimer = null;
-
- function showSlide(index) {
- slides.forEach((slide, i) => {
- slide.classList.remove('active');
- if (i === index) {
- slide.classList.add('active');
- }
- });
- }
-
- function nextSlide() {
- currentIndex = (currentIndex + 1) % slides.length;
- showSlide(currentIndex);
- }
-
- function prevSlide() {
- currentIndex = (currentIndex - 1 + slides.length) % slides.length;
- showSlide(currentIndex);
- }
-
- function restartAuto() {
- if (slides.length <= 1) return;
- if (autoTimer) clearInterval(autoTimer);
- autoTimer = setInterval(nextSlide, 10000);
- }
-
- showSlide(0);
- restartAuto();
-
- if (rightArrow) {
- rightArrow.addEventListener('click', function() {
- nextSlide();
- restartAuto();
- });
- }
- if (leftArrow) {
- leftArrow.addEventListener('click', function() {
- prevSlide();
- restartAuto();
- });
- }
- }
-
- // Initialize carousel 4
- initTestimonialCarousel('testimonial-carousel-4');
-
  // Collapsible About Sections, accordion on all viewports, all collapsed by default
  function initCollapsibleSections() {
  const collapsibleSections = document.querySelectorAll('.collapsible-section');

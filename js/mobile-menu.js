@@ -234,16 +234,38 @@
 
     buildGroupedMobileMenu();
 
-    function toggleMenu() {
-      hamburger.classList.toggle('active');
-      nav.classList.toggle('active');
-      body.classList.toggle('menu-open');
+    let scrollLockY = 0;
+
+    function openMenu() {
+      scrollLockY = window.scrollY || window.pageYOffset;
+      hamburger.classList.add('active');
+      nav.classList.add('active');
+      body.classList.add('menu-open');
+      body.style.position = 'fixed';
+      body.style.top = `-${scrollLockY}px`;
+      body.style.left = '0';
+      body.style.right = '0';
+      body.style.width = '100%';
     }
 
     function closeMenu() {
       hamburger.classList.remove('active');
       nav.classList.remove('active');
       body.classList.remove('menu-open');
+      body.style.position = '';
+      body.style.top = '';
+      body.style.left = '';
+      body.style.right = '';
+      body.style.width = '';
+      window.scrollTo(0, scrollLockY);
+    }
+
+    function toggleMenu() {
+      if (nav.classList.contains('active')) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
     }
 
     hamburger.addEventListener('click', function(e) {
