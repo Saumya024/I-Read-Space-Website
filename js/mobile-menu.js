@@ -156,10 +156,15 @@
       const panel = document.createElement('div');
       panel.className = 'mobile-menu-panel';
 
-      const workGroup = createGroup('Work With Me', [
-        cloneLink('Services'),
-        cloneLink('Pricing')
-      ]);
+      const servicesLink = cloneLink('Services');
+      const pricingLink = cloneLink('Pricing');
+
+      const workGroup = document.createElement('div');
+      workGroup.className = 'mobile-menu-group mobile-menu-group--work-with-me';
+      const workHeading = document.createElement('div');
+      workHeading.className = 'mobile-menu-section-heading';
+      workHeading.textContent = 'Work With Me';
+      workGroup.appendChild(workHeading);
 
       const learnChildren = [cloneLink('About')];
       const resourceLinks = [
@@ -216,6 +221,16 @@
 
       const reachGroup = createGroup('Reach Out', [reachPrimary]);
 
+      const belowWork = document.createElement('div');
+      belowWork.className = 'mobile-menu-below-work';
+      const workLinks = document.createElement('div');
+      workLinks.className = 'mobile-menu-work-links';
+      if (servicesLink) workLinks.appendChild(servicesLink);
+      if (pricingLink) workLinks.appendChild(pricingLink);
+      belowWork.appendChild(workLinks);
+      if (learnGroup) belowWork.appendChild(learnGroup);
+      if (reachGroup) belowWork.appendChild(reachGroup);
+
       const closeBtn = document.createElement('button');
       closeBtn.type = 'button';
       closeBtn.className = 'mobile-menu-close';
@@ -224,7 +239,8 @@
 
       const scrollArea = document.createElement('div');
       scrollArea.className = 'mobile-menu-scroll';
-      [workGroup, learnGroup, reachGroup].filter(Boolean).forEach(group => scrollArea.appendChild(group));
+      scrollArea.appendChild(workGroup);
+      scrollArea.appendChild(belowWork);
 
       const ctaDock = document.createElement('div');
       ctaDock.className = 'mobile-menu-cta-dock';

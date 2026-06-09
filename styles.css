@@ -4101,9 +4101,24 @@ body.home #testimonial-3 {
   width: 100%;
 }
 
-.nav.mobile-menu-enhanced .mobile-menu-panel {
-  position: relative;
-  top: -10dvh;
+.nav.mobile-menu-enhanced .mobile-menu-below-work,
+.nav.mobile-menu-enhanced .mobile-menu-cta-dock {
+  margin-top: -10dvh;
+}
+
+.nav.mobile-menu-enhanced .mobile-menu-group--work-with-me {
+  padding-bottom: 0;
+}
+
+.nav.mobile-menu-enhanced .mobile-menu-below-work {
+  width: 100%;
+}
+
+.nav.mobile-menu-enhanced .mobile-menu-work-links {
+  width: 100%;
+  padding-bottom: 16px;
+  border-bottom: var(--section-divider-width) solid var(--card-border-color);
+  box-sizing: border-box;
 }
 
 .nav.mobile-menu-enhanced .mobile-menu-group {
