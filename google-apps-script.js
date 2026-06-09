@@ -1,202 +1,251 @@
 /**
- * Google Apps Script Web App for Intake Form Submission
- * 
+ * Google Apps Script Web App for Intake Form + Cal.com Booking
+ *
  * SETUP INSTRUCTIONS:
  * 1. Open your Google Sheet: https://docs.google.com/spreadsheets/d/1JAJh_uGHo6VBHtWtiiOMzWc0zTnSNX7DPKvbl5e2r68/edit
  * 2. Go to Extensions > Apps Script
- * 3. Delete any existing code and paste this entire file
- * 4. Replace 'YOUR_SHEET_NAME' with your actual sheet name (usually 'Sheet1' or the tab name)
- * 5. Click "Deploy" > "New deployment"
- * 6. Click the gear icon next to "Select type" and choose "Web app"
- * 7. Set:
- *    - Description: "Intake Form Web App"
- *    - Execute as: "Me"
- *    - Who has access: "Anyone"
- * 8. Click "Deploy"
- * 9. Copy the Web App URL and use it in intake.html
- * 10. Click "Authorize access" and grant permissions
+ * 3. Delete ALL existing code in the editor, then paste this ENTIRE file
+ *    (from line 1 through the end — including the SHEET_NAME constants at the top)
+ * 4. Replace 'Sheet1' with your actual sheet tab name if different
+ * 5. Add your Cal.com API key as a Script Property:
+ *    - Apps Script editor > Project Settings (gear) > Script properties
+ *    - Add property: CAL_API_KEY = cal_live_...
+ *    OR run setupCalApiKey() once from the editor (see bottom of file)
+ * 6. Deploy > New deployment > Web app
+ *    - Execute as: Me
+ *    - Who has access: Anyone
+ * 7. Copy the Web App URL into intake.html / js/booking-shared.js
  */
 
-// Replace 'Sheet1' with your actual sheet name/tab name
 const SHEET_NAME = 'Sheet1';
+const CAL_USERNAME = 'i-read-space';
+const EVENT_SLUGS = {
+  '30': '30min',
+  '60': '60min',
+  '90': '90min'
+};
+
+function parseRequest_(e) {
+  if (e.postData && e.postData.contents) {
+    try {
+      return JSON.parse(e.postData.contents);
+    } catch (jsonError) {
+      if (e.parameter && e.parameter.data) {
+        return JSON.parse(e.parameter.data);
+      }
+      return e.parameter || {};
+    }
+  }
+
+  if (e.parameter) {
+    if (e.parameter.data) {
+      return JSON.parse(e.parameter.data);
+    }
+    return e.parameter;
+  }
+
+  return {};
+}
+
+function jsonResponse_(payload) {
+  return ContentService.createTextOutput(JSON.stringify(payload))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function getCalApiKey_() {
+  return PropertiesService.getScriptProperties().getProperty('CAL_API_KEY') || '';
+}
+
+function getEventSlug_(duration) {
+  return EVENT_SLUGS[String(duration)] || EVENT_SLUGS['60'];
+}
+
+function createCalBooking_(data) {
+  const payload = {
+    eventTypeSlug: getEventSlug_(data.duration),
+    username: CAL_USERNAME,
+    start: data.start,
+    attendee: {
+      name: data.name || '',
+      email: data.email || '',
+      timeZone: data.timeZone || 'Asia/Kolkata'
+    }
+  };
+
+  if (data.phone) {
+    payload.attendee.phoneNumber = data.phone;
+  }
+
+  const headers = {
+    'cal-api-version': '2024-08-13',
+    'Content-Type': 'application/json'
+  };
+
+  const apiKey = getCalApiKey_();
+  if (apiKey) {
+    headers.Authorization = 'Bearer ' + apiKey;
+  }
+
+  const response = UrlFetchApp.fetch('https://api.cal.com/v2/bookings', {
+    method: 'post',
+    headers: headers,
+    payload: JSON.stringify(payload),
+    muteHttpExceptions: true
+  });
+
+  const status = response.getResponseCode();
+  const body = response.getContentText();
+  let parsed;
+
+  try {
+    parsed = JSON.parse(body);
+  } catch (error) {
+    return {
+      success: false,
+      error: 'Invalid response from Cal.com',
+      raw: body
+    };
+  }
+
+  if (status >= 200 && status < 300 && parsed.status === 'success') {
+    return {
+      success: true,
+      data: parsed.data
+    };
+  }
+
+  const message = parsed && parsed.error && parsed.error.message
+    ? parsed.error.message
+    : 'Cal.com booking failed';
+
+  return {
+    success: false,
+    error: message,
+    details: parsed
+  };
+}
+
+function saveIntake_(data) {
+  const spreadsheetId = '1JAJh_uGHo6VBHtWtiiOMzWc0zTnSNX7DPKvbl5e2r68';
+  const spreadsheet = SpreadsheetApp.openById(spreadsheetId);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+
+  if (!sheet) {
+    return {
+      success: false,
+      error: 'Sheet not found: ' + SHEET_NAME
+    };
+  }
+
+  const lastRow = sheet.getLastRow();
+  let headers = [];
+  let rowData = [];
+
+  if (lastRow === 0) {
+    headers = [
+      'Name', 'Email', 'Phone', 'Date of Birth', 'Time of Birth', 'Place of Birth',
+      'Primary Area', 'Unclear Question', 'Session Type', 'Duration', 'Package',
+      'Session Slot', 'Booking UID', 'Timezone', 'Timestamp'
+    ];
+    rowData = buildRowData_(headers, data);
+    sheet.appendRow(headers);
+    sheet.appendRow(rowData);
+  } else {
+    headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    rowData = buildRowData_(headers, data);
+    sheet.appendRow(rowData);
+  }
+
+  return {
+    success: true,
+    message: 'Data added successfully'
+  };
+}
+
+function buildRowData_(headers, data) {
+  return headers.map(function(header) {
+    const normalizedHeader = header.toString().toLowerCase().trim();
+
+    if (normalizedHeader.includes('name') && !normalizedHeader.includes('phone') && !normalizedHeader.includes('chart')) {
+      return data.name || '';
+    }
+    if (normalizedHeader.includes('email')) return data.email || '';
+    if (normalizedHeader.includes('phone')) return data.phone || '';
+    if (normalizedHeader.includes('date of birth') || normalizedHeader === 'dob') return data.dob || '';
+    if (normalizedHeader.includes('time of birth') || normalizedHeader === 'tob') return data.tob || '';
+    if (normalizedHeader.includes('place of birth') || normalizedHeader === 'pob') return data.pob || '';
+    if (normalizedHeader.includes('area') || normalizedHeader.includes('guidance')) return data.area || '';
+    if (normalizedHeader.includes('unclear') || normalizedHeader.includes('question')) return data.unclear || '';
+    if (normalizedHeader.includes('session type')) return data.sessionType || '';
+    if (normalizedHeader.includes('duration') || normalizedHeader.includes('minutes')) return data.duration || '';
+    if (normalizedHeader.includes('package')) return data.isPackage ? 'Yes' : 'No';
+    if (normalizedHeader.includes('session slot') || normalizedHeader.includes('slot')) return data.slotLabel || data.slotStart || '';
+    if (normalizedHeader.includes('booking uid') || normalizedHeader.includes('booking id')) return data.bookingUid || '';
+    if (normalizedHeader.includes('timezone') || normalizedHeader.includes('time zone')) return data.timeZone || '';
+    if (normalizedHeader.includes('timestamp') || normalizedHeader.includes('submitted')) return new Date();
+    return '';
+  });
+}
 
 function doPost(e) {
   try {
-    let data;
-    
-    // Handle both JSON and form data
-    if (e.postData && e.postData.contents) {
-      // Try to parse as JSON first
-      try {
-        data = JSON.parse(e.postData.contents);
-      } catch (jsonError) {
-        // If not JSON, try to get from form data
-        if (e.parameter && e.parameter.data) {
-          data = JSON.parse(e.parameter.data);
-        } else {
-          // Use parameters directly if they exist
-          data = e.parameter || {};
-        }
-      }
-    } else if (e.parameter) {
-      // Handle form data with 'data' field containing JSON
-      if (e.parameter.data) {
-        data = JSON.parse(e.parameter.data);
-      } else {
-        // Use parameters directly
-        data = e.parameter;
-      }
-    } else {
-      return ContentService.createTextOutput(JSON.stringify({
-        success: false,
-        error: 'No data received'
-      })).setMimeType(ContentService.MimeType.JSON);
+    const data = parseRequest_(e);
+    const action = data.action || 'intake';
+
+    if (action === 'createBooking') {
+      return jsonResponse_(createCalBooking_(data));
     }
-    
-    // Open the spreadsheet by ID
-    const spreadsheetId = '1JAJh_uGHo6VBHtWtiiOMzWc0zTnSNX7DPKvbl5e2r68';
-    const spreadsheet = SpreadsheetApp.openById(spreadsheetId);
-    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-    
-    if (!sheet) {
-      return ContentService.createTextOutput(JSON.stringify({
-        success: false,
-        error: 'Sheet not found: ' + SHEET_NAME
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    // Check if sheet is empty or has headers
-    const lastRow = sheet.getLastRow();
-    let headers = [];
-    let rowData = [];
-    
-    if (lastRow === 0) {
-      // Sheet is empty - create headers and add data
-      headers = ['Name', 'Email', 'Phone', 'Date of Birth', 'Time of Birth', 'Place of Birth', 'Primary Area', 'Unclear Question', 'Session Type', 'Duration', 'Package', 'Timestamp'];
-      rowData = [
-        data.name || '',
-        data.email || '',
-        data.phone || '',
-        data.dob || '',
-        data.tob || '',
-        data.pob || '',
-        data.area || '',
-        data.unclear || '',
-        data.sessionType || '',
-        data.duration || '',
-        data.isPackage ? 'Yes' : 'No',
-        new Date()
-      ];
-      
-      // Add headers as first row
-      sheet.appendRow(headers);
-      // Add data as second row
-      sheet.appendRow(rowData);
-      
-      Logger.log('Sheet was empty - created headers and added first row');
-    } else {
-      // Sheet has data - get headers from first row
-      headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-      
-      // Prepare the row data in the same order as headers
-      rowData = headers.map(header => {
-        // Normalize header names (remove extra spaces, convert to lowercase for matching)
-        const normalizedHeader = header.toString().toLowerCase().trim();
-        
-        // Map form fields to sheet headers (case-insensitive matching)
-        if (normalizedHeader.includes('name') && !normalizedHeader.includes('phone')) {
-          return data.name || '';
-        } else if (normalizedHeader.includes('email')) {
-          return data.email || '';
-        } else if (normalizedHeader.includes('phone')) {
-          return data.phone || '';
-        } else if (normalizedHeader.includes('date of birth') || normalizedHeader.includes('dob')) {
-          return data.dob || '';
-        } else if (normalizedHeader.includes('time of birth') || normalizedHeader.includes('tob')) {
-          return data.tob || '';
-        } else if (normalizedHeader.includes('place of birth') || normalizedHeader.includes('pob')) {
-          return data.pob || '';
-        } else if (normalizedHeader.includes('area') || normalizedHeader.includes('primary area') || normalizedHeader.includes('guidance')) {
-          return data.area || '';
-        } else if (normalizedHeader.includes('unclear') || normalizedHeader.includes('what feels') || normalizedHeader.includes('question')) {
-          return data.unclear || '';
-        } else if (normalizedHeader.includes('session type') || normalizedHeader.includes('type')) {
-          return data.sessionType || '';
-        } else if (normalizedHeader.includes('duration') || normalizedHeader.includes('minutes')) {
-          return data.duration || '';
-        } else if (normalizedHeader.includes('package')) {
-          return data.isPackage ? 'Yes' : 'No';
-        } else if (normalizedHeader.includes('timestamp') || normalizedHeader.includes('date submitted') || normalizedHeader.includes('submitted')) {
-          return new Date();
-        } else {
-          // If header doesn't match any known field, return empty string
-          return '';
-        }
-      });
-      
-      // Append the row to the sheet
-      sheet.appendRow(rowData);
-    }
-    
-    // Log the data being processed (for debugging - check Apps Script execution log)
-    Logger.log('Received data: ' + JSON.stringify(data));
-    Logger.log('Headers: ' + JSON.stringify(headers));
-    Logger.log('Row data: ' + JSON.stringify(rowData));
-    Logger.log('Sheet last row before append: ' + lastRow);
-    
-    // Log success
-    Logger.log('Row appended successfully');
-    
-    // Return success response
-    return ContentService.createTextOutput(JSON.stringify({
-      success: true,
-      message: 'Data added successfully'
-    })).setMimeType(ContentService.MimeType.JSON);
-    
+
+    return jsonResponse_(saveIntake_(data));
   } catch (error) {
-    // Log error details
-    Logger.log('Error: ' + error.toString());
-    Logger.log('Stack: ' + error.stack);
-    
-    // Return error response
-    return ContentService.createTextOutput(JSON.stringify({
+    return jsonResponse_({
       success: false,
       error: error.toString(),
       stack: error.stack
-    })).setMimeType(ContentService.MimeType.JSON);
+    });
   }
 }
 
-// doGet function for testing (when accessing URL directly)
 function doGet(e) {
-  return ContentService.createTextOutput(JSON.stringify({
+  const params = (e && e.parameter) || {};
+  if (params.action === 'ping') {
+    return jsonResponse_({
+      success: true,
+      message: 'Google Apps Script is working',
+      hasCalApiKey: !!getCalApiKey_()
+    });
+  }
+
+  return jsonResponse_({
     success: true,
-    message: 'Google Apps Script is working. Use POST to submit form data.',
-    sheetName: SHEET_NAME,
-    spreadsheetId: '1JAJh_uGHo6VBHtWtiiOMzWc0zTnSNX7DPKvbl5e2r68'
-  })).setMimeType(ContentService.MimeType.JSON);
+    message: 'Google Apps Script is working. Use POST to submit form data or create bookings.',
+    sheetName: SHEET_NAME
+  });
 }
 
-// Test function (optional - for testing in Apps Script editor)
 function testDoPost() {
   const mockEvent = {
     postData: {
       contents: JSON.stringify({
+        action: 'createBooking',
+        duration: '60',
+        start: '2026-06-12T18:00:00.000+05:30',
         name: 'Test User',
         email: 'test@example.com',
-        phone: '+1234567890',
-        dob: '1990-01-01',
-        tob: '10:00',
-        pob: 'New York, USA',
-        area: 'Career & Finances',
-        unclear: 'Test question',
-        sessionType: 'audio',
-        duration: '60',
-        isPackage: false
+        phone: '+919999999999',
+        timeZone: 'Asia/Kolkata'
       })
     }
   };
-  
-  const result = doPost(mockEvent);
-  Logger.log(result.getContent());
+
+  Logger.log(doPost(mockEvent).getContent());
+}
+
+/**
+ * Run once from the Apps Script editor to store your Cal.com API key.
+ * After running successfully, remove your key from this function.
+ */
+function setupCalApiKey() {
+  PropertiesService.getScriptProperties().setProperty('CAL_API_KEY', 'PASTE_YOUR_KEY_HERE');
+  Logger.log('CAL_API_KEY saved to Script Properties');
 }

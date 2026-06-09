@@ -7,7 +7,7 @@
   <meta name="supported-color-schemes" content="light">
   <meta name="theme-color" content="#F8F6F2">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Book a Vedic Astrology Consultation | Trusted Astrologer | I Read Space | A Trusted Approach to Astrology</title>
+  <title>Complete Your Booking | I Read Space | A Trusted Approach to Astrology</title>
   <meta name="description" content="Book your Vedic astrology consultation with a trusted astrologer. Share your birth details, select your session type, and schedule a time that works for you." />
   <link rel="canonical" href="https://ireadspace.com/intake.html" />
 
@@ -17,8 +17,8 @@
   <link rel="preload" as="image" href="assets/images/23.png" />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Book a Vedic Astrology Consultation | I Read Space | A Trusted Approach to Astrology" />
-  <meta property="og:description" content="Book your Vedic astrology consultation. Share your birth details, select your session type, and schedule a time." />
+  <meta property="og:title" content="Complete Your Booking | I Read Space | A Trusted Approach to Astrology" />
+  <meta property="og:description" content="Complete your booking. Share your birth details and what you would like guidance on." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://ireadspace.com/intake.html" />
   <meta property="og:image" content="https://ireadspace.com/assets/images/lotus%20image.webp" />
@@ -26,15 +26,15 @@
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Book a Vedic Astrology Consultation | I Read Space | A Trusted Approach to Astrology" />
-  <meta name="twitter:description" content="Book your Vedic astrology consultation. Share your birth details, select your session type, and schedule a time." />
+  <meta name="twitter:title" content="Complete Your Booking | I Read Space | A Trusted Approach to Astrology" />
+  <meta name="twitter:description" content="Complete your booking. Share your birth details and what you would like guidance on." />
   <meta name="twitter:image" content="https://ireadspace.com/assets/images/lotus%20image.webp" />
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Spectral:wght@400;500&display=swap" rel="stylesheet">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="styles.css?v=276" />
+  <link rel="stylesheet" href="styles.css?v=304" />
 </head>
 
 <body>
@@ -74,80 +74,47 @@
   <!-- Intake Section -->
   <section class="intake" id="main-content">
     <div class="intake-container">
-      <h1>Book a Vedic Astrology Consultation</h1>
-      <form class="intake-form" id="intake-form">
-        <div class="intake-grid">
-          
-          <!-- First Section: Pricing/Package Card -->
-          <div class="intake-section">
-            <!-- Pricing Card (default, shown for pricing) -->
-            <div class="pricing-card" id="pricing-card">
-              <div class="pricing-duration">60-Minutes</div>
-              <h3 class="pricing-name">Deep Insight</h3>
-              <div class="pricing-best-for">Root-cause analysis | First-time consultations</div>
-              <div class="pricing-toggle">
-                <button type="button" class="toggle-btn active" data-type="audio">Audio</button>
-                <button type="button" class="toggle-btn" data-type="video">Video</button>
-              </div>
-              <div class="pricing-price" data-audio-price="₹2,400" data-video-price="₹3,000">₹2,400</div>
-              <div class="pricing-details">
-                <div class="pricing-detail-item">Up to 3 themes</div>
-                <div class="pricing-detail-item">Up to 2 charts</div>
-              </div>
-            </div>
-            <!-- Package Card (hidden by default, shown for packages) -->
-            <div class="package-card" id="package-card" style="display: none;">
-              <div class="package-duration">60-Minutes <span class="package-sessions">× 3</span></div>
-              <h3 class="package-name">Deep Insight</h3>
-              <div class="package-toggle">
-                <button type="button" class="toggle-btn active" data-type="audio">Audio</button>
-                <button type="button" class="toggle-btn" data-type="video">Video</button>
-              </div>
-              <div class="package-original-price" data-audio-original="₹7,200" data-video-original="₹9,000">₹7,200</div>
-              <div class="package-price" data-audio-price="₹6,600" data-video-price="₹8,400">₹6,600</div>
-              <div class="package-savings" data-audio-savings="Save ₹600" data-video-savings="Save ₹600">Save ₹600</div>
-              <div class="package-note">No expiry on sessions.</div>
-            </div>
-            <!-- Cal.com modal will be dynamically created after form submission -->
+      <h1>Complete your booking</h1>
+      <div class="intake-slot-banner" id="intake-slot-banner">
+        <div>
+          <div class="intake-slot-label">Scheduled for</div>
+          <div class="intake-slot-value" id="intake-slot-value"></div>
+        </div>
+        <a href="#" class="intake-slot-change" id="intake-slot-change">Reschedule</a>
       </div>
-  
-          <!-- Second Section: Personal Information (Name, Email, Phone) -->
+      <form class="intake-form" id="intake-form">
+        <div class="intake-details-grid">
           <div class="intake-section intake-section-personal">
-      <div class="field">
+            <h2 class="intake-block-title">Personal details</h2>
+            <div class="field">
               <label for="intake-name">Name *</label>
               <input type="text" name="name" id="intake-name" required />
-      </div>
-  
-      <div class="field">
+            </div>
+            <div class="field">
               <label for="intake-email">Email *</label>
               <input type="email" name="email" id="intake-email" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" title="Please enter a valid email address" />
               <span class="field-error" id="email-error"></span>
-      </div>
-  
-      <div class="field">
+            </div>
+            <div class="field">
               <label for="intake-phone">Phone Number *</label>
               <input type="tel" name="phone" id="intake-phone" required pattern="[\d\s\+\-\(\)]+" title="Please enter a valid phone number with country code (7-15 digits)" maxlength="20" />
               <span class="field-error" id="phone-error"></span>
             </div>
-      </div>
-      </div>
+          </div>
 
-        <!-- Birth Details Section: Full-width at bottom, styled like additional charts -->
-        <div class="birth-details-section">
-          <div class="birth-details-block">
+          <div class="intake-section intake-section-birth">
+            <h2 class="intake-block-title">Birth details</h2>
             <div class="field">
               <label for="intake-dob">Date of Birth *</label>
               <input type="date" name="dob" required id="intake-dob" max="" />
               <span class="field-error" id="dob-error"></span>
             </div>
-  
             <div class="field">
               <label for="intake-tob">Time of Birth *</label>
               <input type="time" name="tob" required id="intake-tob" />
               <p class="field-note"><strong>Please note:</strong> Enter only an accurate time of birth. If unsure, select "I don't know my time of birth."</p>
               <label class="tob-unknown-label" for="intake-tob-unknown"><input type="checkbox" name="tob_unknown" id="intake-tob-unknown" value="1" /> I don't know my time of birth</label>
             </div>
-  
             <div class="field">
               <label for="intake-pob">Place of Birth *</label>
               <div class="autocomplete-wrapper">
@@ -155,62 +122,66 @@
                 <div class="autocomplete-suggestions" id="place-suggestions"></div>
               </div>
             </div>
-  
-            <div class="field">
-              <label for="intake-area">Primary Area of Guidance *</label>
-              <div class="custom-select-wrapper">
-                <div class="custom-select-display" id="area-display" aria-hidden="true">Select an area</div>
-                <select name="area" id="intake-area" required class="custom-select-native">
-                  <option value="">Select an area</option>
-                  <option>Career & Finances</option>
-                  <option>Marriage & Relationships</option>
-                  <option>Health & Wellbeing</option>
-                  <option>Family & Children</option>
-                  <option>Personal / Spiritual Growth</option>
-                  <option>Open session</option>
-                </select>
-              </div>
+          </div>
+        </div>
+
+        <div class="intake-section intake-section-guidance">
+          <h2 class="intake-block-title">Primary area of guidance</h2>
+          <div class="field">
+            <label for="intake-area">What would you like to focus on? *</label>
+            <div class="custom-select-wrapper">
+              <div class="custom-select-display" id="area-display" aria-hidden="true">Select an area</div>
+              <select name="area" id="intake-area" required class="custom-select-native">
+                <option value="">Select an area</option>
+                <option>Career & Finances</option>
+                <option>Marriage & Relationships</option>
+                <option>Health & Wellbeing</option>
+                <option>Family & Children</option>
+                <option>Personal / Spiritual Growth</option>
+                <option>Open session</option>
+              </select>
             </div>
           </div>
         </div>
 
-        <!-- Add another chart: plain text + icon (not styled as a button) -->
-        <div class="add-chart-cta-wrap" id="add-chart-area" style="display: none;">
-          <button type="button" class="add-chart-link" id="add-chart-btn-1">
-            <span class="add-chart-link-inner">
-              <svg class="add-chart-plus-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-              <span class="add-chart-label">Add a chat</span>
-            </span>
-            <span class="add-chart-parenthetical">(For someone else's chart — spouse, child, parent, etc.)</span>
-          </button>
-        </div>
-        <div id="additional-charts-wrapper" style="display: none;">
-          <div id="additional-charts"></div>
-          <div class="add-chart-cta-wrap" id="add-chart-btn-2-wrap" style="display: none;">
-            <button type="button" class="add-chart-link" id="add-chart-btn-2">
+        <div class="intake-section intake-section-charts" id="intake-charts-section">
+          <h2 class="intake-block-title">Additional charts</h2>
+          <p class="intake-section-note">Add charts for a spouse, child, parent, or anyone else you would like included in the session.</p>
+          <div class="add-chart-cta-wrap" id="add-chart-area" style="display: none;">
+            <button type="button" class="add-chart-link" id="add-chart-btn-1">
               <span class="add-chart-link-inner">
                 <svg class="add-chart-plus-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                <span class="add-chart-label">Add a chat</span>
+                <span class="add-chart-label">Add a chart</span>
               </span>
-              <span class="add-chart-parenthetical">(For someone else's chart — spouse, child, parent, etc.)</span>
             </button>
           </div>
+          <div id="additional-charts-wrapper" style="display: none;">
+            <div id="additional-charts"></div>
+            <div class="add-chart-cta-wrap" id="add-chart-btn-2-wrap" style="display: none;">
+              <button type="button" class="add-chart-link" id="add-chart-btn-2">
+                <span class="add-chart-link-inner">
+                  <svg class="add-chart-plus-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  <span class="add-chart-label">Add a chart</span>
+                </span>
+              </button>
+            </div>
+          </div>
         </div>
-  
-        <!-- Optional Section -->
-        <div class="intake-optional">
-      <div class="field">
-            <label for="intake-unclear">What feels most unclear right now? (Optional)</label>
-            <textarea name="unclear" rows="4" id="intake-unclear" maxlength="1000"></textarea>
+
+        <div class="intake-section intake-section-optional">
+          <h2 class="intake-block-title">What feels most unclear right now? <span class="intake-optional-tag">(Optional)</span></h2>
+          <div class="field">
+            <label for="intake-unclear" class="visually-hidden">What feels most unclear right now?</label>
+            <textarea name="unclear" rows="4" id="intake-unclear" maxlength="1000" placeholder="Share anything that feels pressing, confusing, or unresolved right now."></textarea>
             <div class="word-count"><span id="word-count-display">0</span> / 150 words</div>
             <span class="field-error" id="unclear-error"></span>
           </div>
-      </div>
+        </div>
   
         <!-- CTA Button -->
         <div class="intake-cta-wrapper">
           <button class="cta" type="button" id="book-slot-btn">
-            Book Slot
+            Confirm &amp; Pay
       </button>
         </div>
       </form>
@@ -219,24 +190,44 @@
     </div>
   </section>
   
-  <!-- Cal.com Booking Modal (dynamically created) -->
-  <div id="cal-modal-overlay" style="display: none;">
-    <div id="cal-modal">
-      <button id="cal-modal-close" class="cal-modal-close" aria-label="Close">×</button>
-      <p class="cal-modal-instruction"><strong>Note: Please select your time zone before booking.</strong></p>
-      <div id="cal-modal-content"></div>
-    </div>
-  </div>
-
-  <!-- Full-screen redirect overlay (shown on top of intake page after slot selection, before confirmation page loads) -->
+  <!-- Full-screen redirect overlay (shown after booking is created, before confirmation page loads) -->
   <div id="redirect-overlay" class="redirect-overlay" style="display: none;" aria-live="polite" aria-modal="true" role="dialog" aria-label="Redirecting">
     <div class="redirect-overlay-content">
       <p class="redirect-overlay-text">Redirecting you to the confirmation and payment page &gt;&gt;&gt;</p>
     </div>
   </div>
 
+  <script src="js/booking-shared.js?v=15"></script>
   <script>
     let hasAttemptedIntakeSubmit = false;
+    let bookingState = null;
+
+    function redirectToScheduleIfNeeded() {
+      bookingState = window.IRSBooking.getBookingState();
+      if (!bookingState || !bookingState.slotStart) {
+        const params = new URLSearchParams(window.location.search);
+        window.location.replace(window.IRSBooking.buildScheduleUrl(
+          window.IRSBooking.getDurationFromURL(),
+          window.IRSBooking.getTypeFromURL(),
+          window.IRSBooking.getRegionFromURL()
+        ));
+        return false;
+      }
+
+      const slotValue = document.getElementById('intake-slot-value');
+      const changeLink = document.getElementById('intake-slot-change');
+      if (slotValue) slotValue.textContent = bookingState.slotLabel || bookingState.slotStart;
+      if (changeLink) {
+        changeLink.href = window.IRSBooking.buildScheduleUrl(
+          bookingState.duration,
+          bookingState.type,
+          bookingState.region
+        );
+      }
+      return true;
+    }
+
+    const hasSelectedSlot = redirectToScheduleIfNeeded();
 
     function setRequiredFieldState(field, shouldShowEmptyState) {
       if (!field) return;
@@ -368,315 +359,16 @@
       });
     });
 
-    // Cal.com Booking URLs — get these from your Cal.com dashboard:
-    // Cal.com → Event Types → [each event] → Copy booking link.
-    const CAL_30_URL = 'https://cal.com/i-read-space/30min';
-    const CAL_60_URL = 'https://cal.com/i-read-space/60min';
-    const CAL_90_URL = 'https://cal.com/i-read-space/90min';
-
-    // Pricing data for each duration (India)
-    const pricingDataIN = {
-      30: {
-        duration: '30-Minutes',
-        name: 'Quick Clarity',
-        bestFor: 'Follow-up sessions | Focused queries | Quick clarity',
-        audioPrice: '₹1,200',
-        videoPrice: '₹1,500',
-        details: [
-          '1 key theme',
-          '1 chart'
-        ]
-      },
-      60: {
-        duration: '60-Minutes',
-        name: 'Deep Insight',
-        bestFor: 'Root-cause analysis | First-time consultations',
-        audioPrice: '₹2,400',
-        videoPrice: '₹3,000',
-        details: [
-          'Up to 3 themes',
-          'Up to 2 charts'
-        ]
-      },
-      90: {
-        duration: '90-Minutes',
-        name: 'Holistic Guidance',
-        bestFor: 'In-depth life themes | Remedies & planning',
-        audioPrice: '₹3,600',
-        videoPrice: '₹4,500',
-        details: [
-          'Multiple life areas',
-          'Multiple charts'
-        ]
-      }
-    };
-
-    // Pricing data for each duration (International)
-    const pricingDataIntl = {
-      30: {
-        duration: '30-Minutes',
-        name: 'Quick Clarity',
-        bestFor: 'Follow-up sessions | Focused queries | Quick clarity',
-        audioPrice: '$27',
-        videoPrice: '$33',
-        details: [
-          '1 key theme',
-          '1 chart'
-        ]
-      },
-      60: {
-        duration: '60-Minutes',
-        name: 'Deep Insight',
-        bestFor: 'Root-cause analysis | First-time consultations',
-        audioPrice: '$54',
-        videoPrice: '$73',
-        details: [
-          'Up to 3 themes',
-          'Up to 2 charts'
-        ]
-      },
-      90: {
-        duration: '90-Minutes',
-        name: 'Holistic Guidance',
-        bestFor: 'In-depth life themes | Remedies & planning',
-        audioPrice: '$81',
-        videoPrice: '$114',
-        details: [
-          'Multiple life areas',
-          'Multiple charts'
-        ]
-      }
-    };
-
-    // Package data for each duration (India)
-    const packageDataIN = {
-      30: {
-        duration: '30-Minutes',
-        name: 'Quick Clarity',
-        audioOriginal: '₹3,600',
-        videoOriginal: '₹4,500',
-        audioPrice: '₹3,300',
-        videoPrice: '₹4,200',
-        audioSavings: 'Save ₹300',
-        videoSavings: 'Save ₹300'
-      },
-      60: {
-        duration: '60-Minutes',
-        name: 'Deep Insight',
-        audioOriginal: '₹7,200',
-        videoOriginal: '₹9,000',
-        audioPrice: '₹6,600',
-        videoPrice: '₹8,400',
-        audioSavings: 'Save ₹600',
-        videoSavings: 'Save ₹600'
-      },
-      90: {
-        duration: '90-Minutes',
-        name: 'Holistic Guidance',
-        audioOriginal: '₹10,800',
-        videoOriginal: '₹13,500',
-        audioPrice: '₹9,900',
-        videoPrice: '₹12,600',
-        audioSavings: 'Save ₹900',
-        videoSavings: 'Save ₹900'
-      }
-    };
-
-    // Package data for each duration (International)
-    const packageDataIntl = {
-      30: {
-        duration: '30-Minutes',
-        name: 'Quick Clarity',
-        audioOriginal: '$81',
-        videoOriginal: '$99',
-        audioPrice: '$72',
-        videoPrice: '$90',
-        audioSavings: 'Save $9',
-        videoSavings: 'Save $9'
-      },
-      60: {
-        duration: '60-Minutes',
-        name: 'Deep Insight',
-        audioOriginal: '$162',
-        videoOriginal: '$219',
-        audioPrice: '$144',
-        videoPrice: '$201',
-        audioSavings: 'Save $18',
-        videoSavings: 'Save $18'
-      },
-      90: {
-        duration: '90-Minutes',
-        name: 'Holistic Guidance',
-        audioOriginal: '$243',
-        videoOriginal: '$342',
-        audioPrice: '$216',
-        videoPrice: '$315',
-        audioSavings: 'Save $27',
-        videoSavings: 'Save $27'
-      }
-    };
-
-    let isIndia = true;
-
-    async function detectLocationByIP() {
-      try {
-        const response = await fetch('https://ipapi.co/json/');
-        const data = await response.json();
-        if (data.country_code) {
-          isIndia = data.country_code === 'IN';
-          return true;
-        }
-      } catch (error) {
-        console.log('IP geolocation failed, trying fallback methods');
-      }
-      return false;
-    }
-
-    function detectLocationByTimezone() {
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      if (timezone === 'Asia/Kolkata') {
-        isIndia = true;
-        return true;
-      }
-      return false;
-    }
-
-    function detectLocationByLocale() {
-      const locale = navigator.language || navigator.userLanguage;
-      if (locale.startsWith('en-IN') || locale.startsWith('hi-IN')) {
-        isIndia = true;
-        return true;
-      }
-      return false;
-    }
-
-    async function detectLocation() {
-      const ipSuccess = await detectLocationByIP();
-      if (ipSuccess) return;
-      if (detectLocationByTimezone()) return;
-      if (detectLocationByLocale()) return;
-      // Safe default: show international pricing unless India is confidently detected.
-      isIndia = false;
-    }
-
-    // Read duration and type from URL query parameters
     function getDurationFromURL() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const duration = urlParams.get('duration');
-      // Validate duration, default to 60 if invalid
-      if (duration === '30' || duration === '60' || duration === '90') {
-        return parseInt(duration, 10);
-      }
-      return 60; // Default to 60 minutes
+      return window.IRSBooking.getDurationFromURL();
     }
 
     function getTypeFromURL() {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get('type'); // Returns 'package' or null
+      return window.IRSBooking.getTypeFromURL();
     }
 
     function getRegionFromURL() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const region = (urlParams.get('region') || '').toLowerCase();
-      if (region === 'in' || region === 'intl') return region;
-      return null;
-    }
-
-    // Update pricing card based on duration
-    function updatePricingCard(duration) {
-      const data = (isIndia ? pricingDataIN : pricingDataIntl)[duration];
-      if (!data) return;
-
-      const card = document.getElementById('pricing-card');
-      if (!card) return;
-
-      // Update duration
-      const durationElement = card.querySelector('.pricing-duration');
-      if (durationElement) durationElement.textContent = data.duration;
-
-      // Update name
-      const nameElement = card.querySelector('.pricing-name');
-      if (nameElement) nameElement.textContent = data.name;
-
-      // Update best for
-      const bestForElement = card.querySelector('.pricing-best-for');
-      if (bestForElement) bestForElement.textContent = data.bestFor;
-
-      // Update price
-      const priceElement = card.querySelector('.pricing-price');
-      if (priceElement) {
-        priceElement.setAttribute('data-audio-price', data.audioPrice);
-        priceElement.setAttribute('data-video-price', data.videoPrice);
-        priceElement.textContent = data.audioPrice;
-      }
-
-      // Update details
-      const detailsElements = card.querySelectorAll('.pricing-detail-item');
-      if (detailsElements && detailsElements.length >= 2) {
-        detailsElements[0].textContent = data.details[0];
-        detailsElements[1].textContent = data.details[1];
-      }
-
-      // Reset toggle buttons to audio (default)
-      const toggleButtons = card.querySelectorAll('.toggle-btn');
-      toggleButtons.forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.type === 'audio') {
-          btn.classList.add('active');
-        }
-      });
-    }
-
-    // Update package card based on duration
-    function updatePackageCard(duration) {
-      const data = (isIndia ? packageDataIN : packageDataIntl)[duration];
-      if (!data) return;
-
-      const card = document.getElementById('package-card');
-      if (!card) return;
-
-      // Update duration
-      const durationElement = card.querySelector('.package-duration');
-      if (durationElement) {
-        durationElement.innerHTML = `${data.duration} <span class="package-sessions">× 3</span>`;
-      }
-
-      // Update name
-      const nameElement = card.querySelector('.package-name');
-      if (nameElement) nameElement.textContent = data.name;
-
-      // Update original price
-      const originalPriceElement = card.querySelector('.package-original-price');
-      if (originalPriceElement) {
-        originalPriceElement.setAttribute('data-audio-original', data.audioOriginal);
-        originalPriceElement.setAttribute('data-video-original', data.videoOriginal);
-        originalPriceElement.textContent = data.audioOriginal;
-      }
-
-      // Update package price
-      const priceElement = card.querySelector('.package-price');
-      if (priceElement) {
-        priceElement.setAttribute('data-audio-price', data.audioPrice);
-        priceElement.setAttribute('data-video-price', data.videoPrice);
-        priceElement.textContent = data.audioPrice;
-      }
-
-      // Update savings
-      const savingsElement = card.querySelector('.package-savings');
-      if (savingsElement) {
-        savingsElement.setAttribute('data-audio-savings', data.audioSavings);
-        savingsElement.setAttribute('data-video-savings', data.videoSavings);
-        savingsElement.textContent = data.audioSavings;
-      }
-
-      // Reset toggle buttons to audio (default)
-      const toggleButtons = card.querySelectorAll('.toggle-btn');
-      toggleButtons.forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.type === 'audio') {
-          btn.classList.add('active');
-        }
-      });
+      return window.IRSBooking.getRegionFromURL();
     }
 
     // Create one additional chart block (Name, Date, Time, Place only) with close option
@@ -730,6 +422,7 @@
 
     // 60 min: one "Add a chart" button below main form. 90 min: first button below main, second button below first added block.
     function setupAddChartButtons(duration) {
+      const chartsSection = document.getElementById('intake-charts-section');
       const addChartArea = document.getElementById('add-chart-area');
       const wrapper = document.getElementById('additional-charts-wrapper');
       const container = document.getElementById('additional-charts');
@@ -740,13 +433,15 @@
       btn2Wrap.style.display = 'none';
 
       if (duration === 30) {
+        if (chartsSection) chartsSection.style.display = 'none';
         addChartArea.style.display = 'none';
         wrapper.style.display = 'none';
         return;
       }
 
+      if (chartsSection) chartsSection.style.display = '';
       addChartArea.style.display = 'block';
-      wrapper.style.display = 'block';
+      wrapper.style.display = 'none';
 
       const btn1 = document.getElementById('add-chart-btn-1');
       const btn2 = document.getElementById('add-chart-btn-2');
@@ -757,6 +452,7 @@
           container.appendChild(block);
           initPlaceAutocompleteForBlock(block);
           addChartArea.style.display = 'none';
+          wrapper.style.display = 'block';
           if (duration === 90 && btn2Wrap) btn2Wrap.style.display = 'block';
         };
       }
@@ -771,107 +467,20 @@
       }
     }
 
-    // Initialize page based on URL parameters
-    // Ensure DOM is ready before updating
-    async function initializeCard() {
-      const regionOverride = getRegionFromURL();
-      if (regionOverride === 'in') {
-        isIndia = true;
-      } else if (regionOverride === 'intl') {
-        isIndia = false;
-      } else {
-        await detectLocation();
-      }
-      const duration = getDurationFromURL();
-      const type = getTypeFromURL();
-      const pricingCard = document.getElementById('pricing-card');
-      const packageCard = document.getElementById('package-card');
-
-      if (type === 'package') {
-        // Show package card, hide pricing card
-        if (pricingCard) pricingCard.style.display = 'none';
-        if (packageCard) {
-          packageCard.style.display = 'block';
-          updatePackageCard(duration);
-        }
-      } else {
-        // Show pricing card, hide package card (default)
-        if (packageCard) packageCard.style.display = 'none';
-        if (pricingCard) {
-          pricingCard.style.display = 'block';
-          updatePricingCard(duration);
-        }
-      }
-
+    function initializeIntakeForm() {
+      const duration = bookingState && bookingState.duration
+        ? bookingState.duration
+        : getDurationFromURL();
       setupAddChartButtons(duration);
     }
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initializeCard);
+      document.addEventListener('DOMContentLoaded', initializeIntakeForm);
     } else {
-      // DOM is already ready
-      initializeCard();
+      initializeIntakeForm();
     }
 
-    // Toggle button functionality with price updates
-    document.querySelectorAll('.toggle-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const toggleGroup = this.parentElement;
-        const card = toggleGroup.closest('.pricing-card, .package-card');
-        const isVideo = this.dataset.type === 'video';
-        
-        // Update toggle active state
-        toggleGroup.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        
-        // Update pricing card prices
-        if (card && card.classList.contains('pricing-card')) {
-          const priceElement = card.querySelector('.pricing-price');
-          if (priceElement) {
-            const audioPrice = priceElement.dataset.audioPrice;
-            const videoPrice = priceElement.dataset.videoPrice;
-            if (audioPrice && videoPrice) {
-              priceElement.textContent = isVideo ? videoPrice : audioPrice;
-            }
-          }
-        }
-        
-        // Update package card prices, original prices, and savings
-        if (card && card.classList.contains('package-card')) {
-          const originalPriceElement = card.querySelector('.package-original-price');
-          const priceElement = card.querySelector('.package-price');
-          const savingsElement = card.querySelector('.package-savings');
-          
-          if (originalPriceElement) {
-            const audioOriginal = originalPriceElement.dataset.audioOriginal;
-            const videoOriginal = originalPriceElement.dataset.videoOriginal;
-            if (audioOriginal && videoOriginal) {
-              originalPriceElement.textContent = isVideo ? videoOriginal : audioOriginal;
-            }
-          }
-          
-          if (priceElement) {
-            const audioPrice = priceElement.dataset.audioPrice;
-            const videoPrice = priceElement.dataset.videoPrice;
-            if (audioPrice && videoPrice) {
-              priceElement.textContent = isVideo ? videoPrice : audioPrice;
-            }
-          }
-          
-          if (savingsElement) {
-            const audioSavings = savingsElement.dataset.audioSavings;
-            const videoSavings = savingsElement.dataset.videoSavings;
-            if (audioSavings && videoSavings) {
-              savingsElement.textContent = isVideo ? videoSavings : audioSavings;
-            }
-          }
-        }
-      });
-    });
-
-    // Track iframe creation to ensure it's created only once per page load
-    let calIframeCreated = false;
-    const RESERVED_PAGE_URL = 'https://ireadspace.com/reserved-latest.html';
+    const RESERVED_PAGE_URL = window.IRSBooking.RESERVED_PAGE_URL;
 
     // Validation functions
     function validateEmail(email) {
@@ -1016,9 +625,10 @@
       });
     }
 
-    // Book Slot button - open modal with Cal.com iframe after form submission
-    document.getElementById('book-slot-btn').addEventListener('click', function(e) {
+    // Complete booking after intake form submission
+    document.getElementById('book-slot-btn').addEventListener('click', async function(e) {
       e.preventDefault();
+      if (!hasSelectedSlot || !bookingState) return;
       hasAttemptedIntakeSubmit = true;
       
       // Clear previous errors
@@ -1093,239 +703,107 @@
           return;
         }
       }
-      // Check if it's a package
-      const packageCard = document.getElementById('package-card');
-      const pricingCard = document.getElementById('pricing-card');
-      const isPackage = packageCard && packageCard.style.display !== 'none';
-      const selectedCard = isPackage ? packageCard : pricingCard;
+      const isPackage = bookingState.type === 'package' || getTypeFromURL() === 'package';
+      const sessionType = bookingState.sessionType || 'audio';
+      const duration = bookingState.duration || getDurationFromURL();
+      const investment = bookingState.price || '';
 
-      // Get session type (audio/video) from the visible selected card
-      const activeToggle = selectedCard ? selectedCard.querySelector('.toggle-btn.active') : document.querySelector('.toggle-btn.active');
-      const sessionType = activeToggle ? activeToggle.dataset.type : 'audio';
-      
-      // Determine duration from the visible pricing card or package card
-      const durationElement = selectedCard ? selectedCard.querySelector('.pricing-duration, .package-duration') : document.querySelector('.pricing-duration, .package-duration');
-      let duration = 60; // Default to 60 minutes
-      if (durationElement) {
-        const durationText = durationElement.textContent.trim();
-        const durationMatch = durationText.match(/(\d+)/);
-        if (durationMatch) {
-          duration = parseInt(durationMatch[1], 10);
-        }
+      const submitBtn = document.getElementById('book-slot-btn');
+      const originalBtnText = submitBtn ? submitBtn.textContent : '';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Confirming your appointment…';
       }
 
-      const investmentElement = selectedCard ? selectedCard.querySelector('.pricing-price, .package-price') : null;
-      const investment = investmentElement ? investmentElement.textContent.trim() : '';
-      
-      // Submit to Google Sheets asynchronously (don't block form submission)
-      // Use setTimeout to ensure this runs after the modal opens
-      setTimeout(() => {
-        try {
-          const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQX3YcflcWNrUZN7a4pcBkzWmf5B4R4vccK5Ci32LuPnpW6YJnKNJrlUYyJ_vz-609/exec';
-          
-          const submissionData = {
-            name: name,
-            email: email,
-            phone: phone,
-            dob: dob,
-            tob: tob || '',
-            timeOfBirthAccuracy: getTimeOfBirthAccuracy(formData, ''),
-            pob: pob || '',
-            area: area || '',
-            unclear: unclear || '',
-            sessionType: sessionType,
-            duration: duration.toString(),
-            investment: investment,
-            isPackage: isPackage,
-            // Additional chart 2 – always send; empty if not added
-            chart2_name: formData.get('chart2_name') || '',
-            chart2_dob: formData.get('chart2_dob') || '',
-            chart2_tob: formData.get('chart2_tob') || '',
-            chart2_tob_accuracy: formData.get('chart2_name') ? getTimeOfBirthAccuracy(formData, 'chart2') : '',
-            chart2_pob: formData.get('chart2_pob') || '',
-            // Additional chart 3 – always send; empty if not added
-            chart3_name: formData.get('chart3_name') || '',
-            chart3_dob: formData.get('chart3_dob') || '',
-            chart3_tob: formData.get('chart3_tob') || '',
-            chart3_tob_accuracy: formData.get('chart3_name') ? getTimeOfBirthAccuracy(formData, 'chart3') : '',
-            chart3_pob: formData.get('chart3_pob') || ''
-          };
-          
-          // Log for debugging
-          console.log('Submitting to Google Sheets:', submissionData);
-          
-          // Send data to Google Sheets using hidden iframe method
-          const sheetsIframe = document.createElement('iframe');
-          sheetsIframe.style.display = 'none';
-          sheetsIframe.style.width = '0';
-          sheetsIframe.style.height = '0';
-          sheetsIframe.style.position = 'absolute';
-          sheetsIframe.style.left = '-9999px';
-          sheetsIframe.name = 'google-sheets-submit-' + Date.now();
-          document.body.appendChild(sheetsIframe);
-          
-          const sheetsForm = document.createElement('form');
-          sheetsForm.method = 'POST';
-          sheetsForm.action = GOOGLE_SCRIPT_URL;
-          sheetsForm.target = sheetsIframe.name;
-          sheetsForm.style.display = 'none';
-          
-          // Add JSON data as a single field
-          const jsonInput = document.createElement('input');
-          jsonInput.type = 'hidden';
-          jsonInput.name = 'data';
-          jsonInput.value = JSON.stringify(submissionData);
-          sheetsForm.appendChild(jsonInput);
-          
-          document.body.appendChild(sheetsForm);
-          
-          // Submit form
-          sheetsForm.submit();
-          
-          // Clean up after a delay
-          setTimeout(() => {
-            try {
-              if (sheetsForm.parentNode) {
-                sheetsForm.parentNode.removeChild(sheetsForm);
-              }
-              if (sheetsIframe.parentNode) {
-                sheetsIframe.parentNode.removeChild(sheetsIframe);
-              }
-            } catch (e) {
-              console.error('Error cleaning up Google Sheets form:', e);
-            }
-          }, 3000);
-        } catch (sheetsError) {
-          // Don't block form submission if Google Sheets fails
-          console.error('Error submitting to Google Sheets:', sheetsError);
-        }
-      }, 100);
-      
-      // Get modal elements
-      const modalOverlay = document.getElementById('cal-modal-overlay');
-      const modalContent = document.getElementById('cal-modal-content');
-      
-      // Only create iframe once per page load
-      if (!calIframeCreated && modalContent) {
-        // Get the matching Cal.com URL (duration already determined above)
-        let calUrl;
-        if (duration === 30) {
-          calUrl = CAL_30_URL;
-        } else if (duration === 60) {
-          calUrl = CAL_60_URL;
-        } else if (duration === 90) {
-          calUrl = CAL_90_URL;
-        } else {
-          calUrl = CAL_60_URL; // Default to 60 minutes
-        }
-        
-        // URL-encode name and email
-        const encodedName = encodeURIComponent(name);
-        const encodedEmail = encodeURIComponent(email);
-        
-        // Default timezone to Asia/Kolkata (IST)
-        const timeZone = encodeURIComponent('Asia/Kolkata');
-        
-        // Construct Cal.com URL with query parameters (name, email, timeZone)
-        const calUrlWithParams = `${calUrl}?name=${encodedName}&email=${encodedEmail}&timeZone=${timeZone}`;
-        
-        // Create and inject Cal.com iframe (only once)
-        const iframe = document.createElement('iframe');
-        iframe.src = calUrlWithParams;
-        iframe.setAttribute('frameborder', '0');
-        iframe.setAttribute('allowtransparency', 'true');
-        iframe.setAttribute('allow', 'geolocation; microphone; camera');
-        iframe.id = 'cal-booking-iframe'; // Add ID for reference
-        
-        // Inject iframe into modal content
-        modalContent.appendChild(iframe);
-        
-        // Mark iframe as created - never create again
-        calIframeCreated = true;
-      }
-      
-      // Show modal (iframe persists if already created)
-      if (modalOverlay) {
-        modalOverlay.style.display = 'flex';
-        document.body.style.overflow = 'hidden'; // Prevent body scrolling
-      }
-    });
-
-    // Close modal functionality
-    const modalOverlay = document.getElementById('cal-modal-overlay');
-    const modalClose = document.getElementById('cal-modal-close');
-
-    // Close button click
-    if (modalClose) {
-      modalClose.addEventListener('click', function() {
-        if (modalOverlay) {
-          modalOverlay.style.display = 'none';
-          document.body.style.overflow = ''; // Restore body scrolling
-        }
-      });
-    }
-
-    // Close on overlay click (outside modal)
-    if (modalOverlay) {
-      modalOverlay.addEventListener('click', function(e) {
-        if (e.target === modalOverlay) {
-          modalOverlay.style.display = 'none';
-          document.body.style.overflow = ''; // Restore body scrolling
-        }
-      });
-    }
-
-    // Close on Escape key
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && modalOverlay && modalOverlay.style.display === 'flex') {
-        modalOverlay.style.display = 'none';
-        document.body.style.overflow = ''; // Restore body scrolling
-      }
-    });
-
-    // Listen for Cal.com booking completion and redirect to reserved page
-    window.addEventListener('message', function(e) {
-      if (!e.data) return;
+      let bookingResult;
       try {
-        var d = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
-        var eventType = (d && d.type) || (d && d.detail && d.detail.type);
-        var url = (d && d.data && d.data.url) ? d.data.url : '';
-        var isBookingDone =
-          eventType === 'bookingSuccessfulV2' ||
-          eventType === 'bookingSuccessful' ||
-          eventType === 'booking:confirmed' ||
-          eventType === 'booking:created' ||
-          (eventType === '__routeChanged' && url && (url.indexOf('booking') !== -1 || url.indexOf('success') !== -1));
-        if (isBookingDone) {
-          var overlay = document.getElementById('redirect-overlay');
-          var modalOverlay = document.getElementById('cal-modal-overlay');
-          if (modalOverlay) modalOverlay.style.display = 'none';
-          if (overlay) {
-            overlay.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-          }
-          setTimeout(function() {
-            window.location.href = RESERVED_PAGE_URL + '?v=1';
-          }, 400);
+        bookingResult = await window.IRSBooking.createBooking({
+          duration: duration,
+          slotStart: bookingState.slotStart,
+          name: name,
+          email: email,
+          phone: phone,
+          timeZone: bookingState.timeZone || 'Asia/Kolkata'
+        });
+      } catch (bookingError) {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalBtnText;
         }
-      } catch (err) {}
-    });
+        alert(bookingError.message || 'That time is no longer available. Please choose another slot.');
+        window.location.href = window.IRSBooking.buildScheduleUrl(duration, isPackage ? 'package' : null, bookingState.region);
+        return;
+      }
 
-    // Optional: test redirect overlay (internal testing). Add ?testRedirect=1 to intake URL to show overlay and redirect after 2s.
-    (function testRedirectOverlay() {
-      var params = new URLSearchParams(window.location.search);
-      if (params.get('testRedirect') !== '1') return;
+      const bookingUid = bookingResult && bookingResult.uid ? bookingResult.uid : '';
+      bookingState.bookingUid = bookingUid;
+      bookingState.slotLabel = bookingState.slotLabel || window.IRSBooking.formatSlotLabel(bookingState.slotStart, bookingState.timeZone);
+      bookingState.investment = investment;
+      bookingState.sessionType = sessionType;
+      window.IRSBooking.saveBookingState(bookingState);
+
+      const submissionData = {
+        name: name,
+        email: email,
+        phone: phone,
+        dob: dob,
+        tob: tob || '',
+        timeOfBirthAccuracy: getTimeOfBirthAccuracy(formData, ''),
+        pob: pob || '',
+        area: area || '',
+        unclear: unclear || '',
+        sessionType: sessionType,
+        duration: duration.toString(),
+        investment: investment,
+        isPackage: isPackage,
+        slotStart: bookingState.slotStart,
+        slotLabel: bookingState.slotLabel,
+        bookingUid: bookingUid,
+        timeZone: bookingState.timeZone || 'Asia/Kolkata',
+        chart2_name: formData.get('chart2_name') || '',
+        chart2_dob: formData.get('chart2_dob') || '',
+        chart2_tob: formData.get('chart2_tob') || '',
+        chart2_tob_accuracy: formData.get('chart2_name') ? getTimeOfBirthAccuracy(formData, 'chart2') : '',
+        chart2_pob: formData.get('chart2_pob') || '',
+        chart3_name: formData.get('chart3_name') || '',
+        chart3_dob: formData.get('chart3_dob') || '',
+        chart3_tob: formData.get('chart3_tob') || '',
+        chart3_tob_accuracy: formData.get('chart3_name') ? getTimeOfBirthAccuracy(formData, 'chart3') : '',
+        chart3_pob: formData.get('chart3_pob') || ''
+      };
+
+      try {
+        const sheetsIframe = document.createElement('iframe');
+        sheetsIframe.style.display = 'none';
+        sheetsIframe.name = 'google-sheets-submit-' + Date.now();
+        document.body.appendChild(sheetsIframe);
+
+        const sheetsForm = document.createElement('form');
+        sheetsForm.method = 'POST';
+        sheetsForm.action = window.IRSBooking.GOOGLE_SCRIPT_URL;
+        sheetsForm.target = sheetsIframe.name;
+        sheetsForm.style.display = 'none';
+
+        const jsonInput = document.createElement('input');
+        jsonInput.type = 'hidden';
+        jsonInput.name = 'data';
+        jsonInput.value = JSON.stringify(submissionData);
+        sheetsForm.appendChild(jsonInput);
+        document.body.appendChild(sheetsForm);
+        sheetsForm.submit();
+      } catch (sheetsError) {
+        console.error('Error submitting to Google Sheets:', sheetsError);
+      }
+
+      const overlay = document.getElementById('redirect-overlay');
+      if (overlay) {
+        overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
       setTimeout(function() {
-        var overlay = document.getElementById('redirect-overlay');
-        var modalOverlay = document.getElementById('cal-modal-overlay');
-        if (modalOverlay) modalOverlay.style.display = 'none';
-        if (overlay) {
-          overlay.style.display = 'flex';
-          document.body.style.overflow = 'hidden';
-          setTimeout(function() { window.location.href = RESERVED_PAGE_URL + '?v=1'; }, 2000);
-        }
+        window.location.href = RESERVED_PAGE_URL + '?v=1';
       }, 500);
-    })();
+    });
 
     // Place of Birth Autocomplete using Nominatim (OpenStreetMap) – reusable for main and additional charts
     function initPlaceAutocomplete(input, suggestionsContainer) {

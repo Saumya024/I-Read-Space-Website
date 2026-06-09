@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Spectral:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=276" />
+  <link rel="stylesheet" href="styles.css?v=304" />
 </head>
 
 <body>
@@ -54,6 +54,7 @@
     <div class="reserved-container">
       <h1 class="reserved-heading">Almost there!</h1>
       <p class="reserved-subheading">Complete payment via WhatsApp to confirm your session.</p>
+      <p class="reserved-message" id="reserved-slot-message" hidden></p>
       <a href="#" class="reserved-cta" id="whatsapp-cta">Pay via WhatsApp</a>
     </div>
   </section>
@@ -115,12 +116,23 @@
     </div>
 </footer>
 
+  <script src="js/booking-shared.js?v=15"></script>
   <script>
-    document.getElementById('whatsapp-cta').addEventListener('click', function(e) {
-      e.preventDefault();
-      const message = "Hello, I've reserved a session slot with I Read Space. Please share payment details and next steps.";
-      window.location.href = 'https://wa.me/919217679635?text=' + encodeURIComponent(message);
-    });
+    (function () {
+      var booking = window.IRSBooking && window.IRSBooking.getBookingState();
+      var slotMessage = document.getElementById('reserved-slot-message');
+      if (booking && booking.slotLabel && slotMessage) {
+        slotMessage.textContent = 'Selected time: ' + booking.slotLabel;
+        slotMessage.hidden = false;
+      }
+
+      document.getElementById('whatsapp-cta').addEventListener('click', function(e) {
+        e.preventDefault();
+        var slotLine = booking && booking.slotLabel ? ('Selected slot: ' + booking.slotLabel + '. ') : '';
+        var message = "Hello, I've reserved a session slot with I Read Space. " + slotLine + "Please share payment details and next steps.";
+        window.location.href = 'https://wa.me/919217679635?text=' + encodeURIComponent(message);
+      });
+    })();
   </script>
 
   <script src="js/mobile-menu.js?v=37"></script>
