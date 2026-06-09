@@ -2176,13 +2176,16 @@ a.area-item:hover,
   width: 100%;
   margin: 0 auto;
   margin-top: 0;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .pricing-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 32px;
   align-items: start;
+  min-width: 0;
 }
 
 .pricing-card {
@@ -2195,19 +2198,39 @@ a.area-item:hover,
   display: flex;
   flex-direction: column;
   overflow: visible;
+  min-width: 0;
+}
+
+.pricing-card.pricing-card-popular {
+  border-color: var(--gold);
+  box-shadow: 0 10px 28px rgba(67, 16, 57, 0.14), 0 0 0 1px rgba(186, 151, 81, 0.35);
+}
+
+.pricing-card.pricing-card-popular .pricing-duration {
+  margin-top: 6px;
 }
 
 .pricing-popular-badge {
   position: absolute;
-  top: -12px;
+  top: -14px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: var(--gold);
+  background: linear-gradient(180deg, #d9bc7a 0%, var(--gold) 55%, #a88440 100%);
   color: var(--primary);
-  padding: 4px 16px;
-  border-radius: 20px;
-  font-size: var(--text-caption);
-  font-weight: 500;
+  padding: 7px 20px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-heading);
+  font-size: var(--text-small);
+  font-weight: var(--weight-medium);
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  width: max-content;
+  max-width: none;
+  box-sizing: border-box;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 14px rgba(67, 16, 57, 0.22), 0 2px 4px rgba(186, 151, 81, 0.45);
+  z-index: 2;
 }
 
 .pricing-duration {
@@ -2627,9 +2650,10 @@ a.area-item:hover,
 
 .packages-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 32px;
   align-items: stretch;
+  min-width: 0;
 }
 
 .package-card {
@@ -4936,17 +4960,17 @@ main[class$="-page"] .wizard-chip.active {
   }
 }
 
-/* Tablet only (769–1024px): 2-column grids for pricing/packages so cards aren’t cut off */
+/* Tablet only (769–1024px): keep 3 cards in one row; minmax prevents overflow */
 @media (min-width: 769px) and (max-width: 1024px) {
   .pricing-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
     min-width: 0;
     align-items: start;
   }
   
   .packages-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
     min-width: 0;
     align-items: stretch;
@@ -5835,6 +5859,54 @@ main[class$="-page"] .wizard-chip.active {
     margin-bottom: 0;
   }
 
+  .pricing-grid,
+  .packages-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: start;
+  }
+
+  .pricing-card,
+  .package-card {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .pricing-expand-content,
+  .pricing-expand-section {
+    text-align: left;
+  }
+
+  .pricing-expand-section h4,
+  .pricing-expand-section ul {
+    text-align: left;
+  }
+
+  .pricing-expand-section li {
+    text-align: left;
+  }
+
+  .pricing-expand-section h4 {
+    font-size: var(--text-body);
+  }
+
+  .pricing-expand-section li {
+    font-size: 13px;
+  }
+
+  .pricing-expand-toggle {
+    font-size: 13px;
+    padding: 8px 16px;
+  }
+
+  .pricing-container,
+  .packages-container {
+    padding: 32px 20px;
+  }
+
   .hero-content h1 {
     font-size: 40px;
     line-height: 1.15;
@@ -6106,54 +6178,6 @@ main[class$="-page"] .wizard-chip.active {
   .area-card-bullets li {
     font-size: 13px;
     margin-bottom: 4px;
-  }
-
-  .pricing-grid,
-  .packages-grid {
-    grid-template-columns: 1fr;
-    gap: 24px;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-    align-items: start;
-  }
-
-  .pricing-card,
-  .package-card {
-    width: 100%;
-    min-width: 0;
-  }
-
-  .pricing-expand-content,
-  .pricing-expand-section {
-    text-align: left;
-  }
-
-  .pricing-expand-section h4,
-  .pricing-expand-section ul {
-    text-align: left;
-  }
-
-  .pricing-expand-section li {
-    text-align: left;
-  }
-
-  .pricing-expand-section h4 {
-    font-size: var(--text-body);
-  }
-
-  .pricing-expand-section li {
-    font-size: 13px;
-  }
-
-  .pricing-expand-toggle {
-    font-size: 13px;
-    padding: 8px 16px;
-  }
-
-  .pricing-container,
-  .packages-container {
-    padding: 32px 20px;
   }
 
   .process-flow {
