@@ -2,13 +2,31 @@
 (function() {
   'use strict';
 
-  // Wait for DOM to be ready
+  const SITE_CONTACT = {
+    phoneDisplay: '+91 92176 79635',
+    phoneHref: 'tel:+919217679635',
+    email: 'consult@ireadspace.com',
+    whatsapp: 'https://wa.me/919217679635',
+    socials: [
+      { icon: 'icons8-instagram-logo-100.png', href: 'https://www.instagram.com/ireadspace?igsh=MmVlbWhzcjFwYmN5&utm_source=qr', aria: 'Instagram' },
+      { icon: 'icons8-linkedin-logo-100.png', href: 'https://www.linkedin.com/in/theonesaumya/', aria: 'LinkedIn' },
+      { icon: 'icons8-threads-50.png', href: 'https://www.threads.com/@ireadspace', aria: 'Threads' },
+      { icon: 'icons8-facebook-50.png', href: 'https://www.facebook.com/profile.php?id=61590787133182', aria: 'Facebook' }
+    ]
+  };
+
+  function getImagesBase() {
+    const styleLink = document.querySelector('link[rel="stylesheet"][href*="styles.css"]');
+    if (!styleLink) return 'assets/images/';
+    const href = (styleLink.getAttribute('href') || '').split('?')[0];
+    return href.replace(/styles\.css$/, 'assets/images/');
+  }
+
   function initMobileMenu() {
     const hamburger = document.getElementById('hamburger');
     const nav = document.getElementById('nav');
     const body = document.body;
 
-    // If elements don't exist, exit early
     if (!hamburger || !nav) {
       return;
     }
@@ -16,6 +34,13 @@
     function findNavLink(label) {
       return Array.from(nav.querySelectorAll('a')).find(link => {
         return link.textContent.trim().toLowerCase() === label.toLowerCase();
+      });
+    }
+
+    function addClasses(element, classNames) {
+      if (!classNames) return;
+      classNames.trim().split(/\s+/).forEach(name => {
+        if (name) element.classList.add(name);
       });
     }
 
@@ -27,16 +52,19 @@
       clone.removeAttribute('style');
       clone.classList.remove('header-cta');
       clone.classList.add('mobile-menu-link');
-      if (extraClass) clone.classList.add(extraClass);
+      addClasses(clone, extraClass);
       return clone;
     }
 
-    function createLink(label, href, extraClass) {
+    function createLink(label, href, extraClass, options) {
       const link = document.createElement('a');
       link.href = href;
       link.textContent = label;
       link.className = 'mobile-menu-link';
-      if (extraClass) link.classList.add(extraClass);
+      addClasses(link, extraClass);
+      if (options && options.target) link.target = options.target;
+      if (options && options.rel) link.rel = options.rel;
+      if (options && options.ariaLabel) link.setAttribute('aria-label', options.ariaLabel);
       return link;
     }
 
@@ -55,6 +83,71 @@
 
       availableChildren.forEach(child => group.appendChild(child));
       return group;
+    }
+
+    function createContactDetails() {
+      const details = document.createElement('div');
+      details.className = 'mobile-menu-contact-details';
+
+      const phoneRow = document.createElement('div');
+      phoneRow.className = 'mobile-menu-contact-detail-row';
+      phoneRow.innerHTML = '<span class="mobile-menu-contact-label">Phone</span>';
+      const phoneLink = document.createElement('a');
+      phoneLink.className = 'mobile-menu-contact-value';
+      phoneLink.href = SITE_CONTACT.phoneHref;
+      phoneLink.textContent = SITE_CONTACT.phoneDisplay;
+      phoneRow.appendChild(phoneLink);
+      details.appendChild(phoneRow);
+
+      const emailRow = document.createElement('div');
+      emailRow.className = 'mobile-menu-contact-detail-row';
+      emailRow.innerHTML = '<span class="mobile-menu-contact-label">Email</span>';
+      const emailLink = document.createElement('a');
+      emailLink.className = 'mobile-menu-contact-value';
+      emailLink.href = `mailto:${SITE_CONTACT.email}`;
+      emailLink.textContent = SITE_CONTACT.email;
+      emailRow.appendChild(emailLink);
+      details.appendChild(emailRow);
+
+      return details;
+    }
+
+    function createReachDivider() {
+      const divider = document.createElement('div');
+      divider.className = 'mobile-menu-reach-divider';
+      divider.setAttribute('aria-hidden', 'true');
+      return divider;
+    }
+
+    function wrapReachBlock(className, children) {
+      const block = document.createElement('div');
+      block.className = className;
+      children.filter(Boolean).forEach(child => block.appendChild(child));
+      return block;
+    }
+
+    function createSocialRow() {
+      const row = document.createElement('div');
+      row.className = 'mobile-menu-social-row';
+      const imagesBase = getImagesBase();
+
+      SITE_CONTACT.socials.forEach(social => {
+        const link = document.createElement('a');
+        link.href = social.href;
+        link.className = 'mobile-menu-social-icon';
+        link.setAttribute('aria-label', social.aria);
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+
+        const img = document.createElement('img');
+        img.src = imagesBase + social.icon;
+        img.alt = '';
+        img.loading = 'lazy';
+        link.appendChild(img);
+        row.appendChild(link);
+      });
+
+      return row;
     }
 
     function buildGroupedMobileMenu() {
@@ -93,8 +186,14 @@
 
       const contactRow = document.createElement('div');
       contactRow.className = 'mobile-menu-contact-row';
-      contactRow.appendChild(createLink('WhatsApp', 'https://wa.me/919217679635', 'mobile-menu-contact-cta'));
-      contactRow.appendChild(createLink('Email', 'mailto:consult@ireadspace.com', 'mobile-menu-contact-cta'));
+      contactRow.appendChild(createLink('WhatsApp', SITE_CONTACT.whatsapp, 'mobile-menu-contact-cta mobile-menu-contact-cta--whatsapp', {
+        target: '_blank',
+        rel: 'noopener noreferrer',
+        ariaLabel: 'WhatsApp'
+      }));
+      contactRow.appendChild(createLink('Email', `mailto:${SITE_CONTACT.email}`, 'mobile-menu-contact-cta mobile-menu-contact-cta--email', {
+        ariaLabel: 'Email'
+      }));
 
       const sourceCta = nav.querySelector('.header-cta');
       const bookCta = sourceCta ? sourceCta.cloneNode(true) : cloneLink('Pricing');
@@ -105,9 +204,29 @@
         bookCta.textContent = bookCta.textContent.trim() || 'Book a Session';
       }
 
-      const reachGroup = createGroup('Reach Out', [contactRow, bookCta].filter(Boolean));
+      const reachPrimary = wrapReachBlock('mobile-menu-reach-primary', [
+        createContactDetails()
+      ]);
 
-      [workGroup, learnGroup, reachGroup].filter(Boolean).forEach(group => panel.appendChild(group));
+      const reachSecondary = wrapReachBlock('mobile-menu-reach-secondary', [
+        contactRow,
+        createSocialRow(),
+        bookCta
+      ]);
+
+      const reachScrollGroup = createGroup('Reach Out', [reachPrimary]);
+
+      const scrollArea = document.createElement('div');
+      scrollArea.className = 'mobile-menu-scroll';
+      [workGroup, learnGroup, reachScrollGroup].filter(Boolean).forEach(group => scrollArea.appendChild(group));
+
+      const ctaDock = document.createElement('div');
+      ctaDock.className = 'mobile-menu-cta-dock';
+      ctaDock.appendChild(createReachDivider());
+      ctaDock.appendChild(reachSecondary);
+
+      panel.appendChild(scrollArea);
+      panel.appendChild(ctaDock);
 
       nav.appendChild(panel);
       nav.classList.add('mobile-menu-enhanced');
@@ -127,13 +246,11 @@
       body.classList.remove('menu-open');
     }
 
-    // Toggle menu on hamburger click
     hamburger.addEventListener('click', function(e) {
       e.stopPropagation();
       toggleMenu();
     });
 
-    // Close menu when clicking on a nav link
     nav.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', function(e) {
         const href = this.getAttribute('href');
@@ -146,17 +263,19 @@
           return;
         }
         e.preventDefault();
-        // Close menu instantly (no transition) so text doesn't double before navigation
         nav.style.transition = 'none';
         closeMenu();
         requestAnimationFrame(function() {
           nav.style.transition = '';
         });
+        if (this.target === '_blank') {
+          window.open(href, '_blank', 'noopener');
+          return;
+        }
         window.location.href = href;
       });
     });
 
-    // Close menu when clicking outside
     document.addEventListener('click', (e) => {
       if (!nav.contains(e.target) && !hamburger.contains(e.target)) {
         if (nav.classList.contains('active')) {
@@ -166,11 +285,9 @@
     });
   }
 
-  // Initialize when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initMobileMenu);
   } else {
     initMobileMenu();
   }
 })();
-
