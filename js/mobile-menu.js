@@ -85,6 +85,33 @@
       return group;
     }
 
+    function createContactDetails() {
+      const details = document.createElement('div');
+      details.className = 'mobile-menu-contact-details';
+
+      const phoneRow = document.createElement('div');
+      phoneRow.className = 'mobile-menu-contact-detail-row';
+      phoneRow.innerHTML = '<span class="mobile-menu-contact-label">Phone</span>';
+      const phoneLink = document.createElement('a');
+      phoneLink.className = 'mobile-menu-contact-value';
+      phoneLink.href = SITE_CONTACT.phoneHref;
+      phoneLink.textContent = SITE_CONTACT.phoneDisplay;
+      phoneRow.appendChild(phoneLink);
+      details.appendChild(phoneRow);
+
+      const emailRow = document.createElement('div');
+      emailRow.className = 'mobile-menu-contact-detail-row';
+      emailRow.innerHTML = '<span class="mobile-menu-contact-label">Email</span>';
+      const emailLink = document.createElement('a');
+      emailLink.className = 'mobile-menu-contact-value';
+      emailLink.href = `mailto:${SITE_CONTACT.email}`;
+      emailLink.textContent = SITE_CONTACT.email;
+      emailRow.appendChild(emailLink);
+      details.appendChild(emailRow);
+
+      return details;
+    }
+
     function createReachDivider() {
       const divider = document.createElement('div');
       divider.className = 'mobile-menu-reach-divider';
@@ -177,11 +204,17 @@
         bookCta.textContent = bookCta.textContent.trim() || 'Book a Session';
       }
 
+      const reachPrimary = wrapReachBlock('mobile-menu-reach-primary', [
+        createContactDetails()
+      ]);
+
       const reachSecondary = wrapReachBlock('mobile-menu-reach-secondary', [
         contactRow,
         createSocialRow(),
         bookCta
       ]);
+
+      const reachGroup = createGroup('Reach Out', [reachPrimary]);
 
       const closeBtn = document.createElement('button');
       closeBtn.type = 'button';
@@ -191,7 +224,7 @@
 
       const scrollArea = document.createElement('div');
       scrollArea.className = 'mobile-menu-scroll';
-      [workGroup, learnGroup].filter(Boolean).forEach(group => scrollArea.appendChild(group));
+      [workGroup, learnGroup, reachGroup].filter(Boolean).forEach(group => scrollArea.appendChild(group));
 
       const ctaDock = document.createElement('div');
       ctaDock.className = 'mobile-menu-cta-dock';
