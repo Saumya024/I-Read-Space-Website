@@ -12,9 +12,9 @@
  * 5. Project Settings (gear) > enable "Show appsscript.json manifest file in editor"
  *    - Open appsscript.json and paste the contents from appsscript.json in this repo
  *    - This fills oauthScopes + urlFetchWhitelist (the "security limitations" fields)
- * 6. Add your Cal.com API key as a Script Property:
- *    - Project Settings > Script properties
- *    - Add property: CAL_API_KEY = your key (never paste keys into this file)
+ * 6. Add Script Properties (Project Settings > Script properties):
+ *    - CAL_API_KEY = your Cal.com API key
+ *    - RECAPTCHA_SECRET = your reCAPTCHA v3 secret key (never paste keys into this file)
  * 7. Deploy > New deployment > Web app
  *    - Execute as: Me (runs as you — required so anonymous visitors can write to your sheet)
  *    - Who has access: Anyone (required for ireadspace.com visitors without Google login)
@@ -24,14 +24,14 @@
  * SECURITY NOTE:
  * "Anyone" access cannot be restricted to ireadspace.com in the deploy dialog.
  * This script validates input, rate-limits by email, rejects honeypot spam,
- * and deduplicates Cal.com bookings via idempotency keys.
- * Optional later: Google reCAPTCHA v3 or Cloudflare Turnstile verification.
+ * deduplicates Cal.com bookings via idempotency keys, and verifies reCAPTCHA v3 tokens.
  */
 
 const SHEET_NAME = 'Sheet1';
 const CAL_USERNAME = 'i-read-space';
 const RATE_LIMIT_WINDOW_SEC = 3600;
 const IDEMPOTENCY_TTL_SEC = 86400;
+const RECAPTCHA_MIN_SCORE = 0.5;
 const EVENT_SLUGS = {
   '30': '30min',
   '60': '60min',
@@ -142,6 +142,64 @@ function createBookingWithIdempotency_(data) {
   }
 }
 
+function verifyRecaptcha_(token, expectedAction) {
+  const secret = PropertiesService.getScriptProperties().getProperty('RECAPTCHA_SECRET');
+  if (!secret) {
+    return { valid: true, skipped: true };
+  }
+
+  if (!token || typeof token !== 'string' || !token.trim()) {
+    return {
+      valid: false,
+      error: 'Security check failed. Please refresh the page and try again.'
+    };
+  }
+
+  const response = UrlFetchApp.fetch('https://www.google.com/recaptcha/api/siteverify', {
+    method: 'post',
+    contentType: 'application/x-www-form-urlencoded',
+    payload: {
+      secret: secret,
+      response: token.trim()
+    },
+    muteHttpExceptions: true
+  });
+
+  let parsed;
+  try {
+    parsed = JSON.parse(response.getContentText());
+  } catch (error) {
+    return {
+      valid: false,
+      error: 'Security check failed. Please try again.'
+    };
+  }
+
+  if (!parsed.success) {
+    return {
+      valid: false,
+      error: 'Security check failed. Please refresh the page and try again.'
+    };
+  }
+
+  if (expectedAction && parsed.action && parsed.action !== expectedAction) {
+    return {
+      valid: false,
+      error: 'Security check failed. Please refresh the page and try again.'
+    };
+  }
+
+  const score = typeof parsed.score === 'number' ? parsed.score : 0;
+  if (score < RECAPTCHA_MIN_SCORE) {
+    return {
+      valid: false,
+      error: 'We could not verify this submission. Please try again later.'
+    };
+  }
+
+  return { valid: true, score: score };
+}
+
 function checkRateLimit_(email, action) {
   const normalized = normalizeEmail_(email);
   if (!normalized) {
@@ -176,6 +234,11 @@ function validateBookingRequest_(data) {
     return { valid: false, isBot: true };
   }
 
+  const recaptcha = verifyRecaptcha_(data.recaptchaToken, 'booking');
+  if (!recaptcha.valid) {
+    return { valid: false, error: recaptcha.error };
+  }
+
   if (!isValidName_(data.name)) {
     return { valid: false, error: 'Please enter a valid name.' };
   }
@@ -205,6 +268,11 @@ function validateIntakeRequest_(data) {
     return { valid: false, isBot: true };
   }
 
+  const recaptcha = verifyRecaptcha_(data.recaptchaToken, 'intake');
+  if (!recaptcha.valid) {
+    return { valid: false, error: recaptcha.error };
+  }
+
   if (!isValidName_(data.name)) {
     return { valid: false, error: 'Please enter a valid name.' };
   }
@@ -227,6 +295,12 @@ function validateEmailCapture_(data) {
   if (isHoneypotTriggered_(data)) {
     return { valid: false, isBot: true };
   }
+
+  const recaptcha = verifyRecaptcha_(data.recaptchaToken, 'email_capture');
+  if (!recaptcha.valid) {
+    return { valid: false, error: recaptcha.error };
+  }
+
   if (!isValidEmail_(data.email)) {
     return { valid: false, error: 'Please enter a valid email address.' };
   }

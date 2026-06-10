@@ -705,7 +705,8 @@
       phone: bookingData.phone || '',
       timeZone: bookingData.timeZone || 'Asia/Kolkata',
       website: bookingData.website || '',
-      idempotencyKey: bookingData.idempotencyKey || ''
+      idempotencyKey: bookingData.idempotencyKey || '',
+      recaptchaToken: bookingData.recaptchaToken || ''
     });
 
     if (scriptResult && scriptResult.success && scriptResult.data) {

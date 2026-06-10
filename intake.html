@@ -203,7 +203,8 @@
     </div>
   </div>
 
-  <script src="js/booking-shared.js?v=18"></script>
+  <script src="/js/recaptcha.js?v=1"></script>
+  <script src="js/booking-shared.js?v=19"></script>
   <script>
     let hasAttemptedIntakeSubmit = false;
     let bookingState = null;
@@ -783,6 +784,21 @@
         }
       }, 2000);
 
+      let bookingRecaptchaToken = '';
+      try {
+        bookingRecaptchaToken = await window.IRSRecaptcha.getToken('booking');
+      } catch (recaptchaError) {
+        bookingSubmitInFlight = false;
+        clearBookingIdempotencyKey();
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.removeAttribute('aria-disabled');
+          submitBtn.textContent = originalBtnText;
+        }
+        alert('Security check failed to load. Please refresh the page and try again.');
+        return;
+      }
+
       let bookingResult;
       try {
         bookingResult = await window.IRSBooking.createBooking({
@@ -793,7 +809,8 @@
           phone: phone,
           timeZone: bookingState.timeZone || 'Asia/Kolkata',
           website: formData.get('website') || '',
-          idempotencyKey: idempotencyKey
+          idempotencyKey: idempotencyKey,
+          recaptchaToken: bookingRecaptchaToken
         });
       } catch (bookingError) {
         bookingSubmitInFlight = false;
@@ -827,11 +844,19 @@
       bookingState.isIndia = isIndiaResolved;
       window.IRSBooking.saveBookingState(bookingState);
 
+      let intakeRecaptchaToken = '';
+      try {
+        intakeRecaptchaToken = await window.IRSRecaptcha.getToken('intake');
+      } catch (recaptchaError) {
+        console.error('Intake reCAPTCHA token failed:', recaptchaError);
+      }
+
       const submissionData = {
         name: name,
         email: email,
         phone: phone,
         website: formData.get('website') || '',
+        recaptchaToken: intakeRecaptchaToken,
         dob: dob,
         tob: tob || '',
         timeOfBirthAccuracy: getTimeOfBirthAccuracy(formData, ''),

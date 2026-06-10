@@ -4,6 +4,33 @@
   var SHEET_NAME = 'Sheet2';
   var TRACKER_PDF_PATH = '../../assets/43day-reset-tracker-FINAL.pptx.pdf';
   var honeypotCounter = 0;
+  var recaptchaLoadPromise = null;
+
+  function loadRecaptchaModule() {
+    if (window.IRSRecaptcha) {
+      return Promise.resolve();
+    }
+    if (recaptchaLoadPromise) {
+      return recaptchaLoadPromise;
+    }
+
+    recaptchaLoadPromise = new Promise(function(resolve, reject) {
+      var script = document.createElement('script');
+      script.src = '/js/recaptcha.js?v=1';
+      script.async = true;
+      script.onload = function() { resolve(); };
+      script.onerror = function() { reject(new Error('reCAPTCHA failed to load')); };
+      document.head.appendChild(script);
+    });
+
+    return recaptchaLoadPromise;
+  }
+
+  function getRecaptchaToken(action) {
+    return loadRecaptchaModule().then(function() {
+      return window.IRSRecaptcha.getToken(action);
+    });
+  }
 
   function isValidEmail(value) {
     if (!value || typeof value !== 'string') return false;
@@ -51,7 +78,7 @@
     return field ? (field.value || '').trim() : '';
   }
 
-  function sendEmailToSheets(email, source, website) {
+  function sendEmailToSheets(email, source, website, recaptchaToken) {
     if (!email) return;
 
     try {
@@ -76,7 +103,8 @@
       dataInput.value = JSON.stringify({
         email: email,
         source: source || '',
-        website: website || ''
+        website: website || '',
+        recaptchaToken: recaptchaToken || ''
       });
       form.appendChild(dataInput);
 
@@ -123,11 +151,17 @@
         document.title ||
         'Insight';
 
-      btn.textContent = 'Subscribed!';
       btn.disabled = true;
       btn.setAttribute('aria-disabled', 'true');
 
-      sendEmailToSheets(email, source, readHoneypotValue(form));
+      getRecaptchaToken('email_capture').then(function(recaptchaToken) {
+        btn.textContent = 'Subscribed!';
+        sendEmailToSheets(email, source, readHoneypotValue(form), recaptchaToken);
+      }).catch(function() {
+        btn.disabled = false;
+        btn.removeAttribute('aria-disabled');
+        alert('Security check failed. Please refresh the page and try again.');
+      });
     });
   }
 
@@ -168,19 +202,25 @@
         (document.querySelector('main h1') && document.querySelector('main h1').textContent) ||
         'Ascendant Reset Tracker';
 
-      trackerBtn.textContent = 'Sent!';
       trackerBtn.disabled = true;
       trackerBtn.setAttribute('aria-disabled', 'true');
 
-      sendEmailToSheets(email, source, readHoneypotValue(trackerWrap));
+      getRecaptchaToken('email_capture').then(function(recaptchaToken) {
+        trackerBtn.textContent = 'Sent!';
+        sendEmailToSheets(email, source, readHoneypotValue(trackerWrap), recaptchaToken);
 
-      var a = document.createElement('a');
-      a.href = TRACKER_PDF_PATH;
-      a.download = '43-Day-Reset-Tracker.pdf';
-      a.rel = 'noopener';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+        var a = document.createElement('a');
+        a.href = TRACKER_PDF_PATH;
+        a.download = '43-Day-Reset-Tracker.pdf';
+        a.rel = 'noopener';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }).catch(function() {
+        trackerBtn.disabled = false;
+        trackerBtn.removeAttribute('aria-disabled');
+        alert('Security check failed. Please refresh the page and try again.');
+      });
     });
   }
 
@@ -216,11 +256,17 @@
           form.getAttribute('data-success-text') ||
           'Subscribed!';
 
-        btn.textContent = successText;
         btn.disabled = true;
         btn.setAttribute('aria-disabled', 'true');
 
-        sendEmailToSheets(email, source, readHoneypotValue(form));
+        getRecaptchaToken('email_capture').then(function(recaptchaToken) {
+          btn.textContent = successText;
+          sendEmailToSheets(email, source, readHoneypotValue(form), recaptchaToken);
+        }).catch(function() {
+          btn.disabled = false;
+          btn.removeAttribute('aria-disabled');
+          alert('Security check failed. Please refresh the page and try again.');
+        });
       });
     });
   }
