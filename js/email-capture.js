@@ -3,12 +3,12 @@
   var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQX3YcflcWNrUZN7a4pcBkzWmf5B4R4vccK5Ci32LuPnpW6YJnKNJrlUYyJ_vz-609/exec';
   var SHEET_NAME = 'Sheet2';
   var TRACKER_PDF_PATH = '../../assets/43day-reset-tracker-FINAL.pptx.pdf';
+  var honeypotCounter = 0;
 
   function isValidEmail(value) {
     if (!value || typeof value !== 'string') return false;
     var trimmed = value.trim();
     if (trimmed.length === 0) return false;
-    // Basic check: has @, something before @, something after @ with at least one dot
     var at = trimmed.indexOf('@');
     if (at <= 0 || at === trimmed.length - 1) return false;
     var after = trimmed.slice(at + 1);
@@ -16,7 +16,42 @@
     return true;
   }
 
-  function sendEmailToSheets(email, source) {
+  function ensureHoneypotField(container) {
+    if (!container) return null;
+    var existing = container.querySelector('input[name="website"]');
+    if (existing) return existing;
+
+    honeypotCounter += 1;
+    var fieldId = 'email-capture-website-' + honeypotCounter;
+
+    var wrap = document.createElement('div');
+    wrap.className = 'intake-honeypot-wrap';
+    wrap.setAttribute('aria-hidden', 'true');
+
+    var label = document.createElement('label');
+    label.setAttribute('for', fieldId);
+    label.textContent = 'Website';
+
+    var input = document.createElement('input');
+    input.type = 'text';
+    input.name = 'website';
+    input.id = fieldId;
+    input.tabIndex = -1;
+    input.autocomplete = 'off';
+
+    wrap.appendChild(label);
+    wrap.appendChild(input);
+    container.insertBefore(wrap, container.firstChild);
+    return input;
+  }
+
+  function readHoneypotValue(container) {
+    if (!container) return '';
+    var field = container.querySelector('input[name="website"]');
+    return field ? (field.value || '').trim() : '';
+  }
+
+  function sendEmailToSheets(email, source, website) {
     if (!email) return;
 
     try {
@@ -40,7 +75,8 @@
       dataInput.name = 'data';
       dataInput.value = JSON.stringify({
         email: email,
-        source: source || ''
+        source: source || '',
+        website: website || ''
       });
       form.appendChild(dataInput);
 
@@ -67,12 +103,13 @@
   function handleInsightEmailForm() {
     var form = document.getElementById('email-form');
     if (!form) return;
+    ensureHoneypotField(form);
 
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       var input = form.querySelector('input[name="email"]');
       var btn = form.querySelector('button');
-      if (!input || !btn) return;
+      if (!input || !btn || btn.disabled) return;
 
       var email = (input.value || '').trim();
       if (!email) {
@@ -88,8 +125,9 @@
 
       btn.textContent = 'Subscribed!';
       btn.disabled = true;
+      btn.setAttribute('aria-disabled', 'true');
 
-      sendEmailToSheets(email, source);
+      sendEmailToSheets(email, source, readHoneypotValue(form));
     });
   }
 
@@ -97,6 +135,9 @@
     var emailInput = document.getElementById('tracker-email');
     var trackerBtn = document.getElementById('get-tracker-btn');
     if (!emailInput || !trackerBtn) return;
+
+    var trackerWrap = emailInput.closest('.field') || emailInput.parentElement;
+    ensureHoneypotField(trackerWrap);
 
     function setButtonState(valid) {
       trackerBtn.disabled = !valid;
@@ -113,6 +154,8 @@
     });
 
     trackerBtn.addEventListener('click', function() {
+      if (trackerBtn.disabled) return;
+
       var email = (emailInput.value || '').trim();
       if (!isValidEmail(email)) {
         emailInput.focus();
@@ -129,7 +172,7 @@
       trackerBtn.disabled = true;
       trackerBtn.setAttribute('aria-disabled', 'true');
 
-      sendEmailToSheets(email, source);
+      sendEmailToSheets(email, source, readHoneypotValue(trackerWrap));
 
       var a = document.createElement('a');
       a.href = TRACKER_PDF_PATH;
@@ -148,13 +191,14 @@
     forms.forEach(function(form) {
       if (form.dataset.captureBound === 'true') return;
       form.dataset.captureBound = 'true';
+      ensureHoneypotField(form);
 
       form.addEventListener('submit', function(e) {
         e.preventDefault();
 
         var input = form.querySelector('input[name="email"]');
         var btn = form.querySelector('button[type="submit"], button');
-        if (!input || !btn) return;
+        if (!input || !btn || btn.disabled) return;
 
         var email = (input.value || '').trim();
         if (!isValidEmail(email)) {
@@ -176,7 +220,7 @@
         btn.disabled = true;
         btn.setAttribute('aria-disabled', 'true');
 
-        sendEmailToSheets(email, source);
+        sendEmailToSheets(email, source, readHoneypotValue(form));
       });
     });
   }
@@ -193,4 +237,3 @@
     handleGenericEmailCaptureForms();
   }
 })();
-

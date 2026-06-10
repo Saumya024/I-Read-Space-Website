@@ -223,37 +223,58 @@
   background: rgba(67, 16, 57, 0.05);
 }
 
-.irs-cookie-overlay {
+.irs-cookie-popover {
   position: fixed;
-  inset: 0;
   z-index: 10001;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 0 16px 20px;
-  background: rgba(67, 16, 57, 0.35);
-}
-
-.irs-cookie-panel {
-  width: min(100%, 320px);
-  max-height: min(70vh, 420px);
+  width: min(400px, calc(100vw - 16px));
+  max-height: min(70vh, 480px);
   overflow-y: auto;
-  background: #F8F6F2;
+  background: #ffffff;
   border-radius: 10px;
-  box-shadow: 0 8px 32px rgba(67, 16, 57, 0.18);
-  padding: 14px 16px 16px;
-  animation: irs-cookie-panel-in 0.22s ease-out forwards;
+  box-shadow: 0 4px 24px rgba(67, 16, 57, 0.14), 0 2px 8px rgba(67, 16, 57, 0.08);
+  padding: 16px 18px 18px;
+  animation: irs-cookie-popover-in 0.2s ease-out forwards;
 }
 
-@keyframes irs-cookie-panel-in {
+@keyframes irs-cookie-popover-in {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes irs-cookie-popover-in-below {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes irs-cookie-sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.irs-cookie-popover--below {
+  animation-name: irs-cookie-popover-in-below;
+}
+
+.irs-cookie-divider {
+  border: none;
+  border-top: 1px solid rgba(67, 16, 57, 0.1);
+  margin: 0;
 }
 
 .irs-cookie-panel-header {
@@ -289,12 +310,7 @@
 }
 
 .irs-cookie-row {
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(67, 16, 57, 0.1);
-}
-
-.irs-cookie-row-last {
-  border-bottom: none;
+  padding: 10px 0;
 }
 
 .irs-cookie-row-essential {
@@ -391,21 +407,34 @@
 
 .irs-cookie-panel-footer {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: stretch;
-  gap: 8px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(67, 16, 57, 0.1);
+  gap: 12px;
+  padding-top: 4px;
 }
 
-.irs-cookie-panel-footer .irs-cookie-btn {
-  flex: 1 1 0;
-  padding: 9px 10px;
-  font-size: var(--text-caption);
+.irs-cookie-panel-footer .irs-cookie-btn-accept {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: var(--text-small);
 }
 
-.irs-cookie-panel-footer .irs-cookie-btn-block {
-  width: auto;
+.irs-cookie-accept-all-link {
+  background: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: var(--text-small);
+  font-weight: 500;
+  color: #431039;
+  text-decoration: underline;
+  cursor: pointer;
+  text-align: center;
+  padding: 4px 8px;
+  align-self: center;
+}
+
+.irs-cookie-accept-all-link:hover {
+  color: #5a1849;
 }
 
 body.irs-cookie-banner-open,
@@ -413,10 +442,28 @@ body.irs-cookie-panel-open {
   padding-bottom: 0;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1024px) {
+  .irs-cookie-popover {
+    width: min(360px, calc(100vw - 16px));
+  }
+}
+
+@media (max-width: 767px) {
   .irs-cookie-btn {
     padding: 12px 26px;
     font-size: var(--text-small);
+  }
+
+  .irs-cookie-popover--sheet {
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    bottom: 0;
+    width: 100% !important;
+    max-width: none;
+    max-height: 85vh;
+    border-radius: 12px 12px 0 0;
+    animation: irs-cookie-sheet-in 0.28s ease-out forwards;
   }
 }
 
@@ -432,19 +479,6 @@ body.irs-cookie-panel-open {
   .irs-cookie-btn {
     flex: 1 1 auto;
     text-align: center;
-  }
-
-  .irs-cookie-overlay {
-    padding: 0 12px 16px;
-  }
-
-  .irs-cookie-panel {
-    width: min(100%, 300px);
-    padding: 12px 14px 14px;
-  }
-
-  .irs-cookie-panel-footer {
-    flex-direction: column;
   }
 }
 

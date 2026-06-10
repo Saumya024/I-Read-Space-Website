@@ -688,6 +688,13 @@
     return response.json();
   }
 
+  function createIdempotencyKey() {
+    if (global.crypto && typeof global.crypto.randomUUID === 'function') {
+      return global.crypto.randomUUID();
+    }
+    return 'idem-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 11);
+  }
+
   async function createBooking(bookingData) {
     var scriptResult = await postToScript({
       action: 'createBooking',
@@ -697,7 +704,8 @@
       email: bookingData.email,
       phone: bookingData.phone || '',
       timeZone: bookingData.timeZone || 'Asia/Kolkata',
-      website: bookingData.website || ''
+      website: bookingData.website || '',
+      idempotencyKey: bookingData.idempotencyKey || ''
     });
 
     if (scriptResult && scriptResult.success && scriptResult.data) {
@@ -756,6 +764,7 @@
     detectIsIndia: detectIsIndia,
     fetchAvailableSlots: fetchAvailableSlots,
     postToScript: postToScript,
+    createIdempotencyKey: createIdempotencyKey,
     createBooking: createBooking,
     addDays: addDays,
     toISODate: toISODate

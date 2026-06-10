@@ -203,10 +203,25 @@
     </div>
   </div>
 
-  <script src="js/booking-shared.js?v=17"></script>
+  <script src="js/booking-shared.js?v=18"></script>
   <script>
     let hasAttemptedIntakeSubmit = false;
     let bookingState = null;
+    let bookingSubmitInFlight = false;
+    const BOOKING_IDEM_STORAGE_KEY = 'irs_booking_idempotency';
+
+    function getOrCreateBookingIdempotencyKey() {
+      let key = sessionStorage.getItem(BOOKING_IDEM_STORAGE_KEY);
+      if (!key) {
+        key = window.IRSBooking.createIdempotencyKey();
+        sessionStorage.setItem(BOOKING_IDEM_STORAGE_KEY, key);
+      }
+      return key;
+    }
+
+    function clearBookingIdempotencyKey() {
+      sessionStorage.removeItem(BOOKING_IDEM_STORAGE_KEY);
+    }
 
     function redirectToScheduleIfNeeded() {
       bookingState = window.IRSBooking.getBookingState();
@@ -660,6 +675,7 @@
     document.getElementById('book-slot-btn').addEventListener('click', async function(e) {
       e.preventDefault();
       if (!hasSelectedSlot || !bookingState) return;
+      if (bookingSubmitInFlight) return;
       hasAttemptedIntakeSubmit = true;
       
       // Clear previous errors
@@ -750,10 +766,13 @@
       const submitBtn = document.getElementById('book-slot-btn');
       const originalBtnText = submitBtn ? submitBtn.textContent : '';
       const overlay = document.getElementById('redirect-overlay');
+      const idempotencyKey = getOrCreateBookingIdempotencyKey();
       let overlayTimer = null;
 
+      bookingSubmitInFlight = true;
       if (submitBtn) {
         submitBtn.disabled = true;
+        submitBtn.setAttribute('aria-disabled', 'true');
         submitBtn.textContent = 'Confirming Your Appointment';
       }
 
@@ -773,9 +792,12 @@
           email: email,
           phone: phone,
           timeZone: bookingState.timeZone || 'Asia/Kolkata',
-          website: formData.get('website') || ''
+          website: formData.get('website') || '',
+          idempotencyKey: idempotencyKey
         });
       } catch (bookingError) {
+        bookingSubmitInFlight = false;
+        clearBookingIdempotencyKey();
         if (overlayTimer) clearTimeout(overlayTimer);
         if (overlay) {
           overlay.style.display = 'none';
@@ -783,6 +805,7 @@
         }
         if (submitBtn) {
           submitBtn.disabled = false;
+          submitBtn.removeAttribute('aria-disabled');
           submitBtn.textContent = originalBtnText;
         }
         alert(bookingError.message || 'That time is no longer available. Please choose another slot.');
@@ -858,6 +881,7 @@
         console.error('Error submitting to Google Sheets:', sheetsError);
       }
 
+      clearBookingIdempotencyKey();
       if (overlayTimer) clearTimeout(overlayTimer);
       if (overlay) {
         overlay.style.display = 'flex';

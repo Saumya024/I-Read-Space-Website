@@ -23,13 +23,15 @@
  *
  * SECURITY NOTE:
  * "Anyone" access cannot be restricted to ireadspace.com in the deploy dialog.
- * This script validates input, rate-limits by email, and rejects honeypot spam.
- * Optional later: Cloudflare Turnstile verification.
+ * This script validates input, rate-limits by email, rejects honeypot spam,
+ * and deduplicates Cal.com bookings via idempotency keys.
+ * Optional later: Google reCAPTCHA v3 or Cloudflare Turnstile verification.
  */
 
 const SHEET_NAME = 'Sheet1';
 const CAL_USERNAME = 'i-read-space';
 const RATE_LIMIT_WINDOW_SEC = 3600;
+const IDEMPOTENCY_TTL_SEC = 86400;
 const EVENT_SLUGS = {
   '30': '30min',
   '60': '60min',
@@ -73,6 +75,71 @@ function isValidSlotStart_(start) {
 
 function isValidDuration_(duration) {
   return ALLOWED_DURATIONS.indexOf(String(duration)) !== -1;
+}
+
+function normalizeIdempotencyKey_(key) {
+  if (!key || typeof key !== 'string') return '';
+  const trimmed = key.trim();
+  if (trimmed.length < 8 || trimmed.length > 64) return '';
+  if (!/^[a-zA-Z0-9_-]+$/.test(trimmed)) return '';
+  return trimmed;
+}
+
+function getIdempotentBookingResult_(key) {
+  const normalized = normalizeIdempotencyKey_(key);
+  if (!normalized) return null;
+
+  const cache = CacheService.getScriptCache();
+  const cacheKey = 'idem_booking_' + normalized;
+  const cached = cache.get(cacheKey);
+  if (!cached) return null;
+
+  try {
+    return JSON.parse(cached);
+  } catch (error) {
+    return null;
+  }
+}
+
+function storeIdempotentBookingResult_(key, result) {
+  const normalized = normalizeIdempotencyKey_(key);
+  if (!normalized || !result || !result.success) return;
+
+  const cache = CacheService.getScriptCache();
+  cache.put('idem_booking_' + normalized, JSON.stringify(result), IDEMPOTENCY_TTL_SEC);
+}
+
+function createBookingWithIdempotency_(data) {
+  const idemKey = data.idempotencyKey;
+  const cached = getIdempotentBookingResult_(idemKey);
+  if (cached) return cached;
+
+  if (!normalizeIdempotencyKey_(idemKey)) {
+    return createCalBooking_(data);
+  }
+
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(10000)) {
+    const retry = getIdempotentBookingResult_(idemKey);
+    if (retry) return retry;
+    return {
+      success: false,
+      error: 'Please wait a moment and try again.'
+    };
+  }
+
+  try {
+    const again = getIdempotentBookingResult_(idemKey);
+    if (again) return again;
+
+    const result = createCalBooking_(data);
+    if (result && result.success) {
+      storeIdempotentBookingResult_(idemKey, result);
+    }
+    return result;
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 function checkRateLimit_(email, action) {
@@ -350,7 +417,7 @@ function doPost(e) {
         if (bookingCheck.isBot) return botSuccessResponse_();
         return jsonResponse_({ success: false, error: bookingCheck.error });
       }
-      return jsonResponse_(createCalBooking_(data));
+      return jsonResponse_(createBookingWithIdempotency_(data));
     }
 
     if (data.email && !data.name && !data.dob) {

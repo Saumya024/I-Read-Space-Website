@@ -176,97 +176,164 @@
     closeUi();
   }
 
-  function closeUi() {
-    var banner = document.getElementById('irs-cookie-banner');
-    var overlay = document.getElementById('irs-cookie-overlay');
-    if (banner) banner.remove();
-    if (overlay) overlay.remove();
-    document.body.classList.remove('irs-cookie-banner-open');
+  var panelOutsideClickHandler = null;
+  var panelRepositionHandler = null;
+
+  function removePanelListeners() {
+    if (panelOutsideClickHandler) {
+      document.removeEventListener('click', panelOutsideClickHandler, true);
+      panelOutsideClickHandler = null;
+    }
+    if (panelRepositionHandler) {
+      window.removeEventListener('resize', panelRepositionHandler);
+      window.removeEventListener('scroll', panelRepositionHandler, true);
+      panelRepositionHandler = null;
+    }
+  }
+
+  function dismissPanel() {
+    var popover = document.getElementById('irs-cookie-popover');
+    if (popover) popover.remove();
+    removePanelListeners();
     document.body.classList.remove('irs-cookie-panel-open');
+  }
+
+  function closeUi() {
+    dismissPanel();
+    var banner = document.getElementById('irs-cookie-banner');
+    if (banner) banner.remove();
+    document.body.classList.remove('irs-cookie-banner-open');
+  }
+
+  function isMobilePanel() {
+    return window.innerWidth < 768;
+  }
+
+  function getPopoverWidth() {
+    var vw = window.innerWidth;
+    if (vw < 768) return vw;
+    if (vw <= 1024) return Math.min(360, vw - 16);
+    return Math.min(400, vw - 16);
+  }
+
+  function positionPopover(popover, anchorBtn) {
+    var gap = 10;
+    var width = getPopoverWidth();
+    var rect = anchorBtn.getBoundingClientRect();
+
+    popover.style.width = width + 'px';
+    popover.classList.remove('irs-cookie-popover--below');
+
+    var panelHeight = popover.offsetHeight;
+    var spaceAbove = rect.top;
+    var spaceBelow = window.innerHeight - rect.bottom;
+    var openAbove = spaceAbove >= panelHeight + gap || spaceAbove >= spaceBelow;
+
+    var left = rect.right - width;
+    left = Math.max(8, Math.min(left, window.innerWidth - width - 8));
+
+    if (openAbove) {
+      popover.style.top = Math.max(8, rect.top - panelHeight - gap) + 'px';
+    } else {
+      popover.classList.add('irs-cookie-popover--below');
+      popover.style.top = Math.min(window.innerHeight - panelHeight - 8, rect.bottom + gap) + 'px';
+    }
+
+    popover.style.left = left + 'px';
+    popover.style.bottom = 'auto';
+    popover.style.right = 'auto';
   }
 
   function getPanelHtml(analyticsOn, advertisingOn) {
     return (
-      '<div class="irs-cookie-panel" role="dialog" aria-label="Cookie preferences">' +
-        '<div class="irs-cookie-panel-header">' +
-          '<h2 class="irs-cookie-panel-title">Cookie Preferences</h2>' +
-          '<button type="button" class="irs-cookie-panel-close" id="irs-cookie-panel-close" aria-label="Close">&times;</button>' +
+      '<div class="irs-cookie-panel-header">' +
+        '<h2 class="irs-cookie-panel-title">Your Cookie Preferences</h2>' +
+        '<button type="button" class="irs-cookie-panel-close" id="irs-cookie-panel-close" aria-label="Close">&times;</button>' +
+      '</div>' +
+      '<div class="irs-cookie-row irs-cookie-row-essential">' +
+        '<div class="irs-cookie-row-head">' +
+          '<span class="irs-cookie-row-label">Essential Cookies</span>' +
+          '<span class="irs-cookie-always-active">' + LOCK_SVG + 'Always Active</span>' +
         '</div>' +
-        '<div class="irs-cookie-row irs-cookie-row-essential">' +
-          '<div class="irs-cookie-row-head">' +
-            '<span class="irs-cookie-row-label">Essential Cookies</span>' +
-            '<span class="irs-cookie-always-active">' + LOCK_SVG + 'Always Active</span>' +
-          '</div>' +
-          '<p class="irs-cookie-row-desc">Required for booking and core site functionality.</p>' +
+        '<p class="irs-cookie-row-desc">Required for booking and core site functionality.</p>' +
+      '</div>' +
+      '<hr class="irs-cookie-divider" aria-hidden="true" />' +
+      '<div class="irs-cookie-row">' +
+        '<div class="irs-cookie-row-head">' +
+          '<label class="irs-cookie-row-label" for="irs-cookie-analytics">Analytics Cookies</label>' +
+          '<label class="irs-cookie-toggle">' +
+            '<input type="checkbox" id="irs-cookie-analytics"' + (analyticsOn ? ' checked' : '') + ' />' +
+            '<span class="irs-cookie-toggle-slider" aria-hidden="true"></span>' +
+          '</label>' +
         '</div>' +
-        '<div class="irs-cookie-row">' +
-          '<div class="irs-cookie-row-head">' +
-            '<label class="irs-cookie-row-label" for="irs-cookie-analytics">Analytics Cookies</label>' +
-            '<label class="irs-cookie-toggle">' +
-              '<input type="checkbox" id="irs-cookie-analytics"' + (analyticsOn ? ' checked' : '') + ' />' +
-              '<span class="irs-cookie-toggle-slider" aria-hidden="true"></span>' +
-            '</label>' +
-          '</div>' +
-          '<p class="irs-cookie-row-desc">Help us understand how visitors use our site so we can improve it.</p>' +
+        '<p class="irs-cookie-row-desc">Helps us understand how visitors use our site.</p>' +
+      '</div>' +
+      '<hr class="irs-cookie-divider" aria-hidden="true" />' +
+      '<div class="irs-cookie-row">' +
+        '<div class="irs-cookie-row-head">' +
+          '<label class="irs-cookie-row-label" for="irs-cookie-advertising">Advertising Cookies</label>' +
+          '<label class="irs-cookie-toggle">' +
+            '<input type="checkbox" id="irs-cookie-advertising"' + (advertisingOn ? ' checked' : '') + ' />' +
+            '<span class="irs-cookie-toggle-slider" aria-hidden="true"></span>' +
+          '</label>' +
         '</div>' +
-        '<div class="irs-cookie-row irs-cookie-row-last">' +
-          '<div class="irs-cookie-row-head">' +
-            '<label class="irs-cookie-row-label" for="irs-cookie-advertising">Advertising Cookies</label>' +
-            '<label class="irs-cookie-toggle">' +
-              '<input type="checkbox" id="irs-cookie-advertising"' + (advertisingOn ? ' checked' : '') + ' />' +
-              '<span class="irs-cookie-toggle-slider" aria-hidden="true"></span>' +
-            '</label>' +
-          '</div>' +
-          '<p class="irs-cookie-row-desc">Used to show relevant ads and measure their effectiveness.</p>' +
-        '</div>' +
-        '<div class="irs-cookie-panel-footer">' +
-          '<button type="button" class="irs-cookie-btn irs-cookie-btn-accept irs-cookie-btn-block" id="irs-cookie-save">Save Preferences</button>' +
-          '<button type="button" class="irs-cookie-btn irs-cookie-btn-manage irs-cookie-btn-block" id="irs-cookie-accept-all">Accept All</button>' +
-        '</div>' +
+        '<p class="irs-cookie-row-desc">Used to show relevant ads.</p>' +
+      '</div>' +
+      '<hr class="irs-cookie-divider" aria-hidden="true" />' +
+      '<div class="irs-cookie-panel-footer">' +
+        '<button type="button" class="irs-cookie-btn irs-cookie-btn-accept irs-cookie-btn-block" id="irs-cookie-save">Save Preferences</button>' +
+        '<button type="button" class="irs-cookie-accept-all-link" id="irs-cookie-accept-all">Accept All</button>' +
       '</div>'
     );
   }
 
   function showPanel(analyticsOn, advertisingOn) {
-    var existing = document.getElementById('irs-cookie-overlay');
-    if (existing) existing.remove();
+    dismissPanel();
 
-    var banner = document.getElementById('irs-cookie-banner');
     var manageBtn = document.getElementById('irs-cookie-manage');
-    var anchorBottom = 20;
+    var mobile = isMobilePanel();
 
-    if (manageBtn) {
-      var rect = manageBtn.getBoundingClientRect();
-      anchorBottom = Math.max(16, window.innerHeight - rect.top + 8);
-    } else if (banner) {
-      var bannerRect = banner.getBoundingClientRect();
-      anchorBottom = Math.max(16, window.innerHeight - bannerRect.top + 8);
-    }
-
-    if (banner) banner.style.display = 'none';
-
-    var overlay = document.createElement('div');
-    overlay.id = 'irs-cookie-overlay';
-    overlay.className = 'irs-cookie-overlay';
-    overlay.style.paddingBottom = anchorBottom + 'px';
-    overlay.innerHTML = getPanelHtml(analyticsOn, advertisingOn);
-    document.body.appendChild(overlay);
+    var popover = document.createElement('div');
+    popover.id = 'irs-cookie-popover';
+    popover.className = 'irs-cookie-popover' + (mobile ? ' irs-cookie-popover--sheet' : '');
+    popover.setAttribute('role', 'dialog');
+    popover.setAttribute('aria-label', 'Cookie preferences');
+    popover.innerHTML = getPanelHtml(analyticsOn, advertisingOn);
+    document.body.appendChild(popover);
     document.body.classList.add('irs-cookie-panel-open');
 
     document.getElementById('irs-cookie-save').addEventListener('click', saveFromPanel);
     document.getElementById('irs-cookie-accept-all').addEventListener('click', acceptAll);
-    document.getElementById('irs-cookie-panel-close').addEventListener('click', function () {
-      if (overlay) overlay.remove();
-      document.body.classList.remove('irs-cookie-panel-open');
-      if (banner && !readStored()) banner.style.display = '';
-    });
-    overlay.addEventListener('click', function (e) {
-      if (e.target === overlay) {
-        overlay.remove();
-        document.body.classList.remove('irs-cookie-panel-open');
-        if (banner && !readStored()) banner.style.display = '';
+    document.getElementById('irs-cookie-panel-close').addEventListener('click', dismissPanel);
+
+    if (!mobile && manageBtn) {
+      requestAnimationFrame(function () {
+        positionPopover(popover, manageBtn);
+      });
+    }
+
+    panelOutsideClickHandler = function (e) {
+      if (popover.contains(e.target) || (manageBtn && manageBtn.contains(e.target))) return;
+      dismissPanel();
+    };
+    setTimeout(function () {
+      document.addEventListener('click', panelOutsideClickHandler, true);
+    }, 0);
+
+    panelRepositionHandler = function () {
+      var nowMobile = isMobilePanel();
+      if (nowMobile) {
+        popover.className = 'irs-cookie-popover irs-cookie-popover--sheet';
+        popover.style.left = '';
+        popover.style.top = '';
+        popover.style.width = '';
+      } else {
+        popover.className = 'irs-cookie-popover';
+        if (manageBtn) positionPopover(popover, manageBtn);
       }
-    });
+    };
+    window.addEventListener('resize', panelRepositionHandler);
+    window.addEventListener('scroll', panelRepositionHandler, true);
   }
 
   function showBanner() {
@@ -286,7 +353,7 @@
         '</p>' +
         '<div class="irs-cookie-banner-actions">' +
           '<button type="button" class="irs-cookie-btn irs-cookie-btn-accept" id="irs-cookie-accept">Accept</button>' +
-          '<button type="button" class="irs-cookie-btn irs-cookie-btn-manage" id="irs-cookie-manage">Manage Cookies</button>' +
+          '<button type="button" class="irs-cookie-btn irs-cookie-btn-manage" id="irs-cookie-manage">Manage Preferences</button>' +
         '</div>' +
       '</div>';
 
