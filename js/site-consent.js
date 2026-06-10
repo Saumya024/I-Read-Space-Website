@@ -281,8 +281,8 @@
       '</div>' +
       '<hr class="irs-cookie-divider" aria-hidden="true" />' +
       '<div class="irs-cookie-panel-footer">' +
-        '<button type="button" class="irs-cookie-btn irs-cookie-btn-accept irs-cookie-btn-block" id="irs-cookie-save">Save Preferences</button>' +
-        '<button type="button" class="irs-cookie-accept-all-link" id="irs-cookie-accept-all">Accept All</button>' +
+        '<button type="button" class="irs-cookie-btn irs-cookie-btn-accept" id="irs-cookie-save">Save Preferences</button>' +
+        '<button type="button" class="irs-cookie-btn irs-cookie-btn-manage" id="irs-cookie-accept-all">Accept All</button>' +
       '</div>'
     );
   }

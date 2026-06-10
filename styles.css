@@ -407,34 +407,16 @@
 
 .irs-cookie-panel-footer {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: stretch;
-  gap: 12px;
+  gap: 8px;
   padding-top: 4px;
 }
 
-.irs-cookie-panel-footer .irs-cookie-btn-accept {
-  width: 100%;
-  padding: 12px 16px;
-  font-size: var(--text-small);
-}
-
-.irs-cookie-accept-all-link {
-  background: none;
-  border: none;
-  font-family: 'Inter', sans-serif;
-  font-size: var(--text-small);
-  font-weight: 500;
-  color: #431039;
-  text-decoration: underline;
-  cursor: pointer;
+.irs-cookie-panel-footer .irs-cookie-btn {
+  flex: 1 1 0;
+  min-width: 0;
   text-align: center;
-  padding: 4px 8px;
-  align-self: center;
-}
-
-.irs-cookie-accept-all-link:hover {
-  color: #5a1849;
 }
 
 body.irs-cookie-banner-open,
