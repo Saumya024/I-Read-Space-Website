@@ -127,17 +127,34 @@
   outline-offset: 2px;
 }
 
-/* Cookie consent banner (GTM / ads-ready) */
+/* Cookie consent banner + preferences panel */
 .irs-cookie-banner {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 10000;
-  padding: 16px 20px;
+  padding: 16px 44px 16px 20px;
   background: #F8F6F2;
   border-top: 1px solid rgba(67, 16, 57, 0.15);
   box-shadow: 0 -4px 24px rgba(67, 16, 57, 0.08);
+}
+
+.irs-cookie-banner-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  color: rgba(67, 16, 57, 0.45);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.irs-cookie-banner-close:hover {
+  color: #431039;
 }
 
 .irs-cookie-banner-inner {
@@ -190,17 +207,194 @@
   background: #5a1849;
 }
 
-.irs-cookie-btn-reject {
+.irs-cookie-btn-manage {
   background: transparent;
   color: #431039;
   border-color: rgba(67, 16, 57, 0.3);
 }
 
-.irs-cookie-btn-reject:hover {
+.irs-cookie-btn-manage:hover {
   background: rgba(67, 16, 57, 0.05);
 }
 
-body.irs-cookie-banner-open {
+.irs-cookie-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(67, 16, 57, 0.35);
+}
+
+.irs-cookie-panel {
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #F8F6F2;
+  border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(67, 16, 57, 0.18);
+  padding: 24px;
+}
+
+.irs-cookie-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.irs-cookie-panel-title {
+  margin: 0;
+  font-family: 'Spectral', serif;
+  font-size: 22px;
+  font-weight: 500;
+  color: #431039;
+}
+
+.irs-cookie-panel-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  line-height: 1;
+  color: rgba(67, 16, 57, 0.5);
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.irs-cookie-panel-close:hover {
+  color: #431039;
+}
+
+.irs-cookie-row {
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(67, 16, 57, 0.1);
+}
+
+.irs-cookie-row-essential {
+  opacity: 0.72;
+}
+
+.irs-cookie-row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.irs-cookie-row-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #431039;
+}
+
+.irs-cookie-row-desc {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  color: rgba(67, 16, 57, 0.7);
+}
+
+.irs-cookie-always-active {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(67, 16, 57, 0.55);
+  white-space: nowrap;
+}
+
+.irs-cookie-lock-icon {
+  flex-shrink: 0;
+}
+
+.irs-cookie-toggle {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.irs-cookie-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.irs-cookie-toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: rgba(67, 16, 57, 0.2);
+  border-radius: 24px;
+  transition: background 0.2s ease;
+}
+
+.irs-cookie-toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  top: 3px;
+  background: #F8F6F2;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(67, 16, 57, 0.2);
+}
+
+.irs-cookie-toggle input:checked + .irs-cookie-toggle-slider {
+  background: #431039;
+}
+
+.irs-cookie-toggle input:checked + .irs-cookie-toggle-slider::before {
+  transform: translateX(20px);
+}
+
+.irs-cookie-toggle input:focus-visible + .irs-cookie-toggle-slider {
+  outline: 2px solid #431039;
+  outline-offset: 2px;
+}
+
+.irs-cookie-panel-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding-top: 20px;
+}
+
+.irs-cookie-panel-footer .irs-cookie-btn-accept {
+  width: 100%;
+  text-align: center;
+}
+
+.irs-cookie-link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: #431039;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.irs-cookie-link-btn:hover {
+  color: #5a1849;
+}
+
+body.irs-cookie-banner-open,
+body.irs-cookie-panel-open {
   padding-bottom: 0;
 }
 
@@ -216,6 +410,10 @@ body.irs-cookie-banner-open {
   .irs-cookie-btn {
     flex: 1 1 auto;
     text-align: center;
+  }
+
+  .irs-cookie-panel {
+    padding: 20px 18px;
   }
 }
 

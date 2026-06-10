@@ -1,7 +1,7 @@
 /**
- * Cookie consent + marketing tags (loads only after Accept)
- * - Google Tag Manager: GTM-WPK6KBSG
- * - Meta Pixel: 1478746156887728 (Facebook + Instagram ads)
+ * Cookie consent + marketing tags (granular preferences)
+ * - Google Tag Manager (analytics): GTM-WPK6KBSG
+ * - Meta Pixel (advertising): 1478746156887728
  */
 (function () {
   'use strict';
@@ -9,23 +9,44 @@
   var GTM_ID = 'GTM-WPK6KBSG';
   var META_PIXEL_ID = '1478746156887728';
   var CONSENT_KEY = 'irs_cookie_consent';
-  var CONSENT_VERSION = '1';
+  var CONSENT_VERSION = '2';
 
-  function getConsent() {
+  var LOCK_SVG = '<svg class="irs-cookie-lock-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+    '<path d="M7 11V8a5 5 0 0 1 10 0v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' +
+    '<rect x="5" y="11" width="14" height="10" rx="2" stroke="currentColor" stroke-width="2"/>' +
+    '</svg>';
+
+  function readStored() {
     try {
       var raw = localStorage.getItem(CONSENT_KEY);
       if (!raw) return null;
       var parsed = JSON.parse(raw);
-      if (parsed && parsed.version === CONSENT_VERSION) return parsed.choice;
+
+      if (parsed && parsed.version === '1') {
+        var accepted = parsed.choice === 'accepted';
+        return {
+          version: CONSENT_VERSION,
+          decided: true,
+          analytics: accepted,
+          advertising: accepted,
+          updated: parsed.updated || new Date().toISOString()
+        };
+      }
+
+      if (parsed && parsed.version === CONSENT_VERSION && parsed.decided) {
+        return parsed;
+      }
     } catch (e) {}
     return null;
   }
 
-  function setConsent(choice) {
+  function savePreferences(prefs) {
     try {
       localStorage.setItem(CONSENT_KEY, JSON.stringify({
-        choice: choice,
         version: CONSENT_VERSION,
+        decided: true,
+        analytics: !!prefs.analytics,
+        advertising: !!prefs.advertising,
         updated: new Date().toISOString()
       }));
     } catch (e) {}
@@ -37,24 +58,23 @@
 
     var f = window;
     var b = document;
-    var e = 'script';
-    var v = 'https://connect.facebook.net/en_US/fbevents.js';
-    var n, t, s;
+    var n;
 
-    if (f.fbq) return;
-    n = f.fbq = function () {
-      n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
-    };
-    if (!f._fbq) f._fbq = n;
-    n.push = n;
-    n.loaded = true;
-    n.version = '2.0';
-    n.queue = [];
-    t = b.createElement(e);
-    t.async = true;
-    t.src = v;
-    s = b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t, s);
+    if (!f.fbq) {
+      n = f.fbq = function () {
+        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+      };
+      if (!f._fbq) f._fbq = n;
+      n.push = n;
+      n.loaded = true;
+      n.version = '2.0';
+      n.queue = [];
+      var t = b.createElement('script');
+      t.async = true;
+      t.src = 'https://connect.facebook.net/en_US/fbevents.js';
+      var s = b.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(t, s);
+    }
 
     f.fbq('init', META_PIXEL_ID);
     f.fbq('track', 'PageView');
@@ -92,17 +112,6 @@
     }
   }
 
-  function loadMarketingTags() {
-    loadGtm();
-    loadMetaPixel();
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', pushPageEvents);
-    } else {
-      pushPageEvents();
-    }
-  }
-
   function pushPageEvents() {
     var path = (window.location.pathname || '').toLowerCase();
 
@@ -129,10 +138,123 @@
     }
   }
 
-  function hideBanner() {
+  function applyPreferences(prefs) {
+    if (prefs.analytics) loadGtm();
+    if (prefs.advertising) loadMetaPixel();
+
+    if (prefs.analytics || prefs.advertising) {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', pushPageEvents);
+      } else {
+        pushPageEvents();
+      }
+    }
+  }
+
+  function acceptAll() {
+    var prefs = { analytics: true, advertising: true };
+    savePreferences(prefs);
+    applyPreferences(prefs);
+    closeUi();
+  }
+
+  function essentialOnly() {
+    var prefs = { analytics: false, advertising: false };
+    savePreferences(prefs);
+    closeUi();
+  }
+
+  function saveFromPanel() {
+    var analyticsEl = document.getElementById('irs-cookie-analytics');
+    var advertisingEl = document.getElementById('irs-cookie-advertising');
+    var prefs = {
+      analytics: analyticsEl ? analyticsEl.checked : false,
+      advertising: advertisingEl ? advertisingEl.checked : false
+    };
+    savePreferences(prefs);
+    applyPreferences(prefs);
+    closeUi();
+  }
+
+  function closeUi() {
     var banner = document.getElementById('irs-cookie-banner');
+    var overlay = document.getElementById('irs-cookie-overlay');
     if (banner) banner.remove();
+    if (overlay) overlay.remove();
     document.body.classList.remove('irs-cookie-banner-open');
+    document.body.classList.remove('irs-cookie-panel-open');
+  }
+
+  function getPanelHtml(analyticsOn, advertisingOn) {
+    return (
+      '<div class="irs-cookie-panel" role="dialog" aria-label="Cookie preferences">' +
+        '<div class="irs-cookie-panel-header">' +
+          '<h2 class="irs-cookie-panel-title">Cookie Preferences</h2>' +
+          '<button type="button" class="irs-cookie-panel-close" id="irs-cookie-panel-close" aria-label="Close">&times;</button>' +
+        '</div>' +
+        '<div class="irs-cookie-row irs-cookie-row-essential">' +
+          '<div class="irs-cookie-row-head">' +
+            '<span class="irs-cookie-row-label">Essential Cookies</span>' +
+            '<span class="irs-cookie-always-active">' + LOCK_SVG + 'Always Active</span>' +
+          '</div>' +
+          '<p class="irs-cookie-row-desc">Required for booking and core site functionality.</p>' +
+        '</div>' +
+        '<div class="irs-cookie-row">' +
+          '<div class="irs-cookie-row-head">' +
+            '<label class="irs-cookie-row-label" for="irs-cookie-analytics">Analytics Cookies</label>' +
+            '<label class="irs-cookie-toggle">' +
+              '<input type="checkbox" id="irs-cookie-analytics"' + (analyticsOn ? ' checked' : '') + ' />' +
+              '<span class="irs-cookie-toggle-slider" aria-hidden="true"></span>' +
+            '</label>' +
+          '</div>' +
+          '<p class="irs-cookie-row-desc">Help us understand how visitors use our site so we can improve it.</p>' +
+        '</div>' +
+        '<div class="irs-cookie-row">' +
+          '<div class="irs-cookie-row-head">' +
+            '<label class="irs-cookie-row-label" for="irs-cookie-advertising">Advertising Cookies</label>' +
+            '<label class="irs-cookie-toggle">' +
+              '<input type="checkbox" id="irs-cookie-advertising"' + (advertisingOn ? ' checked' : '') + ' />' +
+              '<span class="irs-cookie-toggle-slider" aria-hidden="true"></span>' +
+            '</label>' +
+          '</div>' +
+          '<p class="irs-cookie-row-desc">Used to show relevant ads and measure their effectiveness.</p>' +
+        '</div>' +
+        '<div class="irs-cookie-panel-footer">' +
+          '<button type="button" class="irs-cookie-btn irs-cookie-btn-accept" id="irs-cookie-save">Save Preferences</button>' +
+          '<button type="button" class="irs-cookie-link-btn" id="irs-cookie-accept-all">Accept All</button>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function showPanel(analyticsOn, advertisingOn) {
+    var existing = document.getElementById('irs-cookie-overlay');
+    if (existing) existing.remove();
+
+    var banner = document.getElementById('irs-cookie-banner');
+    if (banner) banner.style.display = 'none';
+
+    var overlay = document.createElement('div');
+    overlay.id = 'irs-cookie-overlay';
+    overlay.className = 'irs-cookie-overlay';
+    overlay.innerHTML = getPanelHtml(analyticsOn, advertisingOn);
+    document.body.appendChild(overlay);
+    document.body.classList.add('irs-cookie-panel-open');
+
+    document.getElementById('irs-cookie-save').addEventListener('click', saveFromPanel);
+    document.getElementById('irs-cookie-accept-all').addEventListener('click', acceptAll);
+    document.getElementById('irs-cookie-panel-close').addEventListener('click', function () {
+      if (overlay) overlay.remove();
+      document.body.classList.remove('irs-cookie-panel-open');
+      if (banner && !readStored()) banner.style.display = '';
+    });
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay) {
+        overlay.remove();
+        document.body.classList.remove('irs-cookie-panel-open');
+        if (banner && !readStored()) banner.style.display = '';
+      }
+    });
   }
 
   function showBanner() {
@@ -142,40 +264,39 @@
     banner.id = 'irs-cookie-banner';
     banner.className = 'irs-cookie-banner';
     banner.setAttribute('role', 'dialog');
-    banner.setAttribute('aria-label', 'Cookie preferences');
+    banner.setAttribute('aria-label', 'Cookie notice');
     banner.innerHTML =
+      '<button type="button" class="irs-cookie-banner-close" id="irs-cookie-banner-close" aria-label="Close and use essential cookies only">&times;</button>' +
       '<div class="irs-cookie-banner-inner">' +
         '<p class="irs-cookie-banner-text">' +
-          'We use cookies for analytics and advertising so we can measure what works. ' +
-          'Essential cookies for booking always run. ' +
+          'We use cookies to keep your booking running smoothly and to understand how people use our site. ' +
           '<a href="/privacy.html#cookies">Learn more</a>' +
         '</p>' +
         '<div class="irs-cookie-banner-actions">' +
           '<button type="button" class="irs-cookie-btn irs-cookie-btn-accept" id="irs-cookie-accept">Accept</button>' +
-          '<button type="button" class="irs-cookie-btn irs-cookie-btn-reject" id="irs-cookie-reject">Reject non-essential</button>' +
+          '<button type="button" class="irs-cookie-btn irs-cookie-btn-manage" id="irs-cookie-manage">Manage Cookies</button>' +
         '</div>' +
       '</div>';
 
     document.body.appendChild(banner);
     document.body.classList.add('irs-cookie-banner-open');
 
-    document.getElementById('irs-cookie-accept').addEventListener('click', function () {
-      setConsent('accepted');
-      hideBanner();
-      loadMarketingTags();
-    });
-
-    document.getElementById('irs-cookie-reject').addEventListener('click', function () {
-      setConsent('rejected');
-      hideBanner();
+    document.getElementById('irs-cookie-accept').addEventListener('click', acceptAll);
+    document.getElementById('irs-cookie-banner-close').addEventListener('click', essentialOnly);
+    document.getElementById('irs-cookie-manage').addEventListener('click', function () {
+      var stored = readStored();
+      showPanel(
+        stored ? stored.analytics : false,
+        stored ? stored.advertising : false
+      );
     });
   }
 
   function init() {
-    var consent = getConsent();
-    if (consent === 'accepted') {
-      loadMarketingTags();
-    } else if (consent === null) {
+    var stored = readStored();
+    if (stored) {
+      applyPreferences(stored);
+    } else {
       showBanner();
     }
   }
