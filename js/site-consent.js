@@ -189,7 +189,7 @@
     return (
       '<div class="irs-cookie-panel" role="dialog" aria-label="Cookie preferences">' +
         '<div class="irs-cookie-panel-header">' +
-          '<h2 class="irs-cookie-panel-title">Your Cookie Preferences</h2>' +
+          '<h2 class="irs-cookie-panel-title">Cookie Preferences</h2>' +
           '<button type="button" class="irs-cookie-panel-close" id="irs-cookie-panel-close" aria-label="Close">&times;</button>' +
         '</div>' +
         '<div class="irs-cookie-row irs-cookie-row-essential">' +
