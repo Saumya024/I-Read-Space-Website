@@ -178,6 +178,75 @@
 
   var panelOutsideClickHandler = null;
   var panelRepositionHandler = null;
+  var bannerLayoutHandler = null;
+  var bannerResizeObserver = null;
+
+  function setBannerLayoutVars(height, bottomOffset) {
+    document.documentElement.style.setProperty('--irs-cookie-banner-height', height + 'px');
+    document.documentElement.style.setProperty('--irs-cookie-banner-bottom', bottomOffset + 'px');
+  }
+
+  function resetBannerLayoutVars() {
+    setBannerLayoutVars(0, 0);
+  }
+
+  function syncCookieBannerLayout() {
+    var banner = document.getElementById('irs-cookie-banner');
+    if (!banner || banner.style.display === 'none') {
+      resetBannerLayoutVars();
+      return;
+    }
+
+    var bottomOffset = 0;
+    if (window.visualViewport) {
+      bottomOffset = Math.max(0, window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop);
+    }
+
+    banner.style.bottom = bottomOffset + 'px';
+    setBannerLayoutVars(banner.offsetHeight, bottomOffset);
+  }
+
+  function bindBannerLayoutSync() {
+    if (bannerLayoutHandler) return;
+
+    bannerLayoutHandler = function () {
+      syncCookieBannerLayout();
+    };
+
+    window.addEventListener('resize', bannerLayoutHandler);
+    window.addEventListener('orientationchange', bannerLayoutHandler);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', bannerLayoutHandler);
+      window.visualViewport.addEventListener('scroll', bannerLayoutHandler);
+    }
+
+    var banner = document.getElementById('irs-cookie-banner');
+    if (banner && typeof ResizeObserver !== 'undefined') {
+      bannerResizeObserver = new ResizeObserver(bannerLayoutHandler);
+      bannerResizeObserver.observe(banner);
+    }
+
+    requestAnimationFrame(syncCookieBannerLayout);
+  }
+
+  function unbindBannerLayoutSync() {
+    if (bannerLayoutHandler) {
+      window.removeEventListener('resize', bannerLayoutHandler);
+      window.removeEventListener('orientationchange', bannerLayoutHandler);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', bannerLayoutHandler);
+        window.visualViewport.removeEventListener('scroll', bannerLayoutHandler);
+      }
+      bannerLayoutHandler = null;
+    }
+
+    if (bannerResizeObserver) {
+      bannerResizeObserver.disconnect();
+      bannerResizeObserver = null;
+    }
+
+    resetBannerLayoutVars();
+  }
 
   function removePanelListeners() {
     if (panelOutsideClickHandler) {
@@ -200,6 +269,7 @@
 
   function closeUi() {
     dismissPanel();
+    unbindBannerLayoutSync();
     var banner = document.getElementById('irs-cookie-banner');
     if (banner) banner.remove();
     document.body.classList.remove('irs-cookie-banner-open');
@@ -290,8 +360,12 @@
   function showPanel(analyticsOn, advertisingOn) {
     dismissPanel();
 
+    var banner = document.getElementById('irs-cookie-banner');
     var manageBtn = document.getElementById('irs-cookie-manage');
     var mobile = isMobilePanel();
+
+    if (banner) banner.style.display = 'none';
+    syncCookieBannerLayout();
 
     var popover = document.createElement('div');
     popover.id = 'irs-cookie-popover';
@@ -304,7 +378,14 @@
 
     document.getElementById('irs-cookie-save').addEventListener('click', saveFromPanel);
     document.getElementById('irs-cookie-accept-all').addEventListener('click', acceptAll);
-    document.getElementById('irs-cookie-panel-close').addEventListener('click', dismissPanel);
+    document.getElementById('irs-cookie-panel-close').addEventListener('click', function () {
+      dismissPanel();
+      var hiddenBanner = document.getElementById('irs-cookie-banner');
+      if (hiddenBanner && !readStored()) {
+        hiddenBanner.style.display = '';
+        syncCookieBannerLayout();
+      }
+    });
 
     if (!mobile && manageBtn) {
       requestAnimationFrame(function () {
@@ -315,6 +396,11 @@
     panelOutsideClickHandler = function (e) {
       if (popover.contains(e.target) || (manageBtn && manageBtn.contains(e.target))) return;
       dismissPanel();
+      var hiddenBanner = document.getElementById('irs-cookie-banner');
+      if (hiddenBanner && !readStored()) {
+        hiddenBanner.style.display = '';
+        syncCookieBannerLayout();
+      }
     };
     setTimeout(function () {
       document.addEventListener('click', panelOutsideClickHandler, true);
@@ -359,6 +445,7 @@
 
     document.body.appendChild(banner);
     document.body.classList.add('irs-cookie-banner-open');
+    bindBannerLayoutSync();
 
     document.getElementById('irs-cookie-accept').addEventListener('click', acceptAll);
     document.getElementById('irs-cookie-banner-close').addEventListener('click', essentialOnly);

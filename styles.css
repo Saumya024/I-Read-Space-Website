@@ -128,16 +128,22 @@
 }
 
 /* Cookie consent banner + preferences panel */
+:root {
+  --irs-cookie-banner-height: 0px;
+  --irs-cookie-banner-bottom: 0px;
+}
+
 .irs-cookie-banner {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 10000;
-  padding: 16px 44px 16px 20px;
+  z-index: 10001;
+  padding: 16px 44px calc(16px + env(safe-area-inset-bottom, 0px)) 20px;
   background: #F8F6F2;
   border-top: 1px solid rgba(67, 16, 57, 0.15);
   box-shadow: 0 -4px 24px rgba(67, 16, 57, 0.08);
+  transition: bottom 0.15s ease;
 }
 
 .irs-cookie-banner-close {
@@ -225,7 +231,7 @@
 
 .irs-cookie-popover {
   position: fixed;
-  z-index: 10001;
+  z-index: 10003;
   width: min(400px, calc(100vw - 16px));
   max-height: min(70vh, 480px);
   overflow-y: auto;
@@ -422,6 +428,33 @@
 body.irs-cookie-banner-open,
 body.irs-cookie-panel-open {
   padding-bottom: 0;
+}
+
+body.irs-cookie-banner-open .faq-chat-button {
+  bottom: calc(
+    var(--irs-cookie-banner-bottom, 0px) +
+    var(--irs-cookie-banner-height, 0px) +
+    12px +
+    env(safe-area-inset-bottom, 0px)
+  );
+}
+
+body.irs-cookie-banner-open .whatsapp-floating-button {
+  bottom: calc(
+    var(--irs-cookie-banner-bottom, 0px) +
+    var(--irs-cookie-banner-height, 0px) +
+    68px +
+    env(safe-area-inset-bottom, 0px)
+  );
+}
+
+body.irs-cookie-banner-open .faq-chat-panel {
+  bottom: calc(
+    var(--irs-cookie-banner-bottom, 0px) +
+    var(--irs-cookie-banner-height, 0px) +
+    124px +
+    env(safe-area-inset-bottom, 0px)
+  );
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
@@ -12382,7 +12415,7 @@ main[class$="-page"] .wizard-chip.active {
 /* FAQ Chat Widget */
 .whatsapp-floating-button {
   position: fixed;
-  bottom: 80px;
+  bottom: calc(80px + env(safe-area-inset-bottom, 0px));
   right: 24px;
   width: 44px;
   height: 44px;
@@ -12395,8 +12428,8 @@ main[class$="-page"] .wizard-chip.active {
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 12px rgba(67, 16, 57, 0.2);
-  z-index: 1000;
-  transition: all 0.3s ease;
+  z-index: 10002;
+  transition: bottom 0.2s ease, transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, border-color 0.3s ease;
 }
 
 .whatsapp-floating-button:hover {
@@ -12414,7 +12447,7 @@ main[class$="-page"] .wizard-chip.active {
 
 .faq-chat-button {
   position: fixed;
-  bottom: 24px;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
   right: 24px;
   width: 44px;
   height: 44px;
@@ -12429,8 +12462,8 @@ main[class$="-page"] .wizard-chip.active {
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 12px rgba(67, 16, 57, 0.2);
-  z-index: 1000;
-  transition: all 0.3s ease;
+  z-index: 10002;
+  transition: bottom 0.2s ease, transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, border-color 0.3s ease;
   font-family: var(--font-heading);
 }
 
@@ -12461,11 +12494,11 @@ main[class$="-page"] .wizard-chip.active {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  z-index: 999;
+  z-index: 10002;
   opacity: 0;
   visibility: hidden;
   transform: translateY(20px) scale(0.95);
-  transition: all 0.3s ease;
+  transition: bottom 0.2s ease, opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
   font-family: var(--font-heading);
 }
 
@@ -12757,7 +12790,7 @@ main[class$="-page"] .wizard-chip.active {
   }
 
   .faq-chat-button {
-    bottom: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
     right: 16px;
     width: 40px;
     height: 40px;
@@ -12765,10 +12798,37 @@ main[class$="-page"] .wizard-chip.active {
   }
 
   .whatsapp-floating-button {
-    bottom: 68px;
+    bottom: calc(68px + env(safe-area-inset-bottom, 0px));
     right: 16px;
     width: 40px;
     height: 40px;
+  }
+
+  body.irs-cookie-banner-open .faq-chat-button {
+    bottom: calc(
+      var(--irs-cookie-banner-bottom, 0px) +
+      var(--irs-cookie-banner-height, 0px) +
+      12px +
+      env(safe-area-inset-bottom, 0px)
+    );
+  }
+
+  body.irs-cookie-banner-open .whatsapp-floating-button {
+    bottom: calc(
+      var(--irs-cookie-banner-bottom, 0px) +
+      var(--irs-cookie-banner-height, 0px) +
+      60px +
+      env(safe-area-inset-bottom, 0px)
+    );
+  }
+
+  body.irs-cookie-banner-open .faq-chat-panel {
+    bottom: calc(
+      var(--irs-cookie-banner-bottom, 0px) +
+      var(--irs-cookie-banner-height, 0px) +
+      116px +
+      env(safe-area-inset-bottom, 0px)
+    );
   }
 
   .faq-category-header {
