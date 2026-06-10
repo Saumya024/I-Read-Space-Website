@@ -189,7 +189,7 @@
     return (
       '<div class="irs-cookie-panel" role="dialog" aria-label="Cookie preferences">' +
         '<div class="irs-cookie-panel-header">' +
-          '<h2 class="irs-cookie-panel-title">Cookie Preferences</h2>' +
+          '<h2 class="irs-cookie-panel-title">Your Cookie Preferences</h2>' +
           '<button type="button" class="irs-cookie-panel-close" id="irs-cookie-panel-close" aria-label="Close">&times;</button>' +
         '</div>' +
         '<div class="irs-cookie-row irs-cookie-row-essential">' +
@@ -220,8 +220,8 @@
           '<p class="irs-cookie-row-desc">Used to show relevant ads and measure their effectiveness.</p>' +
         '</div>' +
         '<div class="irs-cookie-panel-footer">' +
-          '<button type="button" class="irs-cookie-btn irs-cookie-btn-accept" id="irs-cookie-save">Save Preferences</button>' +
-          '<button type="button" class="irs-cookie-link-btn" id="irs-cookie-accept-all">Accept All</button>' +
+          '<button type="button" class="irs-cookie-btn irs-cookie-btn-accept irs-cookie-btn-block" id="irs-cookie-save">Save Preferences</button>' +
+          '<button type="button" class="irs-cookie-btn irs-cookie-btn-manage irs-cookie-btn-block" id="irs-cookie-accept-all">Accept All</button>' +
         '</div>' +
       '</div>'
     );
