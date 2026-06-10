@@ -353,7 +353,7 @@
         '</p>' +
         '<div class="irs-cookie-banner-actions">' +
           '<button type="button" class="irs-cookie-btn irs-cookie-btn-accept" id="irs-cookie-accept">Accept</button>' +
-          '<button type="button" class="irs-cookie-btn irs-cookie-btn-manage" id="irs-cookie-manage">Manage Preferences</button>' +
+          '<button type="button" class="irs-cookie-btn irs-cookie-btn-manage" id="irs-cookie-manage">Manage</button>' +
         '</div>' +
       '</div>';
 
