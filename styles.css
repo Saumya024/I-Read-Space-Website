@@ -127,6 +127,98 @@
   outline-offset: 2px;
 }
 
+/* Cookie consent banner (GTM / ads-ready) */
+.irs-cookie-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  padding: 16px 20px;
+  background: #F8F6F2;
+  border-top: 1px solid rgba(67, 16, 57, 0.15);
+  box-shadow: 0 -4px 24px rgba(67, 16, 57, 0.08);
+}
+
+.irs-cookie-banner-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.irs-cookie-banner-text {
+  flex: 1 1 280px;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(67, 16, 57, 0.85);
+}
+
+.irs-cookie-banner-text a {
+  color: #431039;
+  text-decoration: underline;
+}
+
+.irs-cookie-banner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.irs-cookie-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.irs-cookie-btn-accept {
+  background: #431039;
+  color: #F8F6F2;
+  border-color: #431039;
+}
+
+.irs-cookie-btn-accept:hover {
+  background: #5a1849;
+}
+
+.irs-cookie-btn-reject {
+  background: transparent;
+  color: #431039;
+  border-color: rgba(67, 16, 57, 0.3);
+}
+
+.irs-cookie-btn-reject:hover {
+  background: rgba(67, 16, 57, 0.05);
+}
+
+body.irs-cookie-banner-open {
+  padding-bottom: 0;
+}
+
+@media (max-width: 600px) {
+  .irs-cookie-banner {
+    padding: 14px 16px;
+  }
+
+  .irs-cookie-banner-actions {
+    width: 100%;
+  }
+
+  .irs-cookie-btn {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+}
+
 /* Honeypot field — hidden from visitors, visible to simple bots */
 .intake-honeypot-wrap {
   position: absolute;
