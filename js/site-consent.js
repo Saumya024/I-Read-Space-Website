@@ -209,7 +209,7 @@
           '</div>' +
           '<p class="irs-cookie-row-desc">Help us understand how visitors use our site so we can improve it.</p>' +
         '</div>' +
-        '<div class="irs-cookie-row">' +
+        '<div class="irs-cookie-row irs-cookie-row-last">' +
           '<div class="irs-cookie-row-head">' +
             '<label class="irs-cookie-row-label" for="irs-cookie-advertising">Advertising Cookies</label>' +
             '<label class="irs-cookie-toggle">' +
@@ -232,11 +232,23 @@
     if (existing) existing.remove();
 
     var banner = document.getElementById('irs-cookie-banner');
+    var manageBtn = document.getElementById('irs-cookie-manage');
+    var anchorBottom = 20;
+
+    if (manageBtn) {
+      var rect = manageBtn.getBoundingClientRect();
+      anchorBottom = Math.max(16, window.innerHeight - rect.top + 8);
+    } else if (banner) {
+      var bannerRect = banner.getBoundingClientRect();
+      anchorBottom = Math.max(16, window.innerHeight - bannerRect.top + 8);
+    }
+
     if (banner) banner.style.display = 'none';
 
     var overlay = document.createElement('div');
     overlay.id = 'irs-cookie-overlay';
     overlay.className = 'irs-cookie-overlay';
+    overlay.style.paddingBottom = anchorBottom + 'px';
     overlay.innerHTML = getPanelHtml(analyticsOn, advertisingOn);
     document.body.appendChild(overlay);
     document.body.classList.add('irs-cookie-panel-open');
