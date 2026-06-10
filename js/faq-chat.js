@@ -1,6 +1,17 @@
 // FAQ Chat Widget
 // Accordion/Dropdown-based navigation system
 
+const FAQ_PRICING_COPY = {
+  in: {
+    book: "You can book a Vedic astrology consultation online by selecting a session type, sharing your birth details, and choosing an available slot.<br><br><strong>1. Choose your session type:</strong><ul><li>30-minute session (Quick Clarity) — ₹1,200 (Audio) / ₹1,500 (Video)</li><li>60-minute session (Deep Insight) — ₹2,400 (Audio) / ₹3,000 (Video)</li><li>90-minute session (Holistic Guidance) — ₹3,600 (Audio) / ₹4,500 (Video)</li></ul><strong>2. Prepare your birth details:</strong><ul><li>Exact date of birth</li><li>Accurate time of birth (from hospital records, birth certificate, or trusted family records; if unsure, select \"I don't know my time of birth\" on the form)</li><li>Place of birth (city and state/country)</li></ul><strong>3. Book online:</strong><br>Visit the <a href='schedule.html?region=in'>booking page</a>, select your preferred session, choose an available slot, share your birth details, and complete payment. Payment is required in advance to confirm the appointment.<br><br>Consultations are conducted online. Rescheduling is possible with 24 hours' notice. Sessions are confidential.",
+    cost: "Vedic astrology consultations at I Read Space range from ₹1,200 to ₹4,500, depending on session length and format (audio or video).<br><br><ul><li><strong>30-minute session (Quick Clarity)</strong> — ₹1,200 (Audio) / ₹1,500 (Video). One primary concern using one chart.</li><li><strong>60-minute session (Deep Insight)</strong> — ₹2,400 (Audio) / ₹3,000 (Video). Up to three related themes using two charts.</li><li><strong>90-minute session (Holistic Guidance)</strong> — ₹3,600 (Audio) / ₹4,500 (Video). Multiple life areas and charts.</li></ul><strong>Session packages</strong><br>Three-session packages are available with savings of ₹300–₹900. Sessions do not expire.<br><br>Payment is required in advance. Rescheduling possible with 24 hours' notice."
+  },
+  intl: {
+    book: "You can book a Vedic astrology consultation online by selecting a session type, sharing your birth details, and choosing an available slot.<br><br><strong>1. Choose your session type:</strong><ul><li>30-minute session (Quick Clarity) — $27 (Audio) / $33 (Video)</li><li>60-minute session (Deep Insight) — $54 (Audio) / $73 (Video)</li><li>90-minute session (Holistic Guidance) — $81 (Audio) / $114 (Video)</li></ul><strong>2. Prepare your birth details:</strong><ul><li>Exact date of birth</li><li>Accurate time of birth (from hospital records, birth certificate, or trusted family records; if unsure, select \"I don't know my time of birth\" on the form)</li><li>Place of birth (city and state/country)</li></ul><strong>3. Book online:</strong><br>Visit the <a href='schedule.html?region=intl'>booking page</a>, select your preferred session, choose an available slot, share your birth details, and complete payment. Payment is required in advance to confirm the appointment.<br><br>Consultations are conducted online. Rescheduling is possible with 24 hours' notice. Sessions are confidential.",
+    cost: "Vedic astrology consultations at I Read Space range from $27 to $114, depending on session length and format (audio or video).<br><br><ul><li><strong>30-minute session (Quick Clarity)</strong> — $27 (Audio) / $33 (Video). One primary concern using one chart.</li><li><strong>60-minute session (Deep Insight)</strong> — $54 (Audio) / $73 (Video). Up to three related themes using two charts.</li><li><strong>90-minute session (Holistic Guidance)</strong> — $81 (Audio) / $114 (Video). Multiple life areas and charts.</li></ul><strong>Session packages</strong><br>Three-session packages are available with savings of $9–$27. Sessions do not expire.<br><br>Payment is required in advance. Rescheduling possible with 24 hours' notice."
+  }
+};
+
 const FAQ_DATA = [
   {
     question: "What is I Read Space?",
@@ -206,6 +217,36 @@ const FAQ_CATEGORIES = {
   }
 };
 
+async function applyRegionalFAQPricing() {
+  let isIndia = true;
+  const region = new URLSearchParams(window.location.search).get('region');
+
+  if (window.IRSBooking && window.IRSBooking.detectIsIndia) {
+    isIndia = await window.IRSBooking.detectIsIndia(region);
+  } else {
+    try {
+      const response = await fetch('https://ipapi.co/json/');
+      const data = await response.json();
+      if (data.country_code) {
+        isIndia = data.country_code === 'IN';
+      }
+    } catch (error) {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (timezone === 'Asia/Kolkata') isIndia = true;
+    }
+  }
+
+  const copy = isIndia ? FAQ_PRICING_COPY.in : FAQ_PRICING_COPY.intl;
+  FAQ_DATA.forEach(function(item) {
+    if (item.question === 'How do I book a Vedic astrology consultation?') {
+      item.answer = copy.book;
+    }
+    if (item.question === 'How much does a Vedic astrology consultation cost?') {
+      item.answer = copy.cost;
+    }
+  });
+}
+
 function initWhatsAppFloatingButton() {
   if (document.getElementById('whatsapp-floating-button')) return;
 
@@ -296,6 +337,16 @@ function initFAQChat() {
                 answerHtml = pageAnswer.innerHTML.trim();
               }
             }
+            if (option.question === "How much does a Vedic astrology consultation cost?") {
+              const indianPricing = document.getElementById('faq-pricing-indian');
+              const internationalPricing = document.getElementById('faq-pricing-international');
+              const visiblePricing = [indianPricing, internationalPricing].find(function(el) {
+                return el && el.innerHTML.trim() && window.getComputedStyle(el).display !== 'none';
+              });
+              if (visiblePricing) {
+                answerHtml = visiblePricing.innerHTML.trim();
+              }
+            }
             if (answerHtml == null) {
               const faq = FAQ_DATA.find(f => f.question === option.question);
               answerHtml = faq ? faq.answer : '';
@@ -374,10 +425,15 @@ function initFAQButtonVisibility() {
 }
 
 // Initialize when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => { initWhatsAppFloatingButton(); initFAQChat(); initFAQButtonVisibility(); });
-} else {
+async function initFAQWidgets() {
+  await applyRegionalFAQPricing();
   initWhatsAppFloatingButton();
   initFAQChat();
   initFAQButtonVisibility();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initFAQWidgets);
+} else {
+  initFAQWidgets();
 }

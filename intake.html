@@ -7,7 +7,7 @@
   <meta name="supported-color-schemes" content="light">
   <meta name="theme-color" content="#F8F6F2">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Complete Your Booking | I Read Space | A Trusted Approach to Astrology</title>
+  <title>Confirm Your Booking | I Read Space | A Trusted Approach to Astrology</title>
   <meta name="description" content="Book your Vedic astrology consultation with a trusted astrologer. Share your birth details, select your session type, and schedule a time that works for you." />
   <link rel="canonical" href="https://ireadspace.com/intake.html" />
 
@@ -17,8 +17,8 @@
   <link rel="preload" as="image" href="assets/images/23.png" />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Complete Your Booking | I Read Space | A Trusted Approach to Astrology" />
-  <meta property="og:description" content="Complete your booking. Share your birth details and what you would like guidance on." />
+  <meta property="og:title" content="Confirm Your Booking | I Read Space | A Trusted Approach to Astrology" />
+  <meta property="og:description" content="Confirm your booking. Share your birth details to secure your appointment." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://ireadspace.com/intake.html" />
   <meta property="og:image" content="https://ireadspace.com/assets/images/lotus%20image.webp" />
@@ -26,15 +26,15 @@
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Complete Your Booking | I Read Space | A Trusted Approach to Astrology" />
-  <meta name="twitter:description" content="Complete your booking. Share your birth details and what you would like guidance on." />
+  <meta name="twitter:title" content="Confirm Your Booking | I Read Space | A Trusted Approach to Astrology" />
+  <meta name="twitter:description" content="Confirm your booking. Share your birth details to secure your appointment." />
   <meta name="twitter:image" content="https://ireadspace.com/assets/images/lotus%20image.webp" />
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Spectral:wght@400;500&display=swap" rel="stylesheet">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="styles.css?v=305" />
+  <link rel="stylesheet" href="styles.css?v=308" />
 </head>
 
 <body>
@@ -74,15 +74,20 @@
   <!-- Intake Section -->
   <section class="intake" id="main-content">
     <div class="intake-container">
-      <h1>Complete your booking</h1>
+      <h1>Confirm Your Booking</h1>
+      <p class="intake-intro">You're almost there! Fill in your details below to secure your appointment.</p>
       <div class="intake-slot-banner" id="intake-slot-banner">
         <div>
-          <div class="intake-slot-label">Scheduled for</div>
+          <div class="intake-slot-label">Your session</div>
           <div class="intake-slot-value" id="intake-slot-value"></div>
         </div>
         <a href="#" class="intake-slot-change" id="intake-slot-change">Reschedule</a>
       </div>
       <form class="intake-form" id="intake-form">
+        <div class="intake-honeypot-wrap" aria-hidden="true">
+          <label for="intake-website">Website</label>
+          <input type="text" name="website" id="intake-website" tabindex="-1" autocomplete="off" />
+        </div>
         <div class="intake-details-grid">
           <div class="intake-section intake-section-personal">
             <h2 class="intake-block-title">Personal details</h2>
@@ -197,31 +202,56 @@
     </div>
   </div>
 
-  <script src="js/booking-shared.js?v=15"></script>
+  <script src="js/booking-shared.js?v=17"></script>
   <script>
     let hasAttemptedIntakeSubmit = false;
     let bookingState = null;
 
     function redirectToScheduleIfNeeded() {
       bookingState = window.IRSBooking.getBookingState();
+      const regionFromUrl = window.IRSBooking.getRegionFromURL();
+      const formatFromUrl = window.IRSBooking.getFormatFromURL();
+      if (bookingState) {
+        if (regionFromUrl) {
+          bookingState.region = regionFromUrl;
+          bookingState.isIndia = regionFromUrl === 'in';
+        }
+        if (formatFromUrl) {
+          bookingState.sessionType = formatFromUrl;
+        }
+        if (!bookingState.price && bookingState.duration && bookingState.sessionType) {
+          bookingState.price = window.IRSBooking.getPriceForFormat(
+            bookingState.duration,
+            bookingState.isIndia !== undefined ? bookingState.isIndia : bookingState.region !== 'intl',
+            bookingState.sessionType,
+            bookingState.type === 'package'
+          );
+        }
+        window.IRSBooking.saveBookingState(bookingState);
+      }
       if (!bookingState || !bookingState.slotStart) {
         const params = new URLSearchParams(window.location.search);
         window.location.replace(window.IRSBooking.buildScheduleUrl(
           window.IRSBooking.getDurationFromURL(),
           window.IRSBooking.getTypeFromURL(),
-          window.IRSBooking.getRegionFromURL()
+          window.IRSBooking.getRegionFromURL(),
+          window.IRSBooking.getFormatFromURL()
         ));
         return false;
       }
 
       const slotValue = document.getElementById('intake-slot-value');
       const changeLink = document.getElementById('intake-slot-change');
-      if (slotValue) slotValue.textContent = bookingState.slotLabel || bookingState.slotStart;
+      if (slotValue) {
+        slotValue.textContent = window.IRSBooking.formatBookingSummary(bookingState) ||
+          (bookingState.slotLabel || bookingState.slotStart);
+      }
       if (changeLink) {
         changeLink.href = window.IRSBooking.buildScheduleUrl(
           bookingState.duration,
           bookingState.type,
-          bookingState.region
+          bookingState.region,
+          bookingState.sessionType
         );
       }
       return true;
@@ -704,16 +734,34 @@
         }
       }
       const isPackage = bookingState.type === 'package' || getTypeFromURL() === 'package';
-      const sessionType = bookingState.sessionType || 'audio';
+      const sessionType = bookingState.sessionType || window.IRSBooking.getFormatFromURL() || 'audio';
       const duration = bookingState.duration || getDurationFromURL();
-      const investment = bookingState.price || '';
+      const isIndiaResolved = bookingState.isIndia !== undefined
+        ? bookingState.isIndia
+        : bookingState.region !== 'intl';
+      const investment = bookingState.price || window.IRSBooking.getPriceForFormat(
+        duration,
+        isIndiaResolved,
+        sessionType,
+        isPackage
+      );
 
       const submitBtn = document.getElementById('book-slot-btn');
       const originalBtnText = submitBtn ? submitBtn.textContent : '';
+      const overlay = document.getElementById('redirect-overlay');
+      let overlayTimer = null;
+
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Confirming your appointment…';
+        submitBtn.textContent = 'Confirming Your Appointment';
       }
+
+      overlayTimer = setTimeout(function() {
+        if (overlay) {
+          overlay.style.display = 'flex';
+          document.body.style.overflow = 'hidden';
+        }
+      }, 2000);
 
       let bookingResult;
       try {
@@ -723,15 +771,26 @@
           name: name,
           email: email,
           phone: phone,
-          timeZone: bookingState.timeZone || 'Asia/Kolkata'
+          timeZone: bookingState.timeZone || 'Asia/Kolkata',
+          website: formData.get('website') || ''
         });
       } catch (bookingError) {
+        if (overlayTimer) clearTimeout(overlayTimer);
+        if (overlay) {
+          overlay.style.display = 'none';
+          document.body.style.overflow = '';
+        }
         if (submitBtn) {
           submitBtn.disabled = false;
           submitBtn.textContent = originalBtnText;
         }
         alert(bookingError.message || 'That time is no longer available. Please choose another slot.');
-        window.location.href = window.IRSBooking.buildScheduleUrl(duration, isPackage ? 'package' : null, bookingState.region);
+        window.location.href = window.IRSBooking.buildScheduleUrl(
+          duration,
+          isPackage ? 'package' : null,
+          bookingState.region,
+          sessionType
+        );
         return;
       }
 
@@ -739,13 +798,16 @@
       bookingState.bookingUid = bookingUid;
       bookingState.slotLabel = bookingState.slotLabel || window.IRSBooking.formatSlotLabel(bookingState.slotStart, bookingState.timeZone);
       bookingState.investment = investment;
+      bookingState.price = investment;
       bookingState.sessionType = sessionType;
+      bookingState.isIndia = isIndiaResolved;
       window.IRSBooking.saveBookingState(bookingState);
 
       const submissionData = {
         name: name,
         email: email,
         phone: phone,
+        website: formData.get('website') || '',
         dob: dob,
         tob: tob || '',
         timeOfBirthAccuracy: getTimeOfBirthAccuracy(formData, ''),
@@ -795,7 +857,7 @@
         console.error('Error submitting to Google Sheets:', sheetsError);
       }
 
-      const overlay = document.getElementById('redirect-overlay');
+      if (overlayTimer) clearTimeout(overlayTimer);
       if (overlay) {
         overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
@@ -804,6 +866,16 @@
         window.location.href = RESERVED_PAGE_URL + '?v=1';
       }, 500);
     });
+
+    function escapeHtml(text) {
+      if (text == null) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
 
     // Place of Birth Autocomplete using Nominatim (OpenStreetMap) – reusable for main and additional charts
     function initPlaceAutocomplete(input, suggestionsContainer) {
@@ -826,7 +898,8 @@
             suggestionsContainer.innerHTML = data.length === 0 ? '' : data.map((place, index) => {
               const displayName = place.display_name.split(',')[0] + ', ' +
                 (place.address?.city || place.address?.town || place.address?.village || place.address?.state || place.address?.country || '');
-              return `<div class="autocomplete-suggestion" data-index="${index}" data-place="${place.display_name}">${displayName}</div>`;
+              return '<div class="autocomplete-suggestion" data-index="' + index + '" data-place="' +
+                escapeHtml(place.display_name) + '">' + escapeHtml(displayName) + '</div>';
             }).join('');
             suggestionsContainer.style.display = data.length === 0 ? 'none' : 'block';
             selectedIndex = -1;
@@ -932,6 +1005,6 @@
     </div>
     <div id="faq-chat-content" class="faq-chat-content"></div>
   </div>
-  <script src="js/faq-chat.js?v=11"></script>
+  <script src="js/faq-chat.js?v=12"></script>
 </body>
 </html>

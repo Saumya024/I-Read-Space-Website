@@ -1,4 +1,6 @@
 /**
+ * @OnlyCurrentDoc
+ *
  * Google Apps Script Web App for Intake Form + Cal.com Booking
  *
  * SETUP INSTRUCTIONS:
@@ -7,23 +9,175 @@
  * 3. Delete ALL existing code in the editor, then paste this ENTIRE file
  *    (from line 1 through the end — including the SHEET_NAME constants at the top)
  * 4. Replace 'Sheet1' with your actual sheet tab name if different
- * 5. Add your Cal.com API key as a Script Property:
- *    - Apps Script editor > Project Settings (gear) > Script properties
- *    - Add property: CAL_API_KEY = cal_live_...
- *    OR run setupCalApiKey() once from the editor (see bottom of file)
- * 6. Deploy > New deployment > Web app
- *    - Execute as: Me
- *    - Who has access: Anyone
- * 7. Copy the Web App URL into intake.html / js/booking-shared.js
+ * 5. Project Settings (gear) > enable "Show appsscript.json manifest file in editor"
+ *    - Open appsscript.json and paste the contents from appsscript.json in this repo
+ *    - This fills oauthScopes + urlFetchWhitelist (the "security limitations" fields)
+ * 6. Add your Cal.com API key as a Script Property:
+ *    - Project Settings > Script properties
+ *    - Add property: CAL_API_KEY = your key (never paste keys into this file)
+ * 7. Deploy > New deployment > Web app
+ *    - Execute as: Me (runs as you — required so anonymous visitors can write to your sheet)
+ *    - Who has access: Anyone (required for ireadspace.com visitors without Google login)
+ *    - Create a NEW version after every code or manifest change
+ * 8. Copy the Web App URL into js/booking-shared.js (GOOGLE_SCRIPT_URL)
+ *
+ * SECURITY NOTE:
+ * "Anyone" access cannot be restricted to ireadspace.com in the deploy dialog.
+ * This script validates input, rate-limits by email, and rejects honeypot spam.
+ * Optional later: Cloudflare Turnstile verification.
  */
 
 const SHEET_NAME = 'Sheet1';
 const CAL_USERNAME = 'i-read-space';
+const RATE_LIMIT_WINDOW_SEC = 3600;
 const EVENT_SLUGS = {
   '30': '30min',
   '60': '60min',
   '90': '90min'
 };
+const ALLOWED_DURATIONS = ['30', '60', '90'];
+
+function normalizeEmail_(email) {
+  return String(email || '').trim().toLowerCase();
+}
+
+function isHoneypotTriggered_(data) {
+  const trap = data && data.website;
+  return typeof trap === 'string' && trap.trim() !== '';
+}
+
+function isValidEmail_(email) {
+  if (!email || typeof email !== 'string') return false;
+  const trimmed = email.trim();
+  return trimmed.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
+}
+
+function isValidPhone_(phone) {
+  if (!phone || typeof phone !== 'string') return false;
+  const digits = phone.replace(/\D/g, '');
+  return digits.length >= 7 && digits.length <= 15;
+}
+
+function isValidName_(name) {
+  if (!name || typeof name !== 'string') return false;
+  const trimmed = name.trim();
+  return trimmed.length >= 2 && trimmed.length <= 120;
+}
+
+function isValidSlotStart_(start) {
+  if (!start || typeof start !== 'string') return false;
+  const slotTime = new Date(start).getTime();
+  if (isNaN(slotTime)) return false;
+  return slotTime > Date.now() + (5 * 60 * 1000);
+}
+
+function isValidDuration_(duration) {
+  return ALLOWED_DURATIONS.indexOf(String(duration)) !== -1;
+}
+
+function checkRateLimit_(email, action) {
+  const normalized = normalizeEmail_(email);
+  if (!normalized) {
+    return { allowed: false, error: 'A valid email is required.' };
+  }
+
+  const limits = {
+    createBooking: { max: 3, window: RATE_LIMIT_WINDOW_SEC },
+    intake: { max: 5, window: RATE_LIMIT_WINDOW_SEC },
+    emailCapture: { max: 5, window: RATE_LIMIT_WINDOW_SEC }
+  };
+  const config = limits[action] || limits.intake;
+
+  const cache = CacheService.getScriptCache();
+  const cacheKey = 'rl_' + action + '_' + Utilities.base64EncodeWebSafe(normalized).slice(0, 72);
+  const current = cache.get(cacheKey);
+  const count = current ? parseInt(current, 10) : 0;
+
+  if (count >= config.max) {
+    return {
+      allowed: false,
+      error: 'Too many submissions from this email. Please try again in an hour.'
+    };
+  }
+
+  cache.put(cacheKey, String(count + 1), config.window);
+  return { allowed: true };
+}
+
+function validateBookingRequest_(data) {
+  if (isHoneypotTriggered_(data)) {
+    return { valid: false, isBot: true };
+  }
+
+  if (!isValidName_(data.name)) {
+    return { valid: false, error: 'Please enter a valid name.' };
+  }
+  if (!isValidEmail_(data.email)) {
+    return { valid: false, error: 'Please enter a valid email address.' };
+  }
+  if (data.phone && !isValidPhone_(data.phone)) {
+    return { valid: false, error: 'Please enter a valid phone number.' };
+  }
+  if (!isValidDuration_(data.duration)) {
+    return { valid: false, error: 'Invalid session duration.' };
+  }
+  if (!isValidSlotStart_(data.start)) {
+    return { valid: false, error: 'Please choose a valid upcoming time slot.' };
+  }
+
+  const rateLimit = checkRateLimit_(data.email, 'createBooking');
+  if (!rateLimit.allowed) {
+    return { valid: false, error: rateLimit.error };
+  }
+
+  return { valid: true };
+}
+
+function validateIntakeRequest_(data) {
+  if (isHoneypotTriggered_(data)) {
+    return { valid: false, isBot: true };
+  }
+
+  if (!isValidName_(data.name)) {
+    return { valid: false, error: 'Please enter a valid name.' };
+  }
+  if (!isValidEmail_(data.email)) {
+    return { valid: false, error: 'Please enter a valid email address.' };
+  }
+  if (data.phone && !isValidPhone_(data.phone)) {
+    return { valid: false, error: 'Please enter a valid phone number.' };
+  }
+
+  const rateLimit = checkRateLimit_(data.email, 'intake');
+  if (!rateLimit.allowed) {
+    return { valid: false, error: rateLimit.error };
+  }
+
+  return { valid: true };
+}
+
+function validateEmailCapture_(data) {
+  if (isHoneypotTriggered_(data)) {
+    return { valid: false, isBot: true };
+  }
+  if (!isValidEmail_(data.email)) {
+    return { valid: false, error: 'Please enter a valid email address.' };
+  }
+
+  const rateLimit = checkRateLimit_(data.email, 'emailCapture');
+  if (!rateLimit.allowed) {
+    return { valid: false, error: rateLimit.error };
+  }
+
+  return { valid: true };
+}
+
+function botSuccessResponse_() {
+  return jsonResponse_({
+    success: true,
+    message: 'Data added successfully'
+  });
+}
 
 function parseRequest_(e) {
   if (e.postData && e.postData.contents) {
@@ -102,8 +256,7 @@ function createCalBooking_(data) {
   } catch (error) {
     return {
       success: false,
-      error: 'Invalid response from Cal.com',
-      raw: body
+      error: 'Invalid response from Cal.com'
     };
   }
 
@@ -120,8 +273,7 @@ function createCalBooking_(data) {
 
   return {
     success: false,
-    error: message,
-    details: parsed
+    error: message
   };
 }
 
@@ -193,33 +345,42 @@ function doPost(e) {
     const action = data.action || 'intake';
 
     if (action === 'createBooking') {
+      const bookingCheck = validateBookingRequest_(data);
+      if (!bookingCheck.valid) {
+        if (bookingCheck.isBot) return botSuccessResponse_();
+        return jsonResponse_({ success: false, error: bookingCheck.error });
+      }
       return jsonResponse_(createCalBooking_(data));
+    }
+
+    if (data.email && !data.name && !data.dob) {
+      const captureCheck = validateEmailCapture_(data);
+      if (!captureCheck.valid) {
+        if (captureCheck.isBot) return botSuccessResponse_();
+        return jsonResponse_({ success: false, error: captureCheck.error });
+      }
+      return jsonResponse_(saveIntake_(data));
+    }
+
+    const intakeCheck = validateIntakeRequest_(data);
+    if (!intakeCheck.valid) {
+      if (intakeCheck.isBot) return botSuccessResponse_();
+      return jsonResponse_({ success: false, error: intakeCheck.error });
     }
 
     return jsonResponse_(saveIntake_(data));
   } catch (error) {
     return jsonResponse_({
       success: false,
-      error: error.toString(),
-      stack: error.stack
+      error: 'Something went wrong. Please try again.'
     });
   }
 }
 
 function doGet(e) {
-  const params = (e && e.parameter) || {};
-  if (params.action === 'ping') {
-    return jsonResponse_({
-      success: true,
-      message: 'Google Apps Script is working',
-      hasCalApiKey: !!getCalApiKey_()
-    });
-  }
-
   return jsonResponse_({
     success: true,
-    message: 'Google Apps Script is working. Use POST to submit form data or create bookings.',
-    sheetName: SHEET_NAME
+    message: 'OK'
   });
 }
 
@@ -241,11 +402,3 @@ function testDoPost() {
   Logger.log(doPost(mockEvent).getContent());
 }
 
-/**
- * Run once from the Apps Script editor to store your Cal.com API key.
- * After running successfully, remove your key from this function.
- */
-function setupCalApiKey() {
-  PropertiesService.getScriptProperties().setProperty('CAL_API_KEY', 'PASTE_YOUR_KEY_HERE');
-  Logger.log('CAL_API_KEY saved to Script Properties');
-}

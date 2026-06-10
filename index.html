@@ -1311,17 +1311,25 @@
  }
  }
 
- // Keep booking flow currency-consistent on intake page
+ function getCardFormat(card) {
+ if (!card) return 'audio';
+ const activeToggle = card.querySelector('.toggle-btn.active');
+ return activeToggle && activeToggle.dataset.type === 'video' ? 'video' : 'audio';
+ }
+
+ // Keep booking flow currency- and format-consistent through schedule page
  function updateBookingLinks(region) {
  const ctaLinks = document.querySelectorAll('a[href^="schedule.html?duration="]');
  ctaLinks.forEach(link => {
  try {
  const href = link.getAttribute('href');
  if (!href) return;
+ const card = link.closest('.pricing-card, .package-card');
  const parts = href.split('?');
  const base = parts[0] || 'schedule.html';
  const params = new URLSearchParams(parts[1] || '');
  params.set('region', region);
+ params.set('format', getCardFormat(card));
  link.setAttribute('href', `${base}?${params.toString()}`);
  } catch (e) {
  // no-op: skip malformed hrefs
@@ -1333,10 +1341,12 @@
  detectLocation().then(() => {
  showPricing();
  updateBookingLinks(isIndia ? 'in' : 'intl');
+ window.bookingRegion = isIndia ? 'in' : 'intl';
  if (window.alignPricingSections) {
  requestAnimationFrame(window.alignPricingSections);
  }
  });
+ window.updateBookingLinks = updateBookingLinks;
  })();
  </script>
 
@@ -1387,6 +1397,17 @@
  if (audioPrice) priceElement.textContent = audioPrice;
  if (audioSavings) savingsElement.textContent = audioSavings;
  }
+ }
+ }
+
+ if (card) {
+ const link = card.querySelector('.pricing-cta, .package-cta');
+ if (link) {
+ const href = link.getAttribute('href') || '';
+ const params = new URLSearchParams(href.split('?')[1] || '');
+ params.set('format', isVideo ? 'video' : 'audio');
+ if (window.bookingRegion) params.set('region', window.bookingRegion);
+ link.setAttribute('href', 'schedule.html?' + params.toString());
  }
  }
  });
@@ -1841,6 +1862,6 @@
  </div>
 
  <!-- FAQ Chat Script -->
- <script src="js/faq-chat.js?v=11"></script>
+ <script src="js/faq-chat.js?v=12"></script>
 </body>
 </html>

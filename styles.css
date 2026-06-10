@@ -127,6 +127,17 @@
   outline-offset: 2px;
 }
 
+/* Honeypot field — hidden from visitors, visible to simple bots */
+.intake-honeypot-wrap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* Visually hidden but available to screen readers (a11y) */
 .visually-hidden {
   position: absolute;
@@ -4474,9 +4485,19 @@ body.home #testimonial-3 {
 }
 
 .intake-container h1 {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   font-size: 34px;
   color: var(--primary);
+  text-align: center;
+}
+
+.intake-intro {
+  margin: 0 auto 2rem;
+  max-width: 520px;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: 1.6;
+  color: var(--primary-light);
   text-align: center;
 }
 
@@ -8481,10 +8502,12 @@ main[class$="-page"] .wizard-chip.active {
 
 .reserved-subheading {
   font-family: var(--font-body);
-  font-size: var(--text-h3);
+  font-size: var(--text-h5);
   font-weight: 400;
+  line-height: 1.6;
   color: var(--primary);
-  margin-bottom: 16px;
+  margin: 0 auto 16px;
+  max-width: 480px;
   text-align: center;
 }
 
@@ -8512,7 +8535,7 @@ main[class$="-page"] .wizard-chip.active {
   }
 
   .reserved-subheading {
-    font-size: 20px;
+    font-size: var(--text-body);
   }
 
 }

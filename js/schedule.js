@@ -32,7 +32,7 @@
 
   var selectedTimezone = null;
   var timezoneEntries = [];
-  var selectedFormat = 'audio';
+  var selectedFormat = B.getFormatFromURL() || 'audio';
   var slotsByDate = {};
   var availableDates = [];
   var selectedDate = null;
@@ -70,6 +70,7 @@
     if (summaryEl) {
       if (enabled) {
         summaryEl.innerHTML = '<span class="schedule-summary-check" aria-hidden="true">✓</span> ' +
+          B.formatSessionLabel(selectedFormat) + ' · ' + getSelectedPrice() + ' · ' +
           B.formatSlotLabel(selectedSlotStart, selectedTimezone.id);
         summaryEl.hidden = false;
       } else {
@@ -79,8 +80,20 @@
     }
   }
 
+  function applyFormatSelection() {
+    if (!formatGrid) return;
+    formatGrid.querySelectorAll('.schedule-format-card').forEach(function (item) {
+      item.classList.toggle('is-selected', item.dataset.format === selectedFormat);
+    });
+  }
+
   function initFormatPicker() {
     if (!formatGrid) return;
+    var existingState = B.getBookingState();
+    if (!B.getFormatFromURL() && existingState && existingState.sessionType) {
+      selectedFormat = existingState.sessionType;
+    }
+    applyFormatSelection();
     updateFormatDetails();
 
     formatGrid.addEventListener('click', function (e) {
@@ -451,7 +464,7 @@
       var state = {
         duration: duration,
         type: isPackage ? 'package' : null,
-        region: regionOverride,
+        region: regionOverride || B.regionFromIsIndia(isIndia),
         isIndia: isIndia,
         sessionType: selectedFormat,
         timeZone: selectedTimezone.id,

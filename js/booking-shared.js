@@ -181,11 +181,22 @@
     return null;
   }
 
-  function buildScheduleUrl(duration, type, region) {
+  function getFormatFromURL() {
+    var format = (new URLSearchParams(window.location.search).get('format') || '').toLowerCase();
+    if (format === 'audio' || format === 'video') return format;
+    return null;
+  }
+
+  function regionFromIsIndia(isIndia) {
+    return isIndia ? 'in' : 'intl';
+  }
+
+  function buildScheduleUrl(duration, type, region, format) {
     var params = new URLSearchParams();
     params.set('duration', String(duration || 60));
     if (type === 'package') params.set('type', 'package');
     if (region) params.set('region', region);
+    if (format === 'audio' || format === 'video') params.set('format', format);
     return 'schedule.html?' + params.toString();
   }
 
@@ -194,7 +205,32 @@
     params.set('duration', String(booking.duration || 60));
     if (booking.type === 'package') params.set('type', 'package');
     if (booking.region) params.set('region', booking.region);
+    if (booking.sessionType === 'audio' || booking.sessionType === 'video') {
+      params.set('format', booking.sessionType);
+    }
     return 'intake.html?' + params.toString();
+  }
+
+  function formatSessionLabel(sessionType) {
+    return sessionType === 'video' ? 'Video' : 'Audio';
+  }
+
+  function formatBookingSummary(booking) {
+    if (!booking) return '';
+    var isIndia = booking.isIndia !== undefined
+      ? booking.isIndia
+      : booking.region !== 'intl';
+    var isPackage = booking.type === 'package';
+    var sessionType = booking.sessionType || 'audio';
+    var price = booking.price || booking.investment ||
+      getPriceForFormat(booking.duration, isIndia, sessionType, isPackage);
+    var sessionName = booking.sessionName || getSessionName(booking.duration, isIndia);
+    var parts = [];
+    if (sessionName) parts.push(sessionName);
+    parts.push(formatSessionLabel(sessionType));
+    if (price) parts.push(price);
+    if (booking.slotLabel) parts.push(booking.slotLabel);
+    return parts.join(' · ');
   }
 
   function getBookingState() {
@@ -652,61 +688,24 @@
     return response.json();
   }
 
-  async function createBookingDirect(bookingData) {
-    var slug = EVENT_SLUGS[bookingData.duration] || EVENT_SLUGS[60];
-    var payload = {
-      eventTypeSlug: slug,
-      username: CAL_USERNAME,
+  async function createBooking(bookingData) {
+    var scriptResult = await postToScript({
+      action: 'createBooking',
+      duration: bookingData.duration,
       start: bookingData.slotStart,
-      attendee: {
-        name: bookingData.name,
-        email: bookingData.email,
-        timeZone: bookingData.timeZone || 'Asia/Kolkata'
-      }
-    };
-
-    if (bookingData.phone) {
-      payload.attendee.phoneNumber = bookingData.phone;
-    }
-
-    var response = await fetch(CAL_API_BASE + '/bookings', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'cal-api-version': '2024-08-13'
-      },
-      body: JSON.stringify(payload)
+      name: bookingData.name,
+      email: bookingData.email,
+      phone: bookingData.phone || '',
+      timeZone: bookingData.timeZone || 'Asia/Kolkata',
+      website: bookingData.website || ''
     });
 
-    var json = await response.json();
-    if (response.ok && json.status === 'success' && json.data) {
-      return json.data;
+    if (scriptResult && scriptResult.success && scriptResult.data) {
+      return scriptResult.data;
     }
 
-    var message = (json && json.error && json.error.message) || 'Booking failed';
+    var message = (scriptResult && scriptResult.error) || 'Booking failed. Please try again.';
     throw new Error(message);
-  }
-
-  async function createBooking(bookingData) {
-    try {
-      var scriptResult = await postToScript({
-        action: 'createBooking',
-        duration: bookingData.duration,
-        start: bookingData.slotStart,
-        name: bookingData.name,
-        email: bookingData.email,
-        phone: bookingData.phone || '',
-        timeZone: bookingData.timeZone || 'Asia/Kolkata'
-      });
-
-      if (scriptResult && scriptResult.success && scriptResult.data) {
-        return scriptResult.data;
-      }
-    } catch (scriptError) {
-      console.warn('Apps Script booking failed, trying Cal.com directly', scriptError);
-    }
-
-    return createBookingDirect(bookingData);
   }
 
   function addDays(date, days) {
@@ -738,6 +737,10 @@
     getDurationFromURL: getDurationFromURL,
     getTypeFromURL: getTypeFromURL,
     getRegionFromURL: getRegionFromURL,
+    getFormatFromURL: getFormatFromURL,
+    regionFromIsIndia: regionFromIsIndia,
+    formatSessionLabel: formatSessionLabel,
+    formatBookingSummary: formatBookingSummary,
     buildScheduleUrl: buildScheduleUrl,
     buildIntakeUrl: buildIntakeUrl,
     getBookingState: getBookingState,
