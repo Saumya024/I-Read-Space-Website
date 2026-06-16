@@ -115,16 +115,25 @@
               <input type="date" name="dob" required id="intake-dob" max="" />
               <span class="field-error" id="dob-error"></span>
             </div>
-            <div class="field">
-              <label for="intake-tob">Time of Birth *</label>
-              <input type="time" name="tob" required id="intake-tob" />
-              <p class="field-note"><strong>Please note:</strong> Enter only an accurate time of birth. If unsure, select "I don't know my time of birth."</p>
-              <label class="tob-unknown-label" for="intake-tob-unknown"><input type="checkbox" name="tob_unknown" id="intake-tob-unknown" value="1" /> I don't know my time of birth</label>
+            <div class="field intake-tob-known-field">
+              <span class="field-label" id="intake-tob-known-label">Do you know your exact birth time? *</span>
+              <div class="intake-radio-group" role="radiogroup" aria-labelledby="intake-tob-known-label">
+                <label class="intake-radio-label"><input type="radio" name="knows_birth_time" value="yes" id="intake-knows-tob-yes" required /> Yes</label>
+                <label class="intake-radio-label"><input type="radio" name="knows_birth_time" value="no" id="intake-knows-tob-no" /> No</label>
+              </div>
+              <span class="field-error" id="knows-birth-time-error"></span>
             </div>
-            <div class="field">
+            <p class="field-note intake-alt-methods-note" id="intake-alt-methods-note" hidden>We'll use Tarot and Numerology for your insights.</p>
+            <div class="field" id="intake-tob-section" hidden>
+              <label for="intake-tob">Time of Birth *</label>
+              <input type="time" name="tob" id="intake-tob" />
+              <span class="field-error" id="tob-error"></span>
+            </div>
+            <input type="hidden" name="tob_unknown" id="intake-tob-unknown" value="" />
+            <div class="field" id="intake-pob-section" hidden>
               <label for="intake-pob">Place of Birth *</label>
               <div class="autocomplete-wrapper">
-                <input type="text" name="pob" id="intake-pob" autocomplete="off" required />
+                <input type="text" name="pob" id="intake-pob" autocomplete="off" />
                 <div class="autocomplete-suggestions" id="place-suggestions"></div>
               </div>
             </div>
@@ -296,11 +305,36 @@
       }
     }
 
+    function syncAllBirthDetailsFields(form) {
+      syncBirthDetailsByPrefix('');
+      if (!form) return;
+      form.querySelectorAll('.additional-chart-block').forEach(function(block) {
+        const prefix = block.getAttribute('data-chart-prefix');
+        if (prefix) syncBirthDetailsByPrefix(prefix, block);
+      });
+    }
+
     function validateRequiredFieldsAndFocus(form) {
       const requiredFields = form.querySelectorAll('.field input[required], .field select[required]');
       let firstInvalidField = null;
 
       requiredFields.forEach(function(field) {
+        if (field.type === 'radio') {
+          const groupName = field.name;
+          if (form.querySelector('input[name="' + groupName + '"]:checked')) {
+            form.querySelectorAll('input[name="' + groupName + '"]').forEach(function(radio) {
+              radio.classList.remove('required-empty', 'required-filled');
+            });
+            return;
+          }
+          if (!firstInvalidField) {
+            firstInvalidField = field;
+          }
+          field.classList.add('required-empty');
+          field.classList.remove('required-filled');
+          return;
+        }
+
         if (field.disabled) {
           field.classList.remove('required-empty', 'required-filled');
           return;
@@ -332,6 +366,112 @@
       return true;
     }
 
+    const INTAKE_ALT_METHODS_NOTE = 'We\u2019ll use Tarot and Numerology for your insights.';
+
+    function getBirthDetailsElements(prefix, scope) {
+      const root = scope || document;
+      function el(suffix) {
+        const elementId = prefix ? prefix + '-' + suffix : 'intake-' + suffix;
+        if (root === document) return document.getElementById(elementId);
+        return root.querySelector('#' + elementId);
+      }
+      return {
+        knowsYes: el('knows-tob-yes'),
+        knowsNo: el('knows-tob-no'),
+        tobSection: el('tob-section'),
+        tobInput: el('tob'),
+        tobUnknown: el('tob-unknown'),
+        pobSection: el('pob-section'),
+        pobInput: el('pob'),
+        altNote: el('alt-methods-note')
+      };
+    }
+
+    function setBirthSectionVisible(section, visible) {
+      if (!section) return;
+      section.hidden = !visible;
+    }
+
+    function syncBirthDetailsByPrefix(prefix, scope) {
+      const els = getBirthDetailsElements(prefix, scope);
+      if (!els.tobInput || !els.tobSection || !els.tobUnknown) return;
+
+      const knowsExact = els.knowsYes && els.knowsYes.checked;
+      const doesNotKnow = els.knowsNo && els.knowsNo.checked;
+
+      if (knowsExact) {
+        setBirthSectionVisible(els.tobSection, true);
+        els.tobInput.disabled = false;
+        els.tobInput.setAttribute('required', 'required');
+        els.tobUnknown.value = '';
+        setRequiredFieldState(els.tobInput, hasAttemptedIntakeSubmit);
+
+        setBirthSectionVisible(els.pobSection, true);
+        if (els.pobInput) {
+          els.pobInput.disabled = false;
+          els.pobInput.setAttribute('required', 'required');
+          setRequiredFieldState(els.pobInput, hasAttemptedIntakeSubmit);
+        }
+        setBirthSectionVisible(els.altNote, false);
+      } else if (doesNotKnow) {
+        setBirthSectionVisible(els.tobSection, false);
+        els.tobInput.removeAttribute('required');
+        els.tobInput.disabled = true;
+        els.tobInput.value = '';
+        els.tobInput.classList.remove('required-empty', 'required-filled');
+        els.tobUnknown.value = '1';
+
+        setBirthSectionVisible(els.pobSection, false);
+        if (els.pobInput) {
+          els.pobInput.removeAttribute('required');
+          els.pobInput.disabled = true;
+          els.pobInput.value = '';
+          els.pobInput.classList.remove('required-empty', 'required-filled');
+        }
+        setBirthSectionVisible(els.altNote, true);
+      } else {
+        setBirthSectionVisible(els.tobSection, false);
+        els.tobInput.removeAttribute('required');
+        els.tobInput.disabled = true;
+        els.tobInput.value = '';
+        els.tobInput.classList.remove('required-empty', 'required-filled');
+        els.tobUnknown.value = '';
+
+        setBirthSectionVisible(els.pobSection, false);
+        if (els.pobInput) {
+          els.pobInput.removeAttribute('required');
+          els.pobInput.disabled = true;
+          els.pobInput.value = '';
+          els.pobInput.classList.remove('required-empty', 'required-filled');
+        }
+        setBirthSectionVisible(els.altNote, false);
+      }
+    }
+
+    function bindBirthDetailsRadios(prefix, scope) {
+      const els = getBirthDetailsElements(prefix, scope);
+      if (!els.knowsYes || !els.knowsNo) return;
+      [els.knowsYes, els.knowsNo].forEach(function(radio) {
+        if (radio.dataset.birthDetailsBound === '1') return;
+        radio.dataset.birthDetailsBound = '1';
+        radio.addEventListener('change', function() {
+          syncBirthDetailsByPrefix(prefix, scope);
+        });
+      });
+    }
+
+    function registerRequiredFieldListeners(field) {
+      if (!field || field.dataset.requiredListenerBound === '1') return;
+      field.dataset.requiredListenerBound = '1';
+      setRequiredFieldState(field, false);
+      field.addEventListener('change', function() {
+        setRequiredFieldState(this, hasAttemptedIntakeSubmit);
+      });
+      field.addEventListener('input', function() {
+        setRequiredFieldState(this, hasAttemptedIntakeSubmit);
+      });
+    }
+
     // Set max date for Date of Birth (today's date)
     document.addEventListener('DOMContentLoaded', function() {
       const dobInput = document.getElementById('intake-dob');
@@ -341,69 +481,26 @@
         dobInput.setAttribute('max', maxDate);
         dobInput.max = maxDate; // Also set property directly for mobile compatibility
       }
-      
-      const tobInput = document.querySelector('input[name="tob"]');
-      
-      // "I don't know my time of birth" – main chart
-      const tobUnknownCheckbox = document.getElementById('intake-tob-unknown');
-      if (tobUnknownCheckbox && tobInput) {
-        function syncMainTobUnknown() {
-          if (tobUnknownCheckbox.checked) {
-            tobInput.removeAttribute('required');
-            tobInput.disabled = true;
-            tobInput.value = '';
-            tobInput.classList.remove('required-empty', 'required-filled');
-          } else {
-            tobInput.disabled = false;
-            tobInput.setAttribute('required', 'required');
-            setRequiredFieldState(tobInput, hasAttemptedIntakeSubmit);
-          }
-        }
-        tobUnknownCheckbox.addEventListener('change', syncMainTobUnknown);
-        syncMainTobUnknown();
-      }
-      
-      // Time of birth certainty – additional charts (event delegation)
+
+      document.querySelectorAll('input[name="knows_birth_time"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+          syncBirthDetailsByPrefix('');
+        });
+      });
+      bindBirthDetailsRadios('', document);
+      syncBirthDetailsByPrefix('');
+
       document.addEventListener('change', function(e) {
-        if (e.target && e.target.classList.contains('chart-tob-unknown')) {
-          const name = e.target.getAttribute('data-tob-for');
-          if (!name) return;
-          const timeInput = document.querySelector('input[name="' + name + '"]');
-          if (!timeInput) return;
-          if (e.target.checked) {
-            timeInput.removeAttribute('required');
-            timeInput.disabled = true;
-            timeInput.value = '';
-            timeInput.classList.remove('required-empty', 'required-filled');
-          } else {
-            timeInput.disabled = false;
-            timeInput.setAttribute('required', 'required');
-            setRequiredFieldState(timeInput, hasAttemptedIntakeSubmit);
-          }
+        if (e.target && e.target.matches('input[name$="_knows_birth_time"]')) {
+          const prefix = e.target.name.replace('_knows_birth_time', '');
+          const block = e.target.closest('.additional-chart-block');
+          syncBirthDetailsByPrefix(prefix, block || document);
         }
       });
-      
+
       // Keep required fields neutral initially; show red only after submit attempt
       const requiredFields = document.querySelectorAll('.field input[required], .field select[required]');
-      requiredFields.forEach(function(field) {
-        setRequiredFieldState(field, false);
-        
-        // Add event listeners to update classes on change
-        field.addEventListener('change', function() {
-          setRequiredFieldState(this, hasAttemptedIntakeSubmit);
-        });
-        
-        // For date/time inputs, also listen to input event
-        if (field.type === 'date' || field.type === 'time') {
-          field.addEventListener('input', function() {
-            setRequiredFieldState(this, hasAttemptedIntakeSubmit);
-          });
-        } else {
-          field.addEventListener('input', function() {
-            setRequiredFieldState(this, hasAttemptedIntakeSubmit);
-          });
-        }
-      });
+      requiredFields.forEach(registerRequiredFieldListeners);
     });
 
     function getDurationFromURL() {
@@ -425,6 +522,7 @@
       const block = document.createElement('div');
       block.className = 'additional-chart-block';
       block.setAttribute('data-chart-index', chartNum);
+      block.setAttribute('data-chart-prefix', prefix);
       block.innerHTML =
         '<div class="additional-chart-block-header">' +
         '<h4 class="additional-chart-heading">Chart ' + chartNum + '</h4>' +
@@ -432,9 +530,16 @@
         '</div>' +
         '<div class="field"><label for="' + prefix + '-name">Name *</label><input type="text" name="' + prefix + '_name" id="' + prefix + '-name" required /></div>' +
         '<div class="field"><label for="' + prefix + '-dob">Date of Birth *</label><input type="date" name="' + prefix + '_dob" required id="' + prefix + '-dob" max="' + today + '" /><span class="field-error" id="' + prefix + '-dob-error"></span></div>' +
-        '<div class="field"><label for="' + prefix + '-tob">Time of Birth *</label><input type="time" name="' + prefix + '_tob" required id="' + prefix + '-tob" /><p class="field-note"><strong>Please note:</strong> Enter only an accurate time of birth. If unsure, select &quot;I don&apos;t know my time of birth.&quot;</p><label class="tob-unknown-label" for="' + prefix + '-tob-unknown"><input type="checkbox" name="' + prefix + '_tob_unknown" id="' + prefix + '-tob-unknown" value="1" class="chart-tob-unknown" data-tob-for="' + prefix + '_tob" /> I don&apos;t know my time of birth</label></div>' +
-        '<div class="field"><label for="' + prefix + '-pob">Place of Birth *</label><div class="autocomplete-wrapper">' +
-        '<input type="text" name="' + prefix + '_pob" id="' + prefix + '-pob" class="place-of-birth-input" autocomplete="off" required />' +
+        '<div class="field intake-tob-known-field"><span class="field-label" id="' + prefix + '-tob-known-label">Do you know their exact birth time? *</span>' +
+        '<div class="intake-radio-group" role="radiogroup" aria-labelledby="' + prefix + '-tob-known-label">' +
+        '<label class="intake-radio-label"><input type="radio" name="' + prefix + '_knows_birth_time" value="yes" id="' + prefix + '-knows-tob-yes" required /> Yes</label>' +
+        '<label class="intake-radio-label"><input type="radio" name="' + prefix + '_knows_birth_time" value="no" id="' + prefix + '-knows-tob-no" /> No</label>' +
+        '</div></div>' +
+        '<p class="field-note intake-alt-methods-note" id="' + prefix + '-alt-methods-note" hidden>' + INTAKE_ALT_METHODS_NOTE + '</p>' +
+        '<div class="field" id="' + prefix + '-tob-section" hidden><label for="' + prefix + '-tob">Time of Birth *</label><input type="time" name="' + prefix + '_tob" id="' + prefix + '-tob" /><span class="field-error" id="' + prefix + '-tob-error"></span></div>' +
+        '<input type="hidden" name="' + prefix + '_tob_unknown" id="' + prefix + '-tob-unknown" value="" />' +
+        '<div class="field" id="' + prefix + '-pob-section" hidden><label for="' + prefix + '-pob">Place of Birth *</label><div class="autocomplete-wrapper">' +
+        '<input type="text" name="' + prefix + '_pob" id="' + prefix + '-pob" class="place-of-birth-input" autocomplete="off" />' +
         '<div class="autocomplete-suggestions" id="place-suggestions-' + chartNum + '"></div></div></div>';
       const closeBtn = block.querySelector('.additional-chart-close');
       if (closeBtn) {
@@ -443,6 +548,9 @@
           updateAddChartButtonsAfterRemove(duration);
         });
       }
+      bindBirthDetailsRadios(prefix, block);
+      syncBirthDetailsByPrefix(prefix, block);
+      block.querySelectorAll('input[required], select[required]').forEach(registerRequiredFieldListeners);
       return block;
     }
 
@@ -497,6 +605,7 @@
         btn1.onclick = function() {
           const block = createAdditionalChartBlock(2, duration);
           container.appendChild(block);
+          syncBirthDetailsByPrefix('chart2', block);
           initPlaceAutocompleteForBlock(block);
           addChartArea.style.display = 'none';
           wrapper.style.display = 'block';
@@ -508,6 +617,7 @@
         btn2.onclick = function() {
           const block = createAdditionalChartBlock(3, duration);
           container.appendChild(block);
+          syncBirthDetailsByPrefix('chart3', block);
           initPlaceAutocompleteForBlock(block);
           btn2Wrap.style.display = 'none';
         };
@@ -551,8 +661,15 @@
     }
 
     function getTimeOfBirthAccuracy(formData, fieldPrefix) {
-      const baseName = fieldPrefix ? fieldPrefix + '_tob' : 'tob';
-      if (formData.get(baseName + '_unknown') === '1') return "Don't know time of birth";
+      if (!fieldPrefix) {
+        if (formData.get('knows_birth_time') === 'no' || formData.get('tob_unknown') === '1') {
+          return "Don't know time of birth";
+        }
+        return 'Provided time of birth';
+      }
+      if (formData.get(fieldPrefix + '_knows_birth_time') === 'no' || formData.get(fieldPrefix + '_tob_unknown') === '1') {
+        return "Don't know time of birth";
+      }
       return 'Provided time of birth';
     }
 
@@ -691,6 +808,7 @@
       
       // Validate form first
       const form = document.getElementById('intake-form');
+      syncAllBirthDetailsFields(form);
       if (!validateRequiredFieldsAndFocus(form)) {
         return;
       }

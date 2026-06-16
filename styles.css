@@ -5102,6 +5102,27 @@ body.home #testimonial-3 {
   color: var(--primary-light);
 }
 
+.intake-alt-methods-note {
+  max-width: 520px;
+  margin: 4px auto 0;
+  padding: 12px 16px;
+  background-color: rgba(67, 16, 57, 0.05);
+  border-radius: 12px;
+  line-height: 1.5;
+  color: var(--primary);
+}
+
+.additional-chart-block .intake-alt-methods-note {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.intake .field[hidden],
+.intake .intake-alt-methods-note[hidden] {
+  display: none !important;
+}
+
 .tob-unknown-label {
   display: block;
   margin-top: 8px;
@@ -5114,6 +5135,60 @@ body.home #testimonial-3 {
 .tob-unknown-label input[type="checkbox"] {
   margin-right: 8px;
   vertical-align: middle;
+}
+
+.intake-radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.intake-radio-label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 88px;
+  padding: 10px 24px;
+  font-family: var(--font-heading);
+  font-size: var(--text-small);
+  font-weight: 400;
+  color: var(--primary);
+  background-color: var(--white);
+  border: 1px solid rgba(67, 16, 57, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.intake-radio-label:has(input:checked) {
+  background-color: var(--primary);
+  color: var(--cream-white);
+  border-color: var(--primary);
+}
+
+.intake-radio-label:has(input:focus-visible) {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.intake-radio-label input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+.intake-tob-known-field .field-label {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: var(--text-small);
+  font-weight: 500;
+  color: var(--primary);
 }
 
 .intake-form {
@@ -5129,11 +5204,14 @@ body.home #testimonial-3 {
 .intake .intake-block-title,
 .intake .intake-section-note,
 .intake .field label,
-.intake .field input:not([type="checkbox"]),
+.intake .field .field-label,
+.intake .field input:not([type="checkbox"]):not([type="radio"]),
 .intake .field select,
 .intake .field textarea,
 .intake .field-note,
+.intake .intake-alt-methods-note,
 .intake .tob-unknown-label,
+.intake .intake-radio-label,
 .intake .word-count,
 .intake .field-error {
   text-align: center;
@@ -5290,7 +5368,7 @@ body.home #testimonial-3 {
   flex-shrink: 0;
 }
 
-.additional-chart-block .field input:not([type="checkbox"]),
+.additional-chart-block .field input:not([type="checkbox"]):not([type="radio"]),
 .additional-chart-block .field select,
 .additional-chart-block .field textarea {
   width: 100%;
@@ -6372,7 +6450,7 @@ main[class$="-page"] .wizard-chip.active {
     display: block;
   }
 
-  .additional-chart-block .field input:not([type="checkbox"]),
+  .additional-chart-block .field input:not([type="checkbox"]):not([type="radio"]),
   .additional-chart-block .field select,
   .additional-chart-block .field textarea {
     width: 100% !important;
@@ -7935,7 +8013,7 @@ main[class$="-page"] .wizard-chip.active {
     overflow: visible;
   }
   
-  .additional-chart-block .field input:not([type="checkbox"]),
+  .additional-chart-block .field input:not([type="checkbox"]):not([type="radio"]),
   .additional-chart-block .field select,
   .additional-chart-block .field textarea,
   .additional-chart-block .field .autocomplete-wrapper {
