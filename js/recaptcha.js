@@ -4,9 +4,13 @@
   var SITE_KEY = '6Lc8MhctAAAAAO9iyYadykdxz8BkwBYRVOQjhITu';
   var loadPromise = null;
   var SCRIPT_ID = 'irs-recaptcha-script';
-  var LOAD_TIMEOUT_MS = 10000;
-  var READY_TIMEOUT_MS = 10000;
-  var EXECUTE_TIMEOUT_MS = 10000;
+  // Kept short so a non-functional reCAPTCHA (e.g. site key not registered for
+  // this domain) fails fast instead of stalling the booking redirect. When
+  // reCAPTCHA is working it responds in well under a second, so these limits
+  // never bite legitimate traffic.
+  var LOAD_TIMEOUT_MS = 5000;
+  var READY_TIMEOUT_MS = 4000;
+  var EXECUTE_TIMEOUT_MS = 3000;
 
   function hasRecaptchaApi() {
     return !!(
@@ -114,19 +118,11 @@
   }
 
   function getToken(action) {
-    return loadRecaptcha()
-      .then(function () {
-        return executeToken(action);
-      })
-      .catch(function (firstError) {
-        // Retry once for transient init races/network flakiness.
-        loadPromise = null;
-        return loadRecaptcha().then(function () {
-          return executeToken(action);
-        }).catch(function () {
-          throw firstError;
-        });
-      });
+    // No retry on failure: the callers treat the token as best-effort, so a
+    // second full load+execute attempt only adds latency to the redirect.
+    return loadRecaptcha().then(function () {
+      return executeToken(action);
+    });
   }
 
   global.IRSRecaptcha = {
