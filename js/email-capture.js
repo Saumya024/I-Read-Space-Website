@@ -16,7 +16,7 @@
 
     recaptchaLoadPromise = new Promise(function(resolve, reject) {
       var script = document.createElement('script');
-      script.src = '/js/recaptcha.js?v=6';
+      script.src = '/js/recaptcha.js?v=7';
       script.async = true;
       script.onload = function() { resolve(); };
       script.onerror = function() { reject(new Error('reCAPTCHA failed to load')); };
