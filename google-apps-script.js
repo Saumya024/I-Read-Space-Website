@@ -515,13 +515,12 @@ function doPost(e) {
 
     return jsonResponse_(saveIntake_(data));
   } catch (error) {
-    // Surface the real cause. Apps Script marks the execution "Completed"
-    // when we catch here, so the actual exception never reaches the logs —
-    // include it in the response so we can see exactly what failed.
+    // Log the real cause to Stackdriver (visible in Executions) but show the
+    // visitor a friendly message rather than a raw stack trace.
     console.error('doPost error: ' + (error && error.stack ? error.stack : error));
     return jsonResponse_({
       success: false,
-      error: 'Booking error: ' + String(error && error.message ? error.message : error)
+      error: 'Something went wrong. Please try again.'
     });
   }
 }

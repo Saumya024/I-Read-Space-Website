@@ -744,13 +744,7 @@
       return scriptResult.data;
     }
 
-    // TEMP DIAGNOSTIC: when the server returns no explicit error, surface the
-    // raw response so we can see exactly why the booking was rejected.
-    // Remove once the root cause is identified.
-    var rawDebug = '';
-    try { rawDebug = ' [server said: ' + JSON.stringify(scriptResult) + ']'; } catch (e) {}
-    var message = (scriptResult && scriptResult.error) ||
-      ('Booking failed. Please try again.' + rawDebug);
+    var message = (scriptResult && scriptResult.error) || 'Booking failed. Please try again.';
     throw new Error(message);
   }
 
