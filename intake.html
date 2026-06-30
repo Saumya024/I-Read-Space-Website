@@ -902,24 +902,14 @@
         }
       }, 2000);
 
+      // reCAPTCHA is best-effort: if it can't load (ad-blocker, privacy
+      // extension, throttled network), don't dead-end the booking. Continue
+      // with an empty token so a real visitor can still complete their booking.
       let bookingRecaptchaToken = '';
       try {
         bookingRecaptchaToken = await window.IRSRecaptcha.getToken('booking');
       } catch (recaptchaError) {
-        bookingSubmitInFlight = false;
-        clearBookingIdempotencyKey();
-        if (overlayTimer) clearTimeout(overlayTimer);
-        if (overlay) {
-          overlay.style.display = 'none';
-          document.body.style.overflow = '';
-        }
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.removeAttribute('aria-disabled');
-          submitBtn.textContent = originalBtnText;
-        }
-        alert('Security check failed to load. Please refresh the page and try again.');
-        return;
+        console.error('Booking reCAPTCHA token failed (continuing without it):', recaptchaError);
       }
 
       let bookingResult;
