@@ -6,6 +6,7 @@
   var CAL_USERNAME = 'i-read-space';
   var BOOKING_STORAGE_KEY = 'irsBooking';
   var RESERVED_PAGE_URL = 'reserved-latest.html';
+  var SCRIPT_REQUEST_TIMEOUT_MS = 25000;
 
   var EVENT_SLUGS = {
     30: '30min',
@@ -680,12 +681,36 @@
   }
 
   async function postToScript(payload) {
-    var response = await fetch(GOOGLE_SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload)
-    });
-    return response.json();
+    var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var timeoutId = setTimeout(function () {
+      if (controller) controller.abort();
+    }, SCRIPT_REQUEST_TIMEOUT_MS);
+
+    try {
+      var response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload),
+        signal: controller ? controller.signal : undefined
+      });
+
+      if (!response.ok) {
+        throw new Error('Booking service unavailable. Please try again.');
+      }
+
+      try {
+        return await response.json();
+      } catch (jsonError) {
+        throw new Error('Booking service returned an invalid response. Please try again.');
+      }
+    } catch (error) {
+      if (error && error.name === 'AbortError') {
+        throw new Error('Booking confirmation is taking longer than expected. Please try again.');
+      }
+      throw error;
+    } finally {
+      clearTimeout(timeoutId);
+    }
   }
 
   function createIdempotencyKey() {
