@@ -515,9 +515,13 @@ function doPost(e) {
 
     return jsonResponse_(saveIntake_(data));
   } catch (error) {
+    // Surface the real cause. Apps Script marks the execution "Completed"
+    // when we catch here, so the actual exception never reaches the logs —
+    // include it in the response so we can see exactly what failed.
+    console.error('doPost error: ' + (error && error.stack ? error.stack : error));
     return jsonResponse_({
       success: false,
-      error: 'Something went wrong. Please try again.'
+      error: 'Booking error: ' + String(error && error.message ? error.message : error)
     });
   }
 }
