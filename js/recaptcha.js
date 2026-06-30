@@ -4,6 +4,7 @@
   var SITE_KEY = '6Lc8MhctAAAAAO9iyYadykdxz8BkwBYRVOQjhITu';
   var loadPromise = null;
   var SCRIPT_ID = 'irs-recaptcha-script';
+  var LOAD_TIMEOUT_MS = 10000;
   var READY_TIMEOUT_MS = 10000;
   var EXECUTE_TIMEOUT_MS = 10000;
 
@@ -50,6 +51,18 @@
         return;
       }
 
+      // Guard the script download itself. The Google API script can stall
+      // indefinitely (slow network, ad-blocker, throttled region) and fire
+      // neither `load` nor `error`, which would otherwise hang this promise
+      // forever and freeze the booking flow on the "Redirecting" overlay.
+      var settled = false;
+      var timeoutId = setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        loadPromise = null;
+        reject(new Error('reCAPTCHA failed to load (timeout)'));
+      }, LOAD_TIMEOUT_MS);
+
       var script = document.getElementById(SCRIPT_ID);
       if (!script) {
         script = document.createElement('script');
@@ -60,13 +73,25 @@
       }
 
       function onLoad() {
-        waitForReady().then(resolve).catch(function (err) {
+        if (settled) return;
+        waitForReady().then(function () {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timeoutId);
+          resolve();
+        }).catch(function (err) {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timeoutId);
           loadPromise = null;
           reject(err);
         });
       }
 
       function onError() {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeoutId);
         loadPromise = null;
         reject(new Error('reCAPTCHA failed to load'));
       }
