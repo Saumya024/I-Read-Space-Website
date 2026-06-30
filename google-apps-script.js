@@ -539,7 +539,7 @@ function testDoPost() {
       contents: JSON.stringify({
         action: 'createBooking',
         duration: '60',
-        start: '2026-06-12T18:00:00.000+05:30',
+        start: '2026-07-04T18:00:00.000+05:30',
         name: 'Test User',
         email: 'test@example.com',
         phone: '+919999999999',
