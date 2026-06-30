@@ -682,17 +682,23 @@
 
   async function postToScript(payload) {
     var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-    var timeoutId = setTimeout(function () {
-      if (controller) controller.abort();
-    }, SCRIPT_REQUEST_TIMEOUT_MS);
+    var timeoutId = null;
+
+    var timeoutPromise = new Promise(function (_, reject) {
+      timeoutId = setTimeout(function () {
+        if (controller) controller.abort();
+        reject(new Error('Booking confirmation is taking longer than expected. Please try again.'));
+      }, SCRIPT_REQUEST_TIMEOUT_MS);
+    });
 
     try {
-      var response = await fetch(GOOGLE_SCRIPT_URL, {
+      var requestPromise = fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(payload),
         signal: controller ? controller.signal : undefined
       });
+      var response = await Promise.race([requestPromise, timeoutPromise]);
 
       if (!response.ok) {
         throw new Error('Booking service unavailable. Please try again.');
@@ -704,7 +710,7 @@
         throw new Error('Booking service returned an invalid response. Please try again.');
       }
     } catch (error) {
-      if (error && error.name === 'AbortError') {
+      if (error && (error.name === 'AbortError' || /taking longer than expected/i.test(error.message || ''))) {
         throw new Error('Booking confirmation is taking longer than expected. Please try again.');
       }
       throw error;
