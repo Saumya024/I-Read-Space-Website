@@ -1,6 +1,6 @@
 // Shared helper to send simple email captures to the I Read Space Bookings sheet (Sheet2 tab)
 (function() {
-  var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQX3YcflcWNrUZN7a4pcBkzWmf5B4R4vccK5Ci32LuPnpW6YJnKNJrlUYyJ_vz-609/exec';
+  var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwL-3NpOQHeVfwFjEUBvsFwqi3NNKsU773OuOy3YNLSLhogTD9q1GCr4KRwZaoWU061/exec';
   var SHEET_NAME = 'Sheet2';
   var TRACKER_PDF_PATH = '../../assets/43day-reset-tracker-FINAL.pptx.pdf';
   var honeypotCounter = 0;
