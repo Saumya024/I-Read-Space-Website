@@ -1,7 +1,7 @@
 (function (global) {
   'use strict';
 
-  var SITE_KEY = '6Lc8MhctAAAAAO9iyYadykdxz8BkwBYRVOQjhITu';
+  var SITE_KEY = '6LcUsT0tAAAAAKxKffnTGUfCqHPJsK4RJAuVcOfL';
   var loadPromise = null;
   var SCRIPT_ID = 'irs-recaptcha-script';
   // Kept short so a non-functional reCAPTCHA (e.g. site key not registered for
