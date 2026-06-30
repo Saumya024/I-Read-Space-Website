@@ -534,12 +534,19 @@ function doGet(e) {
 }
 
 function testDoPost() {
+  // Build a slot 14 days out at 18:00 IST so it is always in the future
+  // regardless of today's date, and log it so we can confirm.
+  var future = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+  var dateStr = Utilities.formatDate(future, 'Asia/Kolkata', 'yyyy-MM-dd');
+  var startIso = dateStr + 'T18:00:00.000+05:30';
+  Logger.log('Testing booking with start: ' + startIso);
+
   const mockEvent = {
     postData: {
       contents: JSON.stringify({
         action: 'createBooking',
         duration: '60',
-        start: '2026-07-04T18:00:00.000+05:30',
+        start: startIso,
         name: 'Test User',
         email: 'test@example.com',
         phone: '+919999999999',
