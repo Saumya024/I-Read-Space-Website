@@ -5,6 +5,7 @@
   var loadPromise = null;
   var SCRIPT_ID = 'irs-recaptcha-script';
   var READY_TIMEOUT_MS = 10000;
+  var EXECUTE_TIMEOUT_MS = 10000;
 
   function hasRecaptchaApi() {
     return !!(
@@ -78,7 +79,13 @@
   }
 
   function executeToken(action) {
-    return global.grecaptcha.execute(SITE_KEY, { action: action || 'submit' });
+    var executePromise = global.grecaptcha.execute(SITE_KEY, { action: action || 'submit' });
+    var timeoutPromise = new Promise(function (_, reject) {
+      setTimeout(function () {
+        reject(new Error('reCAPTCHA execution timeout'));
+      }, EXECUTE_TIMEOUT_MS);
+    });
+    return Promise.race([executePromise, timeoutPromise]);
   }
 
   function getToken(action) {
