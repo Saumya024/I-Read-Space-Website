@@ -148,48 +148,52 @@ function verifyRecaptcha_(token, expectedAction) {
     return { valid: true, skipped: true };
   }
 
+  // Fail OPEN, not closed. reCAPTCHA is a best-effort spam signal, never a
+  // hard gate on a genuine booking. If the browser could not produce a token
+  // (extension/ad-blocker, script blocked, or — most commonly — the site key
+  // is not registered for this domain), let the booking through instead of
+  // rejecting every customer. We only block on a *confirmed* bot signal: a
+  // token that verifies successfully but scores below the threshold.
   if (!token || typeof token !== 'string' || !token.trim()) {
-    return {
-      valid: false,
-      error: 'Security check failed. Please refresh the page and try again.'
-    };
+    return { valid: true, skipped: true, reason: 'missing-token' };
   }
 
-  const response = UrlFetchApp.fetch('https://www.google.com/recaptcha/api/siteverify', {
-    method: 'post',
-    contentType: 'application/x-www-form-urlencoded',
-    payload: {
-      secret: secret,
-      response: token.trim()
-    },
-    muteHttpExceptions: true
-  });
+  let response;
+  try {
+    response = UrlFetchApp.fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'post',
+      contentType: 'application/x-www-form-urlencoded',
+      payload: {
+        secret: secret,
+        response: token.trim()
+      },
+      muteHttpExceptions: true
+    });
+  } catch (error) {
+    return { valid: true, skipped: true, reason: 'verify-fetch-failed' };
+  }
 
   let parsed;
   try {
     parsed = JSON.parse(response.getContentText());
   } catch (error) {
-    return {
-      valid: false,
-      error: 'Security check failed. Please try again.'
-    };
+    return { valid: true, skipped: true, reason: 'verify-parse-failed' };
   }
 
+  // Token reached Google but was not accepted (expired, duplicate, or the
+  // secret/site-key pair is misconfigured). That is "unverifiable", not proof
+  // of a bot — fail open.
   if (!parsed.success) {
-    return {
-      valid: false,
-      error: 'Security check failed. Please refresh the page and try again.'
-    };
+    return { valid: true, skipped: true, reason: 'verify-not-success' };
   }
 
   if (expectedAction && parsed.action && parsed.action !== expectedAction) {
-    return {
-      valid: false,
-      error: 'Security check failed. Please refresh the page and try again.'
-    };
+    return { valid: true, skipped: true, reason: 'action-mismatch' };
   }
 
-  const score = typeof parsed.score === 'number' ? parsed.score : 0;
+  // Only here is reCAPTCHA actually working: a verified token with a real
+  // score. A low score is a genuine bot signal, so keep blocking it.
+  const score = typeof parsed.score === 'number' ? parsed.score : 1;
   if (score < RECAPTCHA_MIN_SCORE) {
     return {
       valid: false,
