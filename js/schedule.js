@@ -8,7 +8,7 @@
   var bookingType = B.getTypeFromURL();
   var isPackage = bookingType === 'package';
   var regionOverride = B.getRegionFromURL();
-  var isIndia = true;
+  var region = 'in';
 
   var timezoneInput = document.getElementById('schedule-timezone-input');
   var timezoneSuggestions = document.getElementById('schedule-timezone-suggestions');
@@ -51,12 +51,12 @@
   }
 
   function getSelectedPrice() {
-    return B.getPriceForFormat(duration, isIndia, selectedFormat, isPackage);
+    return B.getPriceForFormat(duration, region, selectedFormat, isPackage);
   }
 
   function updateFormatDetails() {
-    var audioPrice = B.getPriceForFormat(duration, isIndia, 'audio', isPackage);
-    var videoPrice = B.getPriceForFormat(duration, isIndia, 'video', isPackage);
+    var audioPrice = B.getPriceForFormat(duration, region, 'audio', isPackage);
+    var videoPrice = B.getPriceForFormat(duration, region, 'video', isPackage);
     if (audioDetailEl) audioDetailEl.textContent = audioPrice + ' · audio consultation';
     if (videoDetailEl) videoDetailEl.textContent = videoPrice + ' · video consultation';
   }
@@ -464,8 +464,8 @@
       var state = {
         duration: duration,
         type: isPackage ? 'package' : null,
-        region: regionOverride || B.regionFromIsIndia(isIndia),
-        isIndia: isIndia,
+        region: region,
+        isIndia: region === 'in',
         sessionType: selectedFormat,
         timeZone: selectedTimezone.id,
         timeZoneLabel: selectedTimezone.label,
@@ -473,7 +473,7 @@
         slotLabel: B.formatSlotLabel(selectedSlotStart, selectedTimezone.id),
         selectedDate: selectedDate,
         price: getSelectedPrice(),
-        sessionName: B.getSessionName(duration, isIndia)
+        sessionName: B.getSessionName(duration)
       };
 
       B.saveBookingState(state);
@@ -482,15 +482,15 @@
   }
 
   async function init() {
-    isIndia = await B.detectIsIndia(regionOverride);
+    region = await B.detectRegion(regionOverride);
 
     if (durationLabelEl) {
       durationLabelEl.textContent = duration + '-MINUTE CONSULTATION' + (isPackage ? ' · PACKAGE OF 3' : '');
     }
-    if (sessionNameEl) sessionNameEl.textContent = B.getSessionName(duration, isIndia);
+    if (sessionNameEl) sessionNameEl.textContent = B.getSessionName(duration);
 
     timezoneEntries = await B.fetchCalTimezones();
-    selectedTimezone = await B.getDefaultTimezone();
+    selectedTimezone = await B.getDefaultTimezone(region);
     if (!timezoneEntries.length) {
       showError('Time zones could not load. Tap the time zone field and try again.');
     }

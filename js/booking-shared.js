@@ -14,16 +14,213 @@
     90: '90min'
   };
 
-  var pricingDataIN = {
-    30: { duration: '30-Minutes', name: 'Quick Clarity', audioPrice: '₹1,200', videoPrice: '₹1,500' },
-    60: { duration: '60-Minutes', name: 'Deep Insight', audioPrice: '₹2,400', videoPrice: '₹3,000' },
-    90: { duration: '90-Minutes', name: 'Holistic Guidance', audioPrice: '₹3,600', videoPrice: '₹4,500' }
+  var SESSION_META = {
+    30: { duration: '30-Minutes', name: 'Quick Clarity' },
+    60: { duration: '60-Minutes', name: 'Deep Insight' },
+    90: { duration: '90-Minutes', name: 'Holistic Guidance' }
   };
 
-  var pricingDataIntl = {
-    30: { duration: '30-Minutes', name: 'Quick Clarity', audioPrice: '$27', videoPrice: '$33' },
-    60: { duration: '60-Minutes', name: 'Deep Insight', audioPrice: '$54', videoPrice: '$73' },
-    90: { duration: '90-Minutes', name: 'Holistic Guidance', audioPrice: '$81', videoPrice: '$114' }
+  // Regional pricing. `intl` is the default USD rate shown to any visitor
+  // whose country isn't one of the other keys below (per-region rates are a
+  // purchasing-power-adjusted discount off `intl`, never above it). Adding a
+  // new region: add a key here, then map its country code(s) in
+  // COUNTRY_CODE_TO_REGION and its CURATED_TIMEZONES country name(s) in
+  // REGION_COUNTRY_NAMES.
+  var REGION_PRICING = {
+    in: {
+      individual: {
+        30: { audioPrice: '₹1,200', videoPrice: '₹1,500' },
+        60: { audioPrice: '₹2,400', videoPrice: '₹3,000' },
+        90: { audioPrice: '₹3,600', videoPrice: '₹4,500' }
+      },
+      packages: {
+        30: { audioPrice: '₹3,300', videoPrice: '₹4,200', audioOriginal: '₹3,600', videoOriginal: '₹4,500', audioSavings: 'Save ₹300', videoSavings: 'Save ₹300' },
+        60: { audioPrice: '₹6,600', videoPrice: '₹8,400', audioOriginal: '₹7,200', videoOriginal: '₹9,000', audioSavings: 'Save ₹600', videoSavings: 'Save ₹600' },
+        90: { audioPrice: '₹9,900', videoPrice: '₹12,600', audioOriginal: '₹10,800', videoOriginal: '₹13,500', audioSavings: 'Save ₹900', videoSavings: 'Save ₹900' }
+      }
+    },
+    intl: {
+      individual: {
+        30: { audioPrice: '$27', videoPrice: '$33' },
+        60: { audioPrice: '$54', videoPrice: '$73' },
+        90: { audioPrice: '$81', videoPrice: '$114' }
+      },
+      packages: {
+        30: { audioPrice: '$72', videoPrice: '$90', audioOriginal: '$81', videoOriginal: '$99', audioSavings: 'Save $9', videoSavings: 'Save $9' },
+        60: { audioPrice: '$144', videoPrice: '$201', audioOriginal: '$162', videoOriginal: '$219', audioSavings: 'Save $18', videoSavings: 'Save $18' },
+        90: { audioPrice: '$216', videoPrice: '$315', audioOriginal: '$243', videoOriginal: '$342', audioSavings: 'Save $27', videoSavings: 'Save $27' }
+      }
+    },
+    ca: {
+      individual: {
+        30: { audioPrice: 'C$34', videoPrice: 'C$41' },
+        60: { audioPrice: 'C$67', videoPrice: 'C$91' },
+        90: { audioPrice: 'C$101', videoPrice: 'C$142' }
+      },
+      packages: {
+        30: { audioPrice: 'C$90', videoPrice: 'C$112', audioOriginal: 'C$102', videoOriginal: 'C$123', audioSavings: 'Save C$12', videoSavings: 'Save C$11' },
+        60: { audioPrice: 'C$180', videoPrice: 'C$251', audioOriginal: 'C$201', videoOriginal: 'C$273', audioSavings: 'Save C$21', videoSavings: 'Save C$22' },
+        90: { audioPrice: 'C$270', videoPrice: 'C$394', audioOriginal: 'C$303', videoOriginal: 'C$426', audioSavings: 'Save C$33', videoSavings: 'Save C$32' }
+      }
+    },
+    au: {
+      individual: {
+        30: { audioPrice: 'A$39', videoPrice: 'A$48' },
+        60: { audioPrice: 'A$78', videoPrice: 'A$105' },
+        90: { audioPrice: 'A$117', videoPrice: 'A$164' }
+      },
+      packages: {
+        30: { audioPrice: 'A$104', videoPrice: 'A$130', audioOriginal: 'A$117', videoOriginal: 'A$144', audioSavings: 'Save A$13', videoSavings: 'Save A$14' },
+        60: { audioPrice: 'A$207', videoPrice: 'A$289', audioOriginal: 'A$234', videoOriginal: 'A$315', audioSavings: 'Save A$27', videoSavings: 'Save A$26' },
+        90: { audioPrice: 'A$311', videoPrice: 'A$454', audioOriginal: 'A$351', videoOriginal: 'A$492', audioSavings: 'Save A$40', videoSavings: 'Save A$38' }
+      }
+    },
+    ae: {
+      individual: {
+        30: { audioPrice: 'AED 84', videoPrice: 'AED 103' },
+        60: { audioPrice: 'AED 169', videoPrice: 'AED 228' },
+        90: { audioPrice: 'AED 253', videoPrice: 'AED 356' }
+      },
+      packages: {
+        30: { audioPrice: 'AED 225', videoPrice: 'AED 281', audioOriginal: 'AED 252', videoOriginal: 'AED 309', audioSavings: 'Save AED 27', videoSavings: 'Save AED 28' },
+        60: { audioPrice: 'AED 450', videoPrice: 'AED 627', audioOriginal: 'AED 507', videoOriginal: 'AED 684', audioSavings: 'Save AED 57', videoSavings: 'Save AED 57' },
+        90: { audioPrice: 'AED 674', videoPrice: 'AED 983', audioOriginal: 'AED 759', videoOriginal: 'AED 1,068', audioSavings: 'Save AED 85', videoSavings: 'Save AED 85' }
+      }
+    },
+    eu: {
+      individual: {
+        30: { audioPrice: '€24', videoPrice: '€29' },
+        60: { audioPrice: '€47', videoPrice: '€64' },
+        90: { audioPrice: '€71', videoPrice: '€100' }
+      },
+      packages: {
+        30: { audioPrice: '€63', videoPrice: '€79', audioOriginal: '€72', videoOriginal: '€87', audioSavings: 'Save €9', videoSavings: 'Save €8' },
+        60: { audioPrice: '€126', videoPrice: '€176', audioOriginal: '€141', videoOriginal: '€192', audioSavings: 'Save €15', videoSavings: 'Save €16' },
+        90: { audioPrice: '€189', videoPrice: '€276', audioOriginal: '€213', videoOriginal: '€300', audioSavings: 'Save €24', videoSavings: 'Save €24' }
+      }
+    },
+    gb: {
+      individual: {
+        30: { audioPrice: '£20', videoPrice: '£25' },
+        60: { audioPrice: '£40', videoPrice: '£55' },
+        90: { audioPrice: '£61', videoPrice: '£86' }
+      },
+      packages: {
+        30: { audioPrice: '£54', videoPrice: '£68', audioOriginal: '£60', videoOriginal: '£75', audioSavings: 'Save £6', videoSavings: 'Save £7' },
+        60: { audioPrice: '£108', videoPrice: '£151', audioOriginal: '£120', videoOriginal: '£165', audioSavings: 'Save £12', videoSavings: 'Save £14' },
+        90: { audioPrice: '£162', videoPrice: '£236', audioOriginal: '£183', videoOriginal: '£258', audioSavings: 'Save £21', videoSavings: 'Save £22' }
+      }
+    },
+    sg: {
+      individual: {
+        30: { audioPrice: 'S$35', videoPrice: 'S$43' },
+        60: { audioPrice: 'S$70', videoPrice: 'S$94' },
+        90: { audioPrice: 'S$104', videoPrice: 'S$147' }
+      },
+      packages: {
+        30: { audioPrice: 'S$93', videoPrice: 'S$116', audioOriginal: 'S$105', videoOriginal: 'S$129', audioSavings: 'Save S$12', videoSavings: 'Save S$13' },
+        60: { audioPrice: 'S$186', videoPrice: 'S$259', audioOriginal: 'S$210', videoOriginal: 'S$282', audioSavings: 'Save S$24', videoSavings: 'Save S$23' },
+        90: { audioPrice: 'S$279', videoPrice: 'S$406', audioOriginal: 'S$312', videoOriginal: 'S$441', audioSavings: 'Save S$33', videoSavings: 'Save S$35' }
+      }
+    },
+    nz: {
+      individual: {
+        30: { audioPrice: 'NZ$48', videoPrice: 'NZ$58' },
+        60: { audioPrice: 'NZ$95', videoPrice: 'NZ$128' },
+        90: { audioPrice: 'NZ$143', videoPrice: 'NZ$201' }
+      },
+      packages: {
+        30: { audioPrice: 'NZ$127', videoPrice: 'NZ$158', audioOriginal: 'NZ$144', videoOriginal: 'NZ$174', audioSavings: 'Save NZ$17', videoSavings: 'Save NZ$16' },
+        60: { audioPrice: 'NZ$253', videoPrice: 'NZ$354', audioOriginal: 'NZ$285', videoOriginal: 'NZ$384', audioSavings: 'Save NZ$32', videoSavings: 'Save NZ$30' },
+        90: { audioPrice: 'NZ$380', videoPrice: 'NZ$554', audioOriginal: 'NZ$429', videoOriginal: 'NZ$603', audioSavings: 'Save NZ$49', videoSavings: 'Save NZ$49' }
+      }
+    },
+    jp: {
+      individual: {
+        30: { audioPrice: '¥3,100', videoPrice: '¥3,700' },
+        60: { audioPrice: '¥6,100', videoPrice: '¥8,300' },
+        90: { audioPrice: '¥9,200', videoPrice: '¥12,900' }
+      },
+      packages: {
+        30: { audioPrice: '¥8,200', videoPrice: '¥10,200', audioOriginal: '¥9,300', videoOriginal: '¥11,100', audioSavings: 'Save ¥1,100', videoSavings: 'Save ¥900' },
+        60: { audioPrice: '¥16,300', videoPrice: '¥22,800', audioOriginal: '¥18,300', videoOriginal: '¥24,900', audioSavings: 'Save ¥2,000', videoSavings: 'Save ¥2,100' },
+        90: { audioPrice: '¥24,500', videoPrice: '¥35,700', audioOriginal: '¥27,600', videoOriginal: '¥38,700', audioSavings: 'Save ¥3,100', videoSavings: 'Save ¥3,000' }
+      }
+    },
+    kr: {
+      individual: {
+        30: { audioPrice: '₩31,000', videoPrice: '₩38,000' },
+        60: { audioPrice: '₩62,000', videoPrice: '₩83,000' },
+        90: { audioPrice: '₩93,000', videoPrice: '₩130,000' }
+      },
+      packages: {
+        30: { audioPrice: '₩82,000', videoPrice: '₩103,000', audioOriginal: '₩93,000', videoOriginal: '₩114,000', audioSavings: 'Save ₩11,000', videoSavings: 'Save ₩11,000' },
+        60: { audioPrice: '₩165,000', videoPrice: '₩230,000', audioOriginal: '₩186,000', videoOriginal: '₩249,000', audioSavings: 'Save ₩21,000', videoSavings: 'Save ₩19,000' },
+        90: { audioPrice: '₩247,000', videoPrice: '₩360,000', audioOriginal: '₩279,000', videoOriginal: '₩390,000', audioSavings: 'Save ₩32,000', videoSavings: 'Save ₩30,000' }
+      }
+    },
+    il: {
+      individual: {
+        30: { audioPrice: '₪81', videoPrice: '₪99' },
+        60: { audioPrice: '₪162', videoPrice: '₪219' },
+        90: { audioPrice: '₪243', videoPrice: '₪342' }
+      },
+      packages: {
+        30: { audioPrice: '₪216', videoPrice: '₪270', audioOriginal: '₪243', videoOriginal: '₪297', audioSavings: 'Save ₪27', videoSavings: 'Save ₪27' },
+        60: { audioPrice: '₪432', videoPrice: '₪603', audioOriginal: '₪486', videoOriginal: '₪657', audioSavings: 'Save ₪54', videoSavings: 'Save ₪54' },
+        90: { audioPrice: '₪648', videoPrice: '₪945', audioOriginal: '₪729', videoOriginal: '₪1,026', audioSavings: 'Save ₪81', videoSavings: 'Save ₪81' }
+      }
+    },
+    pl: {
+      individual: {
+        30: { audioPrice: '61 zł', videoPrice: '74 zł' },
+        60: { audioPrice: '122 zł', videoPrice: '164 zł' },
+        90: { audioPrice: '182 zł', videoPrice: '256 zł' }
+      },
+      packages: {
+        30: { audioPrice: '162 zł', videoPrice: '202 zł', audioOriginal: '183 zł', videoOriginal: '222 zł', audioSavings: 'Save 21 zł', videoSavings: 'Save 20 zł' },
+        60: { audioPrice: '324 zł', videoPrice: '452 zł', audioOriginal: '366 zł', videoOriginal: '492 zł', audioSavings: 'Save 42 zł', videoSavings: 'Save 40 zł' },
+        90: { audioPrice: '486 zł', videoPrice: '709 zł', audioOriginal: '546 zł', videoOriginal: '768 zł', audioSavings: 'Save 60 zł', videoSavings: 'Save 59 zł' }
+      }
+    }
+  };
+
+  // ISO 3166-1 alpha-2 country code -> pricing/timezone region key. Anything
+  // not listed here (including the US itself) falls back to `intl`.
+  var COUNTRY_CODE_TO_REGION = {
+    IN: 'in',
+    CA: 'ca',
+    AU: 'au',
+    AE: 'ae',
+    GB: 'gb',
+    SG: 'sg',
+    NZ: 'nz',
+    JP: 'jp',
+    KR: 'kr',
+    IL: 'il',
+    PL: 'pl',
+    // Eurozone member states
+    AT: 'eu', BE: 'eu', CY: 'eu', EE: 'eu', FI: 'eu', FR: 'eu', DE: 'eu',
+    GR: 'eu', IE: 'eu', IT: 'eu', LV: 'eu', LT: 'eu', LU: 'eu', MT: 'eu',
+    NL: 'eu', PT: 'eu', SK: 'eu', SI: 'eu', ES: 'eu', HR: 'eu'
+  };
+
+  // CURATED_TIMEZONES `country` values used as a secondary (region-based)
+  // default-timezone fallback, if the visitor's own browser timezone can't
+  // be matched directly.
+  var REGION_COUNTRY_NAMES = {
+    in: ['India'],
+    ca: ['Canada'],
+    au: ['Australia'],
+    ae: ['United Arab Emirates'],
+    eu: ['Germany', 'France', 'Spain', 'Italy', 'Netherlands', 'Belgium', 'Austria', 'Ireland', 'Portugal', 'Finland'],
+    gb: ['United Kingdom'],
+    sg: ['Singapore'],
+    nz: ['New Zealand'],
+    jp: ['Japan'],
+    kr: ['South Korea'],
+    il: ['Israel'],
+    pl: ['Poland']
   };
 
   var calTimezoneEntries = null;
@@ -178,7 +375,7 @@
 
   function getRegionFromURL() {
     var region = (new URLSearchParams(window.location.search).get('region') || '').toLowerCase();
-    if (region === 'in' || region === 'intl') return region;
+    if (VALID_REGION_CODES.indexOf(region) !== -1) return region;
     return null;
   }
 
@@ -218,14 +415,12 @@
 
   function formatBookingSummary(booking) {
     if (!booking) return '';
-    var isIndia = booking.isIndia !== undefined
-      ? booking.isIndia
-      : booking.region !== 'intl';
+    var region = booking.region || (booking.isIndia ? 'in' : 'intl');
     var isPackage = booking.type === 'package';
     var sessionType = booking.sessionType || 'audio';
     var price = booking.price || booking.investment ||
-      getPriceForFormat(booking.duration, isIndia, sessionType, isPackage);
-    var sessionName = booking.sessionName || getSessionName(booking.duration, isIndia);
+      getPriceForFormat(booking.duration, region, sessionType, isPackage);
+    var sessionName = booking.sessionName || getSessionName(booking.duration);
     var parts = [];
     if (sessionName) parts.push(sessionName);
     parts.push(formatSessionLabel(sessionType));
@@ -424,7 +619,25 @@
     return calTimezoneEntries;
   }
 
-  async function getDefaultTimezone() {
+  // Picks the most populous curated city for a region's home country(s), used
+  // only when the visitor's own browser timezone can't be matched (see below).
+  function getRegionTimezoneFallback(region, entries) {
+    var countryNames = REGION_COUNTRY_NAMES[region];
+    if (!countryNames) return null;
+    for (var i = 0; i < countryNames.length; i++) {
+      var matches = entries
+        .filter(function (entry) { return entry.country === countryNames[i]; })
+        .sort(function (a, b) { return (b.pop || 0) - (a.pop || 0); });
+      if (matches.length) return matches[0];
+    }
+    return null;
+  }
+
+  // `region` (if known) is only a fallback signal: the visitor's own browser
+  // timezone (via Intl) is always tried first and is the accurate, precise
+  // source of truth for where they actually are, whereas an IP-derived region
+  // only tells us their country, not which timezone within it.
+  async function getDefaultTimezone(region) {
     var entries = await fetchCalTimezones();
     var detected = normalizeTimezoneId(Intl.DateTimeFormat().resolvedOptions().timeZone);
     var matches = entries
@@ -434,6 +647,9 @@
     if (matches.length) {
       return toTimezoneOption(matches[0], entries);
     }
+
+    var regionFallback = getRegionTimezoneFallback(region, entries);
+    if (regionFallback) return toTimezoneOption(regionFallback, entries);
 
     var fallback = entries
       .filter(function (entry) { return entry.timezone === 'Asia/Kolkata'; })
@@ -615,53 +831,97 @@
     }).format(new Date(isoStart)).toLowerCase();
   }
 
-  var packageDataIN = {
-    30: { audioPrice: '₹3,300', videoPrice: '₹4,200' },
-    60: { audioPrice: '₹6,600', videoPrice: '₹8,400' },
-    90: { audioPrice: '₹9,900', videoPrice: '₹12,600' }
-  };
+  var VALID_REGION_CODES = Object.keys(REGION_PRICING);
 
-  var packageDataIntl = {
-    30: { audioPrice: '$72', videoPrice: '$90' },
-    60: { audioPrice: '$144', videoPrice: '$201' },
-    90: { audioPrice: '$216', videoPrice: '$315' }
-  };
-
-  function getPricingData(duration, isIndia, isPackage) {
-    if (isPackage) {
-      return (isIndia ? packageDataIN : packageDataIntl)[duration] || null;
-    }
-    return (isIndia ? pricingDataIN : pricingDataIntl)[duration] || null;
+  function normalizeRegion(region) {
+    return VALID_REGION_CODES.indexOf(region) !== -1 ? region : 'intl';
   }
 
-  function getPriceForFormat(duration, isIndia, format, isPackage) {
-    var data = getPricingData(duration, isIndia, isPackage);
+  function getRegionPricingTable(region) {
+    return REGION_PRICING[normalizeRegion(region)];
+  }
+
+  function getPricingData(duration, region, isPackage) {
+    var table = getRegionPricingTable(region);
+    var bucket = isPackage ? table.packages : table.individual;
+    return (bucket && bucket[duration]) || null;
+  }
+
+  function getPriceForFormat(duration, region, format, isPackage) {
+    var data = getPricingData(duration, region, isPackage);
     if (!data) return '';
     return format === 'video' ? data.videoPrice : data.audioPrice;
   }
 
-  function getAudioPrice(duration, isIndia) {
-    return getPriceForFormat(duration, isIndia, 'audio', false);
+  function getAudioPrice(duration, region) {
+    return getPriceForFormat(duration, region, 'audio', false);
   }
 
-  function getSessionName(duration, isIndia) {
-    var data = (isIndia ? pricingDataIN : pricingDataIntl)[duration];
-    return data ? data.name : '';
+  function getSessionName(duration) {
+    var meta = SESSION_META[duration];
+    return meta ? meta.name : '';
   }
 
-  async function detectIsIndia(regionOverride) {
-    if (regionOverride === 'in') return true;
-    if (regionOverride === 'intl') return false;
+  // Timezone IDs that unambiguously belong to a single one of our supported
+  // regions, used as a secondary signal (after IP lookup) if the visitor's
+  // own browser timezone can't be resolved directly.
+  var TIMEZONE_TO_REGION = {
+    'Asia/Kolkata': 'in',
+    'Asia/Dubai': 'ae',
+    'Asia/Singapore': 'sg',
+    'Asia/Tokyo': 'jp',
+    'Asia/Seoul': 'kr',
+    'Asia/Jerusalem': 'il',
+    'Europe/Warsaw': 'pl',
+    'Europe/London': 'gb',
+    'Pacific/Auckland': 'nz',
+    'Europe/Berlin': 'eu', 'Europe/Paris': 'eu', 'Europe/Madrid': 'eu',
+    'Europe/Rome': 'eu', 'Europe/Amsterdam': 'eu', 'Europe/Brussels': 'eu',
+    'Europe/Vienna': 'eu', 'Europe/Lisbon': 'eu', 'Europe/Helsinki': 'eu',
+    'America/Toronto': 'ca', 'America/Vancouver': 'ca', 'America/Edmonton': 'ca',
+    'America/Winnipeg': 'ca', 'America/Halifax': 'ca',
+    'Australia/Sydney': 'au', 'Australia/Melbourne': 'au', 'Australia/Brisbane': 'au',
+    'Australia/Perth': 'au', 'Australia/Adelaide': 'au'
+  };
+
+  // Locale region suffixes as a last-resort signal, mirroring the existing
+  // en-IN/hi-IN check.
+  var LOCALE_SUFFIX_TO_REGION = {
+    'IN': 'in', 'CA': 'ca', 'AU': 'au', 'AE': 'ae', 'GB': 'gb', 'SG': 'sg',
+    'NZ': 'nz', 'JP': 'jp', 'KR': 'kr', 'IL': 'il', 'PL': 'pl',
+    'DE': 'eu', 'FR': 'eu', 'ES': 'eu', 'IT': 'eu', 'NL': 'eu', 'IE': 'eu'
+  };
+
+  async function detectRegion(regionOverride) {
+    if (VALID_REGION_CODES.indexOf(regionOverride) !== -1) return regionOverride;
+
     try {
       var response = await fetch('https://ipapi.co/json/');
       var data = await response.json();
-      if (data.country_code) return data.country_code === 'IN';
+      if (data.country_code) {
+        return COUNTRY_CODE_TO_REGION[data.country_code] || 'intl';
+      }
     } catch (e) {}
+
     var timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    if (timezone === 'Asia/Kolkata') return true;
+    if (TIMEZONE_TO_REGION[timezone]) return TIMEZONE_TO_REGION[timezone];
+
     var locale = navigator.language || navigator.userLanguage || '';
-    if (locale.startsWith('en-IN') || locale.startsWith('hi-IN')) return true;
-    return false;
+    var localeSuffix = locale.split('-')[1];
+    if (localeSuffix && LOCALE_SUFFIX_TO_REGION[localeSuffix.toUpperCase()]) {
+      return LOCALE_SUFFIX_TO_REGION[localeSuffix.toUpperCase()];
+    }
+
+    // All detection methods failed: keep the site's original default.
+    return 'in';
+  }
+
+  async function detectIsIndia(regionOverride) {
+    var override;
+    if (regionOverride === 'in') override = 'in';
+    else if (regionOverride === 'intl') override = 'intl';
+    var region = await detectRegion(override);
+    return region === 'in';
   }
 
   async function fetchAvailableSlots(duration, timeZone, startDate, endDate) {
@@ -772,8 +1032,7 @@
     getPopularTimezoneSuggestions: getPopularTimezoneSuggestions,
     formatGmtOffset: formatGmtOffset,
     buildGroupedTimezoneLabel: buildGroupedTimezoneLabel,
-    pricingDataIN: pricingDataIN,
-    pricingDataIntl: pricingDataIntl,
+    getRegionPricingTable: getRegionPricingTable,
     getDurationFromURL: getDurationFromURL,
     getTypeFromURL: getTypeFromURL,
     getRegionFromURL: getRegionFromURL,
@@ -793,6 +1052,7 @@
     getPriceForFormat: getPriceForFormat,
     getPricingData: getPricingData,
     getSessionName: getSessionName,
+    detectRegion: detectRegion,
     detectIsIndia: detectIsIndia,
     fetchAvailableSlots: fetchAvailableSlots,
     postToScript: postToScript,

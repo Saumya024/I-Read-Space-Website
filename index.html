@@ -716,7 +716,7 @@
 
  <!-- International Pricing -->
  <div class="pricing-grid" id="international-pricing" style="display: none;">
- <div class="pricing-card">
+ <div class="pricing-card" data-duration="90">
  <div class="pricing-card-head">
  <div class="pricing-duration">90-Minutes</div>
  <h3 class="pricing-name">Holistic Guidance</h3>
@@ -742,7 +742,7 @@
  </div>
  </div>
 
- <div class="pricing-card pricing-card-popular">
+ <div class="pricing-card pricing-card-popular" data-duration="60">
  <div class="pricing-popular-badge">Most Popular</div>
  <div class="pricing-card-head">
  <div class="pricing-duration">60-Minutes</div>
@@ -768,7 +768,7 @@
  </div>
  </div>
 
- <div class="pricing-card">
+ <div class="pricing-card" data-duration="30">
  <div class="pricing-card-head">
  <div class="pricing-duration">30-Minutes</div>
  <h3 class="pricing-name">Quick Clarity</h3>
@@ -884,7 +884,7 @@
  </div>
 
  <div class="packages-grid" id="international-packages" style="display: none;">
- <div class="package-card">
+ <div class="package-card" data-duration="90">
  <div class="package-duration">90-Minutes <span class="package-sessions">× 3</span></div>
  <h3 class="package-name">Holistic Guidance</h3>
  <div class="package-toggle">
@@ -897,7 +897,7 @@
  <a href="schedule.html?duration=90&type=package" class="package-cta">Reserve Package</a>
  <div class="package-note">No expiry on sessions.</div>
  </div>
- <div class="package-card">
+ <div class="package-card" data-duration="60">
  <div class="package-duration">60-Minutes <span class="package-sessions">× 3</span></div>
  <h3 class="package-name">Deep Insight</h3>
  <div class="package-toggle">
@@ -910,7 +910,7 @@
  <a href="schedule.html?duration=60&type=package" class="package-cta">Reserve Package</a>
  <div class="package-note">No expiry on sessions.</div>
  </div>
- <div class="package-card">
+ <div class="package-card" data-duration="30">
  <div class="package-duration">30-Minutes <span class="package-sessions">× 3</span></div>
  <h3 class="package-name">Quick Clarity</h3>
  <div class="package-toggle">
@@ -1218,79 +1218,14 @@
  </div>
  </section>
 
+ <script src="js/booking-shared.js?v=25"></script>
  <script>
  // Location-based pricing detection
  (function() {
- let isIndia = false;
- let detectionMethod = 'none';
-
- // Method 1: Try IP-based geolocation
- async function detectLocationByIP() {
- try {
- const response = await fetch('https://ipapi.co/json/');
- const data = await response.json();
- if (data.country_code === 'IN') {
- isIndia = true;
- detectionMethod = 'ip';
- return true;
- } else if (data.country_code) {
- isIndia = false;
- detectionMethod = 'ip';
- return true;
- }
- } catch (error) {
- console.log('IP geolocation failed, trying fallback methods');
- return false;
- }
- }
-
- // Method 2: Check browser timezone (India Standard Time)
- function detectLocationByTimezone() {
- const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
- if (timezone === 'Asia/Kolkata') {
- isIndia = true;
- detectionMethod = 'timezone';
- return true;
- }
- return false;
- }
-
- // Method 3: Check browser locale
- function detectLocationByLocale() {
- const locale = navigator.language || navigator.userLanguage;
- if (locale.startsWith('en-IN') || locale.startsWith('hi-IN')) {
- isIndia = true;
- detectionMethod = 'locale';
- return true;
- }
- return false;
- }
-
- // Main detection function
- async function detectLocation() {
- // Try IP first (most accurate)
- const ipSuccess = await detectLocationByIP();
- if (ipSuccess) {
- return;
- }
-
- // Fallback to timezone
- if (detectLocationByTimezone()) {
- return;
- }
-
- // Fallback to locale
- if (detectLocationByLocale()) {
- return;
- }
-
- // Default to Indian pricing if all methods fail
- isIndia = true;
- detectionMethod = 'default';
- }
+ const B = window.IRSBooking;
 
  // Show pricing and packages by geo only (no manual toggle)
- function showPricing() {
+ function showPricing(region) {
  const indianPricing = document.getElementById('indian-pricing');
  const internationalPricing = document.getElementById('international-pricing');
  const indianPackages = document.getElementById('indian-packages');
@@ -1298,7 +1233,7 @@
  const faqPricingIndian = document.getElementById('faq-pricing-indian');
  const faqPricingInternational = document.getElementById('faq-pricing-international');
 
- if (isIndia) {
+ if (region === 'in') {
  if (indianPricing) indianPricing.style.display = 'grid';
  if (internationalPricing) internationalPricing.style.display = 'none';
  if (indianPackages) indianPackages.style.display = 'grid';
@@ -1319,6 +1254,49 @@
  if (!card) return 'audio';
  const activeToggle = card.querySelector('.toggle-btn.active');
  return activeToggle && activeToggle.dataset.type === 'video' ? 'video' : 'audio';
+ }
+
+ // For any region beyond plain India/default-USD, rewrite the international
+ // grid's prices (and hidden package prices) to that region's currency
+ // before the visitor ever sees a dollar figure. `intl` itself is a no-op:
+ // its table already matches what's hardcoded in the markup.
+ function applyRegionPricing(region) {
+ if (!B || region === 'in' || region === 'intl') return;
+ const table = B.getRegionPricingTable(region);
+ if (!table) return;
+
+ document.querySelectorAll('#international-pricing .pricing-card[data-duration]').forEach(card => {
+ const data = table.individual[card.dataset.duration];
+ const priceEl = card.querySelector('.pricing-price');
+ if (!data || !priceEl) return;
+ priceEl.dataset.audioPrice = data.audioPrice;
+ priceEl.dataset.videoPrice = data.videoPrice;
+ priceEl.textContent = getCardFormat(card) === 'video' ? data.videoPrice : data.audioPrice;
+ });
+
+ document.querySelectorAll('#international-packages .package-card[data-duration]').forEach(card => {
+ const data = table.packages[card.dataset.duration];
+ if (!data) return;
+ const origEl = card.querySelector('.package-original-price');
+ const priceEl = card.querySelector('.package-price');
+ const saveEl = card.querySelector('.package-savings');
+ const isVideo = getCardFormat(card) === 'video';
+ if (origEl) {
+ origEl.dataset.audioOriginal = data.audioOriginal;
+ origEl.dataset.videoOriginal = data.videoOriginal;
+ origEl.textContent = isVideo ? data.videoOriginal : data.audioOriginal;
+ }
+ if (priceEl) {
+ priceEl.dataset.audioPrice = data.audioPrice;
+ priceEl.dataset.videoPrice = data.videoPrice;
+ priceEl.textContent = isVideo ? data.videoPrice : data.audioPrice;
+ }
+ if (saveEl) {
+ saveEl.dataset.audioSavings = data.audioSavings;
+ saveEl.dataset.videoSavings = data.videoSavings;
+ saveEl.textContent = isVideo ? data.videoSavings : data.audioSavings;
+ }
+ });
  }
 
  // Keep booking flow currency- and format-consistent through schedule page
@@ -1342,10 +1320,12 @@
  }
 
  // Initialize
- detectLocation().then(() => {
- showPricing();
- updateBookingLinks(isIndia ? 'in' : 'intl');
- window.bookingRegion = isIndia ? 'in' : 'intl';
+ const regionPromise = B ? B.detectRegion(B.getRegionFromURL()) : Promise.resolve('in');
+ regionPromise.then((region) => {
+ showPricing(region);
+ applyRegionPricing(region);
+ updateBookingLinks(region);
+ window.bookingRegion = region;
  if (window.alignPricingSections) {
  requestAnimationFrame(window.alignPricingSections);
  }

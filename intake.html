@@ -213,7 +213,7 @@
   </div>
 
   <script src="/js/recaptcha.js?v=7"></script>
-  <script src="js/booking-shared.js?v=24"></script>
+  <script src="js/booking-shared.js?v=25"></script>
   <script>
     let hasAttemptedIntakeSubmit = false;
     let bookingState = null;
@@ -248,7 +248,7 @@
         if (!bookingState.price && bookingState.duration && bookingState.sessionType) {
           bookingState.price = window.IRSBooking.getPriceForFormat(
             bookingState.duration,
-            bookingState.isIndia !== undefined ? bookingState.isIndia : bookingState.region !== 'intl',
+            bookingState.region || (bookingState.isIndia ? 'in' : 'intl'),
             bookingState.sessionType,
             bookingState.type === 'package'
           );
@@ -872,12 +872,10 @@
       const isPackage = bookingState.type === 'package' || getTypeFromURL() === 'package';
       const sessionType = bookingState.sessionType || window.IRSBooking.getFormatFromURL() || 'audio';
       const duration = bookingState.duration || getDurationFromURL();
-      const isIndiaResolved = bookingState.isIndia !== undefined
-        ? bookingState.isIndia
-        : bookingState.region !== 'intl';
+      const regionResolved = bookingState.region || (bookingState.isIndia ? 'in' : 'intl');
       const investment = bookingState.price || window.IRSBooking.getPriceForFormat(
         duration,
-        isIndiaResolved,
+        regionResolved,
         sessionType,
         isPackage
       );
@@ -954,7 +952,8 @@
       bookingState.investment = investment;
       bookingState.price = investment;
       bookingState.sessionType = sessionType;
-      bookingState.isIndia = isIndiaResolved;
+      bookingState.region = regionResolved;
+      bookingState.isIndia = regionResolved === 'in';
       window.IRSBooking.saveBookingState(bookingState);
 
       let intakeRecaptchaToken = '';
