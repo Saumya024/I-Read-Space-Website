@@ -4831,6 +4831,7 @@ body.home #testimonial-3 {
 .footer-legal p {
   font-family: var(--font-body);
   font-size: var(--text-caption);
+  --footer-legal-font-size: var(--text-caption);
   line-height: 1.5;
   color: var(--cream-white);
   opacity: 0.58;
@@ -4840,6 +4841,10 @@ body.home #testimonial-3 {
 
 .footer-legal p + p {
   margin-top: 4px;
+}
+
+.footer-legal p.footer-initiative {
+  font-size: calc(var(--footer-legal-font-size) * 1.3);
 }
 
 /* Intake Page */
@@ -7878,6 +7883,7 @@ main[class$="-page"] .wizard-chip.active {
 
   .footer-legal p {
     font-size: 11px;
+    --footer-legal-font-size: 11px;
     text-align: center;
   }
 
