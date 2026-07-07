@@ -441,7 +441,7 @@ function saveIntake_(data) {
   if (lastRow === 0) {
     headers = [
       'Name', 'Email', 'Phone', 'Date of Birth', 'Time of Birth', 'Place of Birth',
-      'Primary Area', 'Unclear Question', 'Session Type', 'Duration', 'Package',
+      'Primary Area', 'Unclear Question', 'Session Type', 'Duration', 'Investment', 'Package',
       'Session Slot', 'Booking UID', 'Timezone', 'Timestamp'
     ];
     rowData = buildRowData_(headers, data);
@@ -475,6 +475,9 @@ function buildRowData_(headers, data) {
     if (normalizedHeader.includes('unclear') || normalizedHeader.includes('question')) return data.unclear || '';
     if (normalizedHeader.includes('session type')) return data.sessionType || '';
     if (normalizedHeader.includes('duration') || normalizedHeader.includes('minutes')) return data.duration || '';
+    if (normalizedHeader.includes('investment') || normalizedHeader.includes('investement') || normalizedHeader.includes('price') || normalizedHeader.includes('amount')) {
+      return data.investment || data.price || data.amount || '';
+    }
     if (normalizedHeader.includes('package')) return data.isPackage ? 'Yes' : 'No';
     if (normalizedHeader.includes('session slot') || normalizedHeader.includes('slot')) return data.slotLabel || data.slotStart || '';
     if (normalizedHeader.includes('booking uid') || normalizedHeader.includes('booking id')) return data.bookingUid || '';

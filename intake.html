@@ -995,27 +995,23 @@
         chart3_pob: formData.get('chart3_pob') || ''
       };
 
+      // Awaited on purpose: the previous hidden-iframe form-submit approach
+      // was fire-and-forget, so the redirect below could navigate the page
+      // away (tearing down the iframe) before Google Apps Script finished
+      // writing the row — losing the record silently while the booking
+      // itself (created separately, above) still succeeded. One retry
+      // covers a transient Apps Script cold-start/network hiccup; if both
+      // attempts fail we still let the customer through since their actual
+      // appointment is already booked, but we log it for follow-up.
       try {
-        const sheetsIframe = document.createElement('iframe');
-        sheetsIframe.style.display = 'none';
-        sheetsIframe.name = 'google-sheets-submit-' + Date.now();
-        document.body.appendChild(sheetsIframe);
-
-        const sheetsForm = document.createElement('form');
-        sheetsForm.method = 'POST';
-        sheetsForm.action = window.IRSBooking.GOOGLE_SCRIPT_URL;
-        sheetsForm.target = sheetsIframe.name;
-        sheetsForm.style.display = 'none';
-
-        const jsonInput = document.createElement('input');
-        jsonInput.type = 'hidden';
-        jsonInput.name = 'data';
-        jsonInput.value = JSON.stringify(submissionData);
-        sheetsForm.appendChild(jsonInput);
-        document.body.appendChild(sheetsForm);
-        sheetsForm.submit();
+        await window.IRSBooking.postToScript(submissionData);
       } catch (sheetsError) {
-        console.error('Error submitting to Google Sheets:', sheetsError);
+        console.error('Error submitting to Google Sheets, retrying once:', sheetsError);
+        try {
+          await window.IRSBooking.postToScript(submissionData);
+        } catch (retryError) {
+          console.error('Google Sheets submission failed on retry:', retryError);
+        }
       }
 
       clearBookingIdempotencyKey();

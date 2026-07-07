@@ -927,94 +927,52 @@
   </script>
 
 
+  <script src="js/booking-shared.js?v=25"></script>
   <script>
     // Location-based FAQ pricing detection
     (function() {
-      let isIndia = false;
-      let detectionMethod = 'none';
+      const B = window.IRSBooking;
 
-      // Method 1: Try IP-based geolocation
-      async function detectLocationByIP() {
-        try {
-          const response = await fetch('https://ipapi.co/json/');
-          const data = await response.json();
-          if (data.country_code === 'IN') {
-            isIndia = true;
-            detectionMethod = 'ip';
-            return true;
-          } else if (data.country_code) {
-            isIndia = false;
-            detectionMethod = 'ip';
-            return true;
-          }
-        } catch (error) {
-          console.log('IP geolocation failed, trying fallback methods');
-          return false;
-        }
+      // Rebuilds the "international" pricing paragraph for the visitor's
+      // detected region, reusing the exact prose style already on this page
+      // but pulling in the region-specific numbers from booking-shared.js.
+      function buildFaqCostHtml(region) {
+        const table = B.getRegionPricingTable(region);
+        const ind = table.individual;
+        const pkg = table.packages;
+        const lowSavings = pkg[30].audioSavings.replace('Save ', '');
+        const highSavings = pkg[90].audioSavings.replace('Save ', '');
+        return `Vedic astrology consultations at I Read Space range from ${ind[30].audioPrice} to ${ind[90].videoPrice}, depending on session length and format (audio or video). Three formats are available:<br><br>
+            <ul>
+              <li><strong>30-minute session (Quick Clarity)</strong>, ${ind[30].audioPrice} (Audio) / ${ind[30].videoPrice} (Video). Focused on one primary concern using one chart. Suitable for urgent questions or immediate direction.</li>
+              <li><strong>60-minute session (Deep Insight)</strong>, ${ind[60].audioPrice} (Audio) / ${ind[60].videoPrice} (Video). Covers up to three related themes using a maximum of two charts. Suitable for layered issues or decision-making.</li>
+              <li><strong>90-minute session (Holistic Guidance)</strong>, ${ind[90].audioPrice} (Audio) / ${ind[90].videoPrice} (Video). Allows exploration of multiple life areas and charts, offering a broader view of patterns, timing, and long-term direction.</li>
+            </ul>
+            <strong>Session packages</strong><br>
+            Three-session packages are available with savings of ${lowSavings}–${highSavings}. Sessions do not expire.<br><br>`;
       }
 
-      // Method 2: Check browser timezone (India Standard Time)
-      function detectLocationByTimezone() {
-        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        if (timezone === 'Asia/Kolkata') {
-          isIndia = true;
-          detectionMethod = 'timezone';
-          return true;
-        }
-        return false;
-      }
-
-      // Method 3: Check browser locale
-      function detectLocationByLocale() {
-        const locale = navigator.language || navigator.userLanguage;
-        if (locale.startsWith('en-IN') || locale.startsWith('hi-IN')) {
-          isIndia = true;
-          detectionMethod = 'locale';
-          return true;
-        }
-        return false;
-      }
-
-      // Main detection function
-      async function detectLocation() {
-        // Try IP first (most accurate)
-        const ipSuccess = await detectLocationByIP();
-        if (ipSuccess) {
-          return;
-        }
-
-        // Fallback to timezone
-        if (detectLocationByTimezone()) {
-          return;
-        }
-
-        // Fallback to locale
-        if (detectLocationByLocale()) {
-          return;
-        }
-
-        // Default to Indian pricing if all methods fail
-        isIndia = true;
-        detectionMethod = 'default';
-      }
-
-      // Show FAQ pricing by geo
-      function showFAQPricing() {
+      // Show FAQ pricing for the visitor's region
+      function showFAQPricing(region) {
         const faqPricingIndian = document.getElementById('faq-pricing-indian');
         const faqPricingInternational = document.getElementById('faq-pricing-international');
 
-        if (isIndia) {
+        if (region === 'in') {
           if (faqPricingIndian) faqPricingIndian.style.display = 'block';
           if (faqPricingInternational) faqPricingInternational.style.display = 'none';
         } else {
           if (faqPricingIndian) faqPricingIndian.style.display = 'none';
-          if (faqPricingInternational) faqPricingInternational.style.display = 'block';
+          if (faqPricingInternational) {
+            faqPricingInternational.innerHTML = buildFaqCostHtml(region);
+            faqPricingInternational.style.display = 'block';
+          }
         }
       }
 
       // Initialize
-      detectLocation().then(() => {
-        showFAQPricing();
+      const regionPromise = B ? B.detectRegion(B.getRegionFromURL()) : Promise.resolve('in');
+      regionPromise.then((region) => {
+        showFAQPricing(region);
       });
     })();
   </script>

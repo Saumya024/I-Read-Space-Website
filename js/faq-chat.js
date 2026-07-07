@@ -1,16 +1,73 @@
 // FAQ Chat Widget
 // Accordion/Dropdown-based navigation system
 
-const FAQ_PRICING_COPY = {
-  in: {
-    book: "You can book a Vedic astrology consultation online by selecting a session type, sharing your birth details, and choosing an available slot.<br><br><strong>1. Choose your session type:</strong><ul><li>30-minute session (Quick Clarity) — ₹1,200 (Audio) / ₹1,500 (Video)</li><li>60-minute session (Deep Insight) — ₹2,400 (Audio) / ₹3,000 (Video)</li><li>90-minute session (Holistic Guidance) — ₹3,600 (Audio) / ₹4,500 (Video)</li></ul><strong>2. Prepare your birth details:</strong><ul><li>Exact date of birth</li><li>Exact time of birth, if you know it (from hospital records, birth certificate, or trusted family records; if not, answer <strong>No</strong> on the form)</li><li>Place of birth (city and state/country)</li></ul><strong>3. Book online:</strong><br>Visit the <a href='schedule.html?region=in'>booking page</a>, select your preferred session, choose an available slot, share your birth details, and complete payment. Payment is required in advance to confirm the appointment.<br><br>Consultations are conducted online. Rescheduling is possible with 24 hours' notice. Sessions are confidential.",
-    cost: "Vedic astrology consultations at I Read Space range from ₹1,200 to ₹4,500, depending on session length and format (audio or video).<br><br><ul><li><strong>30-minute session (Quick Clarity)</strong> — ₹1,200 (Audio) / ₹1,500 (Video). One primary concern using one chart.</li><li><strong>60-minute session (Deep Insight)</strong> — ₹2,400 (Audio) / ₹3,000 (Video). Up to three related themes using two charts.</li><li><strong>90-minute session (Holistic Guidance)</strong> — ₹3,600 (Audio) / ₹4,500 (Video). Multiple life areas and charts.</li></ul><strong>Session packages</strong><br>Three-session packages are available with savings of ₹300–₹900. Sessions do not expire.<br><br>Payment is required in advance. Rescheduling possible with 24 hours' notice."
-  },
-  intl: {
-    book: "You can book a Vedic astrology consultation online by selecting a session type, sharing your birth details, and choosing an available slot.<br><br><strong>1. Choose your session type:</strong><ul><li>30-minute session (Quick Clarity) — $27 (Audio) / $33 (Video)</li><li>60-minute session (Deep Insight) — $54 (Audio) / $73 (Video)</li><li>90-minute session (Holistic Guidance) — $81 (Audio) / $114 (Video)</li></ul><strong>2. Prepare your birth details:</strong><ul><li>Exact date of birth</li><li>Exact time of birth, if you know it (from hospital records, birth certificate, or trusted family records; if not, answer <strong>No</strong> on the form)</li><li>Place of birth (city and state/country)</li></ul><strong>3. Book online:</strong><br>Visit the <a href='schedule.html?region=intl'>booking page</a>, select your preferred session, choose an available slot, share your birth details, and complete payment. Payment is required in advance to confirm the appointment.<br><br>Consultations are conducted online. Rescheduling is possible with 24 hours' notice. Sessions are confidential.",
-    cost: "Vedic astrology consultations at I Read Space range from $27 to $114, depending on session length and format (audio or video).<br><br><ul><li><strong>30-minute session (Quick Clarity)</strong> — $27 (Audio) / $33 (Video). One primary concern using one chart.</li><li><strong>60-minute session (Deep Insight)</strong> — $54 (Audio) / $73 (Video). Up to three related themes using two charts.</li><li><strong>90-minute session (Holistic Guidance)</strong> — $81 (Audio) / $114 (Video). Multiple life areas and charts.</li></ul><strong>Session packages</strong><br>Three-session packages are available with savings of $9–$27. Sessions do not expire.<br><br>Payment is required in advance. Rescheduling possible with 24 hours' notice."
-  }
+// This widget is loaded on ~180 pages across the site, most of which don't
+// load booking-shared.js. It prefers window.IRSBooking's pricing table when
+// present (single source of truth), but falls back to this compact copy so
+// regional pricing still works standalone. Keep these numbers in sync with
+// REGION_PRICING in js/booking-shared.js if prices ever change.
+const FAQ_REGION_PRICING_FALLBACK = {
+  in: { individual: { 30: { audioPrice: '₹1,200', videoPrice: '₹1,500' }, 60: { audioPrice: '₹2,400', videoPrice: '₹3,000' }, 90: { audioPrice: '₹3,600', videoPrice: '₹4,500' } }, packages: { 30: { audioSavings: 'Save ₹300' }, 90: { audioSavings: 'Save ₹900' } } },
+  intl: { individual: { 30: { audioPrice: '$27', videoPrice: '$33' }, 60: { audioPrice: '$54', videoPrice: '$73' }, 90: { audioPrice: '$81', videoPrice: '$114' } }, packages: { 30: { audioSavings: 'Save $9' }, 90: { audioSavings: 'Save $27' } } },
+  ca: { individual: { 30: { audioPrice: 'C$34', videoPrice: 'C$41' }, 60: { audioPrice: 'C$67', videoPrice: 'C$91' }, 90: { audioPrice: 'C$101', videoPrice: 'C$142' } }, packages: { 30: { audioSavings: 'Save C$12' }, 90: { audioSavings: 'Save C$33' } } },
+  au: { individual: { 30: { audioPrice: 'A$39', videoPrice: 'A$48' }, 60: { audioPrice: 'A$78', videoPrice: 'A$105' }, 90: { audioPrice: 'A$117', videoPrice: 'A$164' } }, packages: { 30: { audioSavings: 'Save A$13' }, 90: { audioSavings: 'Save A$40' } } },
+  ae: { individual: { 30: { audioPrice: 'AED 84', videoPrice: 'AED 103' }, 60: { audioPrice: 'AED 169', videoPrice: 'AED 228' }, 90: { audioPrice: 'AED 253', videoPrice: 'AED 356' } }, packages: { 30: { audioSavings: 'Save AED 27' }, 90: { audioSavings: 'Save AED 85' } } },
+  eu: { individual: { 30: { audioPrice: '€24', videoPrice: '€29' }, 60: { audioPrice: '€47', videoPrice: '€64' }, 90: { audioPrice: '€71', videoPrice: '€100' } }, packages: { 30: { audioSavings: 'Save €9' }, 90: { audioSavings: 'Save €24' } } },
+  gb: { individual: { 30: { audioPrice: '£20', videoPrice: '£25' }, 60: { audioPrice: '£40', videoPrice: '£55' }, 90: { audioPrice: '£61', videoPrice: '£86' } }, packages: { 30: { audioSavings: 'Save £6' }, 90: { audioSavings: 'Save £21' } } },
+  sg: { individual: { 30: { audioPrice: 'S$35', videoPrice: 'S$43' }, 60: { audioPrice: 'S$70', videoPrice: 'S$94' }, 90: { audioPrice: 'S$104', videoPrice: 'S$147' } }, packages: { 30: { audioSavings: 'Save S$12' }, 90: { audioSavings: 'Save S$33' } } },
+  nz: { individual: { 30: { audioPrice: 'NZ$48', videoPrice: 'NZ$58' }, 60: { audioPrice: 'NZ$95', videoPrice: 'NZ$128' }, 90: { audioPrice: 'NZ$143', videoPrice: 'NZ$201' } }, packages: { 30: { audioSavings: 'Save NZ$17' }, 90: { audioSavings: 'Save NZ$49' } } },
+  jp: { individual: { 30: { audioPrice: '¥3,100', videoPrice: '¥3,700' }, 60: { audioPrice: '¥6,100', videoPrice: '¥8,300' }, 90: { audioPrice: '¥9,200', videoPrice: '¥12,900' } }, packages: { 30: { audioSavings: 'Save ¥1,100' }, 90: { audioSavings: 'Save ¥3,100' } } },
+  kr: { individual: { 30: { audioPrice: '₩31,000', videoPrice: '₩38,000' }, 60: { audioPrice: '₩62,000', videoPrice: '₩83,000' }, 90: { audioPrice: '₩93,000', videoPrice: '₩130,000' } }, packages: { 30: { audioSavings: 'Save ₩11,000' }, 90: { audioSavings: 'Save ₩32,000' } } },
+  il: { individual: { 30: { audioPrice: '₪81', videoPrice: '₪99' }, 60: { audioPrice: '₪162', videoPrice: '₪219' }, 90: { audioPrice: '₪243', videoPrice: '₪342' } }, packages: { 30: { audioSavings: 'Save ₪27' }, 90: { audioSavings: 'Save ₪81' } } },
+  pl: { individual: { 30: { audioPrice: '61 zł', videoPrice: '74 zł' }, 60: { audioPrice: '122 zł', videoPrice: '164 zł' }, 90: { audioPrice: '182 zł', videoPrice: '256 zł' } }, packages: { 30: { audioSavings: 'Save 21 zł' }, 90: { audioSavings: 'Save 60 zł' } } }
 };
+
+function getFaqRegionTable(region) {
+  if (window.IRSBooking && window.IRSBooking.getRegionPricingTable) {
+    return window.IRSBooking.getRegionPricingTable(region);
+  }
+  return FAQ_REGION_PRICING_FALLBACK[region] || FAQ_REGION_PRICING_FALLBACK.intl;
+}
+
+// Mirrors booking-shared.js's detectRegion, self-contained so this widget
+// still localizes pricing on pages that don't load booking-shared.js.
+const FAQ_COUNTRY_CODE_TO_REGION = {
+  IN: 'in', CA: 'ca', AU: 'au', AE: 'ae', GB: 'gb', SG: 'sg', NZ: 'nz', JP: 'jp', KR: 'kr', IL: 'il', PL: 'pl',
+  AT: 'eu', BE: 'eu', CY: 'eu', EE: 'eu', FI: 'eu', FR: 'eu', DE: 'eu', GR: 'eu', IE: 'eu', IT: 'eu',
+  LV: 'eu', LT: 'eu', LU: 'eu', MT: 'eu', NL: 'eu', PT: 'eu', SK: 'eu', SI: 'eu', ES: 'eu', HR: 'eu'
+};
+const FAQ_VALID_REGIONS = Object.keys(FAQ_REGION_PRICING_FALLBACK);
+
+async function detectFaqRegionFallback(regionOverride) {
+  if (FAQ_VALID_REGIONS.indexOf(regionOverride) !== -1) return regionOverride;
+  try {
+    const response = await fetch('https://ipapi.co/json/');
+    const data = await response.json();
+    if (data.country_code) return FAQ_COUNTRY_CODE_TO_REGION[data.country_code] || 'intl';
+  } catch (error) { /* fall through to timezone/locale below */ }
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  if (timezone === 'Asia/Kolkata') return 'in';
+  const locale = navigator.language || navigator.userLanguage || '';
+  if (locale.startsWith('en-IN') || locale.startsWith('hi-IN')) return 'in';
+  return 'in';
+}
+
+// Builds the "how to book" / "how much does it cost" FAQ answers for a given
+// region, so every supported region (not just India/international) sees its
+// own local-currency copy.
+function buildRegionPricingCopy(region) {
+  const table = getFaqRegionTable(region);
+  const ind = table.individual;
+  const pkg = table.packages;
+  const lowSavings = pkg[30].audioSavings.replace('Save ', '');
+  const highSavings = pkg[90].audioSavings.replace('Save ', '');
+
+  const book = `You can book a Vedic astrology consultation online by selecting a session type, sharing your birth details, and choosing an available slot.<br><br><strong>1. Choose your session type:</strong><ul><li>30-minute session (Quick Clarity) — ${ind[30].audioPrice} (Audio) / ${ind[30].videoPrice} (Video)</li><li>60-minute session (Deep Insight) — ${ind[60].audioPrice} (Audio) / ${ind[60].videoPrice} (Video)</li><li>90-minute session (Holistic Guidance) — ${ind[90].audioPrice} (Audio) / ${ind[90].videoPrice} (Video)</li></ul><strong>2. Prepare your birth details:</strong><ul><li>Exact date of birth</li><li>Exact time of birth, if you know it (from hospital records, birth certificate, or trusted family records; if not, answer <strong>No</strong> on the form)</li><li>Place of birth (city and state/country)</li></ul><strong>3. Book online:</strong><br>Visit the <a href='schedule.html?region=${region}'>booking page</a>, select your preferred session, choose an available slot, share your birth details, and complete payment. Payment is required in advance to confirm the appointment.<br><br>Consultations are conducted online. Rescheduling is possible with 24 hours' notice. Sessions are confidential.`;
+
+  const cost = `Vedic astrology consultations at I Read Space range from ${ind[30].audioPrice} to ${ind[90].videoPrice}, depending on session length and format (audio or video).<br><br><ul><li><strong>30-minute session (Quick Clarity)</strong> — ${ind[30].audioPrice} (Audio) / ${ind[30].videoPrice} (Video). One primary concern using one chart.</li><li><strong>60-minute session (Deep Insight)</strong> — ${ind[60].audioPrice} (Audio) / ${ind[60].videoPrice} (Video). Up to three related themes using two charts.</li><li><strong>90-minute session (Holistic Guidance)</strong> — ${ind[90].audioPrice} (Audio) / ${ind[90].videoPrice} (Video). Multiple life areas and charts.</li></ul><strong>Session packages</strong><br>Three-session packages are available with savings of ${lowSavings}–${highSavings}. Sessions do not expire.<br><br>Payment is required in advance. Rescheduling possible with 24 hours' notice.`;
+
+  return { book, cost };
+}
 
 const FAQ_DATA = [
   {
@@ -218,25 +275,12 @@ const FAQ_CATEGORIES = {
 };
 
 async function applyRegionalFAQPricing() {
-  let isIndia = true;
-  const region = new URLSearchParams(window.location.search).get('region');
+  const urlRegion = new URLSearchParams(window.location.search).get('region');
+  const region = (window.IRSBooking && window.IRSBooking.detectRegion)
+    ? await window.IRSBooking.detectRegion(urlRegion)
+    : await detectFaqRegionFallback(urlRegion);
 
-  if (window.IRSBooking && window.IRSBooking.detectIsIndia) {
-    isIndia = await window.IRSBooking.detectIsIndia(region);
-  } else {
-    try {
-      const response = await fetch('https://ipapi.co/json/');
-      const data = await response.json();
-      if (data.country_code) {
-        isIndia = data.country_code === 'IN';
-      }
-    } catch (error) {
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      if (timezone === 'Asia/Kolkata') isIndia = true;
-    }
-  }
-
-  const copy = isIndia ? FAQ_PRICING_COPY.in : FAQ_PRICING_COPY.intl;
+  const copy = buildRegionPricingCopy(region);
   FAQ_DATA.forEach(function(item) {
     if (item.question === 'How do I book a Vedic astrology consultation?') {
       item.answer = copy.book;
