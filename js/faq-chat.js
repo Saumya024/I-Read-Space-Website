@@ -40,7 +40,7 @@ const FAQ_VALID_REGIONS = Object.keys(FAQ_REGION_PRICING_FALLBACK);
 
 // Mirrors booking-shared.js's TIMEZONE_TO_REGION / LOCALE_SUFFIX_TO_REGION.
 const FAQ_TIMEZONE_TO_REGION = {
-  'Asia/Kolkata': 'in', 'Asia/Dubai': 'ae', 'Asia/Singapore': 'sg', 'Asia/Tokyo': 'jp',
+  'Asia/Kolkata': 'in', 'Asia/Calcutta': 'in', 'Asia/Dubai': 'ae', 'Asia/Singapore': 'sg', 'Asia/Tokyo': 'jp',
   'Asia/Seoul': 'kr', 'Asia/Jerusalem': 'il', 'Europe/Warsaw': 'pl', 'Europe/London': 'gb',
   'Pacific/Auckland': 'nz',
   'Europe/Berlin': 'eu', 'Europe/Paris': 'eu', 'Europe/Madrid': 'eu', 'Europe/Rome': 'eu',

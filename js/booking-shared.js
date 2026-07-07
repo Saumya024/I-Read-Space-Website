@@ -900,7 +900,7 @@
     // geolocation is frequently wrong for mobile carriers, VPNs, and
     // corporate networks (e.g. an Indian visitor's IP block sometimes
     // resolves to a different country in third-party geo-IP databases).
-    var timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    var timezone = normalizeTimezoneId(Intl.DateTimeFormat().resolvedOptions().timeZone);
     if (TIMEZONE_TO_REGION[timezone]) return TIMEZONE_TO_REGION[timezone];
 
     var locale = navigator.language || navigator.userLanguage || '';
