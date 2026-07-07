@@ -38,17 +38,46 @@ const FAQ_COUNTRY_CODE_TO_REGION = {
 };
 const FAQ_VALID_REGIONS = Object.keys(FAQ_REGION_PRICING_FALLBACK);
 
+// Mirrors booking-shared.js's TIMEZONE_TO_REGION / LOCALE_SUFFIX_TO_REGION.
+const FAQ_TIMEZONE_TO_REGION = {
+  'Asia/Kolkata': 'in', 'Asia/Dubai': 'ae', 'Asia/Singapore': 'sg', 'Asia/Tokyo': 'jp',
+  'Asia/Seoul': 'kr', 'Asia/Jerusalem': 'il', 'Europe/Warsaw': 'pl', 'Europe/London': 'gb',
+  'Pacific/Auckland': 'nz',
+  'Europe/Berlin': 'eu', 'Europe/Paris': 'eu', 'Europe/Madrid': 'eu', 'Europe/Rome': 'eu',
+  'Europe/Amsterdam': 'eu', 'Europe/Brussels': 'eu', 'Europe/Vienna': 'eu', 'Europe/Lisbon': 'eu',
+  'Europe/Helsinki': 'eu',
+  'America/Toronto': 'ca', 'America/Vancouver': 'ca', 'America/Edmonton': 'ca',
+  'America/Winnipeg': 'ca', 'America/Halifax': 'ca',
+  'Australia/Sydney': 'au', 'Australia/Melbourne': 'au', 'Australia/Brisbane': 'au',
+  'Australia/Perth': 'au', 'Australia/Adelaide': 'au'
+};
+const FAQ_LOCALE_SUFFIX_TO_REGION = {
+  IN: 'in', CA: 'ca', AU: 'au', AE: 'ae', GB: 'gb', SG: 'sg',
+  NZ: 'nz', JP: 'jp', KR: 'kr', IL: 'il', PL: 'pl',
+  DE: 'eu', FR: 'eu', ES: 'eu', IT: 'eu', NL: 'eu', IE: 'eu'
+};
+
 async function detectFaqRegionFallback(regionOverride) {
   if (FAQ_VALID_REGIONS.indexOf(regionOverride) !== -1) return regionOverride;
+
+  // Device timezone/locale are checked before any IP lookup: they reflect
+  // the device's actual settings, whereas IP-based geolocation is
+  // frequently wrong for mobile carriers, VPNs, and corporate networks.
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  if (FAQ_TIMEZONE_TO_REGION[timezone]) return FAQ_TIMEZONE_TO_REGION[timezone];
+
+  const locale = navigator.language || navigator.userLanguage || '';
+  const localeSuffix = locale.split('-')[1];
+  if (localeSuffix && FAQ_LOCALE_SUFFIX_TO_REGION[localeSuffix.toUpperCase()]) {
+    return FAQ_LOCALE_SUFFIX_TO_REGION[localeSuffix.toUpperCase()];
+  }
+
   try {
     const response = await fetch('https://ipapi.co/json/');
     const data = await response.json();
     if (data.country_code) return FAQ_COUNTRY_CODE_TO_REGION[data.country_code] || 'intl';
-  } catch (error) { /* fall through to timezone/locale below */ }
-  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  if (timezone === 'Asia/Kolkata') return 'in';
-  const locale = navigator.language || navigator.userLanguage || '';
-  if (locale.startsWith('en-IN') || locale.startsWith('hi-IN')) return 'in';
+  } catch (error) { /* all detection methods failed */ }
+
   return 'in';
 }
 

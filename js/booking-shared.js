@@ -895,14 +895,11 @@
   async function detectRegion(regionOverride) {
     if (VALID_REGION_CODES.indexOf(regionOverride) !== -1) return regionOverride;
 
-    try {
-      var response = await fetch('https://ipapi.co/json/');
-      var data = await response.json();
-      if (data.country_code) {
-        return COUNTRY_CODE_TO_REGION[data.country_code] || 'intl';
-      }
-    } catch (e) {}
-
+    // The visitor's own device timezone/locale are checked before any IP
+    // lookup: they reflect the device's actual settings, whereas IP-based
+    // geolocation is frequently wrong for mobile carriers, VPNs, and
+    // corporate networks (e.g. an Indian visitor's IP block sometimes
+    // resolves to a different country in third-party geo-IP databases).
     var timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     if (TIMEZONE_TO_REGION[timezone]) return TIMEZONE_TO_REGION[timezone];
 
@@ -911,6 +908,14 @@
     if (localeSuffix && LOCALE_SUFFIX_TO_REGION[localeSuffix.toUpperCase()]) {
       return LOCALE_SUFFIX_TO_REGION[localeSuffix.toUpperCase()];
     }
+
+    try {
+      var response = await fetch('https://ipapi.co/json/');
+      var data = await response.json();
+      if (data.country_code) {
+        return COUNTRY_CODE_TO_REGION[data.country_code] || 'intl';
+      }
+    } catch (e) {}
 
     // All detection methods failed: keep the site's original default.
     return 'in';
